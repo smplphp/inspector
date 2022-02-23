@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         cacheResultFile="./build/cache/phpunit.result.cache" colors="true" verbose="true"
+         printerClass="Sempro\PHPUnitPrettyPrinter\PrettyPrinterForPhpUnit9">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+        <exclude>
+            <file>./src/helpers.php</file>
+            <directory>./src/Contracts</directory>
+            <directory>./src/Attributes</directory>
+        </exclude>
+    </coverage>
+    <testsuites>
+        <testsuite name="smplphp/container test suite">
+            <directory suffix="Test.php">./tests/</directory>
+            <exclude>./tests/Fixtures</exclude>
+        </testsuite>
+    </testsuites>
+</phpunit>

@@ -1,0 +1,38 @@
+{
+  "name": "smplphp/skeleton",
+  "description": "A simple modern PHP skeleton library",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Ollie Read",
+      "email": "smpl@ollie.codes"
+    }
+  ],
+  "require": {
+    "php": "^8.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.0",
+    "sempro/phpunit-pretty-print": "^1.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Smpl\\Skeleton\\": "src/"
+    },
+    "files": [
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Smpl\\Skeleton\\Tests\\": "tests/"
+    },
+    "files": [
+    ]
+  },
+  "scripts": {
+    "test": "phpunit --verbose --colors=always",
+    "test-coverage": "XDEBUG_MODE=coverage phpunit --verbose --colors=always --coverage-html build/coverage"
+  }
+}
