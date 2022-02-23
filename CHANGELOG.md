@@ -19,4 +19,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Security
 
-[unreleased]: https://github.com/smpl/package/tree/main
+[unreleased]: https://github.com/smplphp/inspector/tree/main

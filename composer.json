@@ -1,6 +1,6 @@
 {
-  "name": "smplphp/skeleton",
-  "description": "A simple modern PHP skeleton library",
+  "name": "smplphp/inspect",
+  "description": "A simple modern PHP class inspector and mapper library",
   "minimum-stability": "stable",
   "license": "MIT",
   "type": "library",
@@ -19,14 +19,14 @@
   },
   "autoload": {
     "psr-4": {
-      "Smpl\\Skeleton\\": "src/"
+      "Smpl\\Inspector\\": "src/"
     },
     "files": [
     ]
   },
   "autoload-dev": {
     "psr-4": {
-      "Smpl\\Skeleton\\Tests\\": "tests/"
+      "Smpl\\Inspector\\Tests\\": "tests/"
     },
     "files": [
     ]

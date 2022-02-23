@@ -1,21 +1,21 @@
 <img src="smpl-logo.png" alt="SMPL" align="left">
 
-# Component
+# Inspector
 
-A simple, modern PHP 8 something something
+A simple modern PHP class inspector and mapper library.
 
-![Packagist Version](https://img.shields.io/packagist/v/smplphp/skeleton)
-![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/smplphp/skeleton)
-![GitHub](https://img.shields.io/github/license/smplphp/skeleton)
-[![codecov](https://codecov.io/gh/smplphp/skeleton/branch/main/graph/badge.svg?token=FHJ41NQMTA)](https://codecov.io/gh/smplphp/skeleton)
-[![Build Status](https://travis-ci.com/smplphp/skeleton.svg?branch=main)](https://travis-ci.com/smplphp/skeleton)
+![Packagist Version](https://img.shields.io/packagist/v/smplphp/inspector)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/smplphp/inspector)
+![GitHub](https://img.shields.io/github/license/smplphp/inspector)
+[![codecov](https://codecov.io/gh/smplphp/inspector/branch/main/graph/badge.svg?token=FHJ41NQMTA)](https://codecov.io/gh/smplphp/inspector)
+[![Build Status](https://travis-ci.com/smplphp/inspector.svg?branch=main)](https://travis-ci.com/smplphp/inspector)
 
 ## Install
 
 Install via composer.
 
 ```bash
-$ composer require smplphp/skeleton
+$ composer require smplphp/inspector
 ```
 
 ## Usage
@@ -42,4 +42,4 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 ## License
 
-The MIT License (MIT). Please see [License File](https://github.com/smplphp/skeleton/blob/master/LICENSE.md) for more information.
+The MIT Licence (MIT). Please see [Licence File](https://github.com/smplphp/inspector/blob/main/LICENSE.md) for more information.
