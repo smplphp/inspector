@@ -6,7 +6,7 @@ namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
 
-class NullableType implements Type
+class NullableType extends BaseType
 {
     /**
      * @var \Smpl\Inspector\Contracts\Type
@@ -30,11 +30,6 @@ class NullableType implements Type
 
     public function isBuiltin(): bool
     {
-        return true;
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
+        return $this->baseType->isBuiltin();
     }
 }

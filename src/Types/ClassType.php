@@ -4,20 +4,13 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Types;
 
-use Smpl\Inspector\Contracts\Type;
-
-class ClassType implements Type
+class ClassType extends BaseType
 {
     private string $className;
 
     public function __construct(string $className)
     {
         $this->className = $className;
-    }
-
-    public function __toString(): string
-    {
-        return $this->getName();
     }
 
     public function getName(): string
@@ -27,7 +20,11 @@ class ClassType implements Type
 
     public function matches(mixed $value): bool
     {
-        return ($value instanceof $this->className) || ($allowNull && $value === null);
+        if (is_object($value)) {
+            return ($value instanceof $this->className);
+        }
+
+        return $value === $this->className || is_subclass_of($value, $this->className);
     }
 
     public function isBuiltin(): bool

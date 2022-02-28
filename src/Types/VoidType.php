@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Types;
 
-class ObjectType extends BaseType
+class VoidType extends BaseType
 {
     public function getName(): string
     {
-        return 'object';
+        return 'void';
     }
 
     public function matches(mixed $value): bool
     {
-        return is_object($value);
+        return $value === null;
     }
 }

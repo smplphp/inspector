@@ -6,7 +6,7 @@ namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
 
-class UnionType implements Type
+class UnionType extends BaseType
 {
     /**
      * @var \Smpl\Inspector\Contracts\Type[]
@@ -24,11 +24,6 @@ class UnionType implements Type
         );
     }
 
-    public function __toString()
-    {
-        return $this->getName();
-    }
-
     public function getName(): string
     {
         return $this->name;
@@ -42,11 +37,17 @@ class UnionType implements Type
             }
         }
 
-        return ($allowNull && $value === null);
+        return false;
     }
 
     public function isBuiltin(): bool
     {
-        return false;
+        foreach ($this->types as $type) {
+            if ($type->isBuiltin() === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

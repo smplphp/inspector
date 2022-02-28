@@ -6,7 +6,7 @@ namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
 
-class IntersectionType implements Type
+class IntersectionType extends BaseType
 {
     /**
      * @var \Smpl\Inspector\Contracts\Type[]
@@ -20,13 +20,8 @@ class IntersectionType implements Type
         $this->types = $types;
         $this->name  = implode(
             '&',
-            array_map(fn(Type $type) => $type->getName(), $this->types)
+            array_map(static fn(Type $type) => $type->getName(), $this->types)
         );
-    }
-
-    public function __toString()
-    {
-        return $this->getName();
     }
 
     public function getName(): string
