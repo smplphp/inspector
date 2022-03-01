@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Smpl\Inspector;
+namespace Smpl\Inspector\Factories;
 
 use ReflectionIntersectionType;
 use ReflectionNamedType;
@@ -86,7 +86,9 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         if ($typeObject === null) {
+            // @codeCoverageIgnoreStart
             throw new RuntimeException(sprintf('Unable to create type for \'%s\'', $type->__toString()));
+            // @codeCoverageIgnoreEnd
         }
 
         if (! ($typeObject instanceof Types\MixedType) && ! ($typeObject instanceof Types\VoidType) && $type->allowsNull()) {
@@ -151,12 +153,8 @@ class TypeFactory implements Contracts\TypeFactory
         return $this->baseTypes[$typeName];
     }
 
-    private function makeNamedType(ReflectionNamedType|string $reflectionType): Contracts\Type
+    private function makeNamedType(ReflectionNamedType $reflectionType): Contracts\Type
     {
-        if (! ($reflectionType instanceof ReflectionNamedType)) {
-            return $this->makeTypeFromString($reflectionType);
-        }
-
         $nullable = $reflectionType->allowsNull();
         $baseType = $this->makeBaseType($reflectionType->getName());
 
