@@ -11,15 +11,27 @@
         <directory name="src"/>
         <ignoreFiles>
             <directory name="vendor"/>
+            <directory name="tests"/>
+            <directory name="src/_OLD"/>
         </ignoreFiles>
     </projectFiles>
 
     <issueHandlers>
         <PropertyNotSetInConstructor errorLevel="suppress"/>
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
+        <ArgumentTypeCoercion>
+            <errorLevel type="suppress">
+                <file name="src/TypeFactory.php"/>
+                <file name="src/Types/ClassType.php"/>
+            </errorLevel>
+        </ArgumentTypeCoercion>
+        <PossiblyInvalidArgument>
+            <errorLevel type="suppress">
+                <file name="src/TypeFactory.php"/>
+            </errorLevel>
+        </PossiblyInvalidArgument>
         <MixedReturnTypeCoercion>
             <errorLevel type="suppress">
-                <file name="src/Elements/Attribute.php"/>
             </errorLevel>
         </MixedReturnTypeCoercion>
     </issueHandlers>

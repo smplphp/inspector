@@ -159,7 +159,7 @@ class TypeFactoryTest extends TestCase
      */
     public function can_make_union_types(): void
     {
-        $type = $this->factory->makeUnion('string', Stringable::class);
+        $type = $this->factory->makeUnion(['string', Stringable::class]);
 
         self::assertInstanceOf(Types\UnionType::class, $type);
         self::assertSame(Stringable::class . '|string', $type->getName());
@@ -182,7 +182,7 @@ class TypeFactoryTest extends TestCase
      */
     public function can_make_intersection_types(): void
     {
-        $type = $this->factory->makeIntersection(Types\ArrayType::class, Types\BoolType::class);
+        $type = $this->factory->makeIntersection([Types\ArrayType::class, Types\BoolType::class]);
 
         self::assertInstanceOf(Types\IntersectionType::class, $type);
         self::assertSame(Types\ArrayType::class . '&' . Types\BoolType::class, $type->getName());

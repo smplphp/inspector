@@ -24,6 +24,10 @@ class ClassType extends BaseType
             return ($value instanceof $this->className);
         }
 
+        if (! is_string($value)) {
+            return false;
+        }
+
         return $value === $this->className || is_subclass_of($value, $this->className);
     }
 

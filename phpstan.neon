@@ -2,5 +2,8 @@ parameters:
     level: 9
     paths:
         - src
+    excludePaths:
+        - tests
+        - src/_OLD
     checkGenericClassInNonGenericObjectType: false
     ignoreErrors:

@@ -10,7 +10,17 @@ interface TypeFactory
 
     public function makeNullable(ReflectionType|Type|string $type): Type;
 
-    public function makeUnion(ReflectionType|Type|string ...$types): Type;
+    /**
+     * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string> $types
+     *
+     * @return \Smpl\Inspector\Contracts\Type
+     */
+    public function makeUnion(array $types): Type;
 
-    public function makeIntersection(ReflectionType|Type|string ...$types): Type;
+    /**
+     * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string> $types
+     *
+     * @return \Smpl\Inspector\Contracts\Type
+     */
+    public function makeIntersection(array $types): Type;
 }

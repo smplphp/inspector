@@ -8,6 +8,7 @@ use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
+use RuntimeException;
 use Smpl\Inspector\Contracts;
 use Smpl\Inspector\Types;
 
@@ -21,23 +22,52 @@ class TypeFactory implements Contracts\TypeFactory
             || trait_exists($className);
     }
 
+    /**
+     * @param ReflectionNamedType[]|\Smpl\Inspector\Contracts\Type[] $types
+     *
+     * @return void
+     */
     private static function sortTypesByName(array &$types): void
     {
         usort(
             $types,
-            static function (ReflectionNamedType|Contracts\Type $a, ReflectionNamedType|Contracts\Type $b) {
+            static function (ReflectionNamedType|Contracts\Type $a, ReflectionNamedType|Contracts\Type $b): int {
                 return strcmp($a->getName(), $b->getName());
             }
         );
     }
 
+    /**
+     * @var \Smpl\Inspector\Contracts\Type[]
+     */
     private array $baseTypes = [];
 
+    /**
+     * @var \Smpl\Inspector\Types\UnionType[]
+     */
     private array $unionTypes = [];
 
+    /**
+     * @var \Smpl\Inspector\Types\IntersectionType[]
+     */
     private array $intersectionTypes = [];
 
+    /**
+     * @var \Smpl\Inspector\Types\NullableType[]
+     */
     private array $nullableTypes = [];
+
+    /**
+     * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string> $types
+     *
+     * @return \Smpl\Inspector\Contracts\Type[]
+     */
+    private function getTypesFromArray(array $types): array
+    {
+        return array_filter(array_map(function (ReflectionType|Contracts\Type|string $type): Contracts\Type {
+            return $type instanceof Contracts\Type ? $type : $this->make($type);
+        }, $types));
+    }
 
     public function make(ReflectionType|string $type): Contracts\Type
     {
@@ -50,9 +80,13 @@ class TypeFactory implements Contracts\TypeFactory
         if ($type instanceof ReflectionNamedType) {
             $typeObject = $this->makeNamedType($type);
         } else if ($type instanceof ReflectionUnionType) {
-            $typeObject = $this->makeUnion(...$type->getTypes());
+            $typeObject = $this->makeUnion($type->getTypes());
         } else if ($type instanceof ReflectionIntersectionType) {
-            $typeObject = $this->makeIntersection(...$type->getTypes());
+            $typeObject = $this->makeIntersection($type->getTypes());
+        }
+
+        if ($typeObject === null) {
+            throw new RuntimeException(sprintf('Unable to create type for \'%s\'', $type->__toString()));
         }
 
         if (! ($typeObject instanceof Types\MixedType) && ! ($typeObject instanceof Types\VoidType) && $type->allowsNull()) {
@@ -78,9 +112,9 @@ class TypeFactory implements Contracts\TypeFactory
         return $this->nullableTypes[$baseTypeName];
     }
 
-    public function makeUnion(ReflectionType|Contracts\Type|string ...$types): Types\UnionType
+    public function makeUnion(array $types): Types\UnionType
     {
-        $types = array_map($this->makeNamedType(...), $types);
+        $types = $this->getTypesFromArray($types);
         self::sortTypesByName($types);
         $unionType = new Types\UnionType(...$types);
 
@@ -93,9 +127,9 @@ class TypeFactory implements Contracts\TypeFactory
         return $unionType;
     }
 
-    public function makeIntersection(ReflectionType|Contracts\Type|string ...$types): Types\IntersectionType
+    public function makeIntersection(array $types): Types\IntersectionType
     {
-        $types = array_map($this->makeNamedType(...), $types);
+        $types = $this->getTypesFromArray($types);
         self::sortTypesByName($types);
         $intersectionType = new Types\IntersectionType(...$types);
 
@@ -163,11 +197,11 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         if (str_contains($type, '|')) {
-            return $this->makeUnion(...explode('|', $type));
+            return $this->makeUnion(explode('|', $type));
         }
 
         if (str_contains($type, '&')) {
-            return $this->makeIntersection(...explode('&', $type));
+            return $this->makeIntersection(explode('&', $type));
         }
 
         return $this->makeBaseType($type);
