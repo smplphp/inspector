@@ -20,4 +20,18 @@ abstract class BaseType implements Type
     {
         return true;
     }
+
+    /**
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    public function accepts(Type|string $type): bool
+    {
+        if ($type instanceof Type) {
+            return $type instanceof static
+                || $type->getName() === $this->getName()
+                || is_subclass_of($this->getName(), $type->getName());
+        }
+
+        return $this->getName() === $type || is_subclass_of($this->getName(), $type);
+    }
 }

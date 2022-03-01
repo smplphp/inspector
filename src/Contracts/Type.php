@@ -10,5 +10,7 @@ interface Type extends Stringable
 
     public function matches(mixed $value): bool;
 
+    public function accepts(Type|string $type): bool;
+
     public function isBuiltin(): bool;
 }
