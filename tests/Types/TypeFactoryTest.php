@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Tests\Types;
 
 use PHPUnit\Framework\TestCase;
-use Smpl\Inspector\TypeFactory;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Types;
 use Stringable;
 

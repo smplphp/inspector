@@ -7,8 +7,8 @@ namespace Smpl\Inspector\Tests\Types;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Tests\Fixtures\TypeReflectableClass;
-use Smpl\Inspector\TypeFactory;
 use Smpl\Inspector\Types;
 
 /**

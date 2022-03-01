@@ -7,7 +7,7 @@ namespace Smpl\Inspector\Tests\Types;
 use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 use Smpl\Inspector\Contracts\Type;
-use Smpl\Inspector\TypeFactory;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Types;
 use stdClass;
 
@@ -36,6 +36,18 @@ class TypeMatchesTest extends TestCase
 
         self::assertTrue($type->matches(false));
         self::assertFalse($type->matches('false'));
+    }
+
+    /**
+     * @test
+     */
+    public function class_types_doesnt_match_non_strings_and_non_objects(): void
+    {
+        $type = new Types\ClassType(Types\StringType::class);
+
+        self::assertTrue($type->matches(new Types\StringType()));
+        self::assertTrue($type->matches(Types\StringType::class));
+        self::assertFalse($type->matches(1));
     }
 
     /**
