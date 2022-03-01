@@ -9,7 +9,7 @@ use Smpl\Inspector\Types\StringType;
 
 class TypeReflectableClass
 {
-    public array $array;
+    public array $array = [];
 
     public bool $bool;
 
@@ -19,7 +19,7 @@ class TypeReflectableClass
 
     public int $int;
 
-    public iterable $iterable;
+    public static iterable $iterable;
 
     public mixed $mixed;
 
@@ -33,7 +33,7 @@ class TypeReflectableClass
 
     public Type&StringType $intersection;
 
-    public $noType;
+    private $noType;
 
     public function voidReturn(): void
     {

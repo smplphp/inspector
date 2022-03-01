@@ -7,3 +7,12 @@ parameters:
         - src/_OLD
     checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
+        - message: '#hasParent is never read, only written#'
+          paths:
+              - src/Elements/Structure.php
+        - message: '#expects ReflectionType\|string, ReflectionType\|null given#'
+          paths:
+              - src/Elements/Structure.php
+        - message: '#Method ([a-zA-Z\\]+)::([a-zA-Z\(\)]+) should return ([a-zA-Z\\]+) but returns ([a-zA-Z\\\|]+)#'
+          paths:
+              - src/Factories/StructureFactory.php

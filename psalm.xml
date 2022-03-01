@@ -21,18 +21,23 @@
         <RedundantPropertyInitializationCheck errorLevel="suppress"/>
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
-                <file name="src/TypeFactory.php"/>
+                <file name="src/Factories/TypeFactory.php"/>
                 <file name="src/Types/ClassType.php"/>
             </errorLevel>
         </ArgumentTypeCoercion>
         <PossiblyInvalidArgument>
             <errorLevel type="suppress">
-                <file name="src/TypeFactory.php"/>
+                <file name="src/Factories/TypeFactory.php"/>
             </errorLevel>
         </PossiblyInvalidArgument>
         <MixedReturnTypeCoercion>
             <errorLevel type="suppress">
+                <file name="src/Factories/StructureFactory.php"/>
             </errorLevel>
         </MixedReturnTypeCoercion>
+        <MixedArgument>
+            <errorLevel type="suppress">
+            </errorLevel>
+        </MixedArgument>
     </issueHandlers>
 </psalm>
