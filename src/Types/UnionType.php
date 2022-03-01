@@ -40,6 +40,17 @@ class UnionType extends BaseType
         return false;
     }
 
+    public function accepts(Type|string $type): bool
+    {
+        foreach ($this->types as $baseType) {
+            if ($baseType->accepts($type)) {
+                return true;
+            }
+        }
+
+        return parent::accepts($type);
+    }
+
     public function isBuiltin(): bool
     {
         foreach ($this->types as $type) {

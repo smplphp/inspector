@@ -293,8 +293,8 @@ class StructurePropertyTest extends TestCase
             PropertyFilter::make()->hasType($this->types->make('string'))
         );
 
-        self::assertCount(1, $stringProperties);
-        self::assertCount(1, $typeProperties);
+        self::assertCount(3, $stringProperties);
+        self::assertCount(3, $typeProperties);
     }
 
     /**

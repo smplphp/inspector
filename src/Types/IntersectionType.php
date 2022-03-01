@@ -40,6 +40,21 @@ class IntersectionType extends BaseType
         return true;
     }
 
+    public function accepts(Type|string $type): bool
+    {
+        if ($type === $this->getName() || parent::accepts($type)) {
+            return true;
+        }
+
+        foreach ($this->types as $baseType) {
+            if (! $baseType->accepts($type)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function isBuiltin(): bool
     {
         return false;

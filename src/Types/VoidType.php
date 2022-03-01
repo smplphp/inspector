@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Types;
 
+use Smpl\Inspector\Contracts\Type;
+
 class VoidType extends BaseType
 {
     public function getName(): string
@@ -14,5 +16,13 @@ class VoidType extends BaseType
     public function matches(mixed $value): bool
     {
         return $value === null;
+    }
+
+    public function accepts(Type|string $type): bool
+    {
+        return $type === 'null'
+            || $type === 'void'
+            || $type === 'never'
+            || $type instanceof self;
     }
 }

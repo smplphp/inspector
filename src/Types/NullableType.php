@@ -32,4 +32,22 @@ class NullableType extends BaseType
     {
         return $this->baseType->isBuiltin();
     }
+
+    public function getBaseType(): Type
+    {
+        return $this->baseType;
+    }
+
+    public function accepts(Type|string $type): bool
+    {
+        if (is_string($type)) {
+            return $type === 'null'
+                || str_starts_with($type, '?')
+                || str_starts_with($type, 'null|')
+                || str_ends_with($type, '|null')
+                || str_contains($type, '|null|');
+        }
+
+        return $type instanceof NullableType || $this->baseType->accepts($type);
+    }
 }

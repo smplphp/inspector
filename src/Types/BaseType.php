@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Inspector;
 
 abstract class BaseType implements Type
 {
@@ -26,12 +27,16 @@ abstract class BaseType implements Type
      */
     public function accepts(Type|string $type): bool
     {
-        if ($type instanceof Type) {
-            return $type instanceof static
-                || $type->getName() === $this->getName()
-                || is_subclass_of($this->getName(), $type->getName());
+        if (! ($type instanceof Type)) {
+            $type = Inspector::getInstance()->types()->make($type);
         }
 
-        return $this->getName() === $type || is_subclass_of($this->getName(), $type);
+        if ($type instanceof NullableType) {
+            $type = $type->getBaseType();
+        }
+
+        return $type instanceof static
+            || $type->getName() === $this->getName()
+            || is_subclass_of($this->getName(), $type->getName());
     }
 }
