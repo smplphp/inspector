@@ -40,14 +40,26 @@ class NullableType extends BaseType
 
     public function accepts(Type|string $type): bool
     {
-        if (is_string($type)) {
-            return $type === 'null'
-                || str_starts_with($type, '?')
-                || str_starts_with($type, 'null|')
-                || str_ends_with($type, '|null')
-                || str_contains($type, '|null|');
+        if ($type instanceof NullableType) {
+            return true;
         }
 
-        return $type instanceof NullableType || $this->baseType->accepts($type);
+        $typeName = is_string($type) ? $type : $type->getName();
+
+        /*
+         * This should match all variations of:
+         *
+         *      null
+         *      ?type
+         *      type|null
+         *      null|type
+         *      type1|null|type2
+         * 
+         */
+        return $typeName === 'null'
+            || str_starts_with($typeName, '?')
+            || str_starts_with($typeName, 'null|')
+            || str_ends_with($typeName, '|null')
+            || str_contains($typeName, '|null|');
     }
 }
