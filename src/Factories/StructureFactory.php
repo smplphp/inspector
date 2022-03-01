@@ -15,6 +15,22 @@ use Smpl\Inspector\Support\StructureType;
 
 class StructureFactory implements StructureFactoryContract
 {
+    /**
+     * @param class-string $class
+     *
+     * @return bool
+     *
+     * @psalm-suppress MixedArgument
+     * @psalm-suppress ArgumentTypeCoercion
+     */
+    public static function isValidClass(string $class): bool
+    {
+        return class_exists($class)
+            || interface_exists($class)
+            || enum_exists($class)
+            || trait_exists($class);
+    }
+
     private TypeFactory $types;
 
     /**
@@ -58,21 +74,6 @@ class StructureFactory implements StructureFactoryContract
     {
         $this->structures[$structure->getFullName()] = $structure;
         return $this;
-    }
-
-    /**
-     * @param class-string $class
-     *
-     * @return bool
-     *
-     * @psalm-suppress MixedArgument
-     */
-    private function isValidClass(string $class): bool
-    {
-        return class_exists($class)
-            || interface_exists($class)
-            || enum_exists($class)
-            || trait_exists($class);
     }
 
     /**
