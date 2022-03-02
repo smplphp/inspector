@@ -6,7 +6,6 @@ namespace Smpl\Inspector\Elements;
 
 use ReflectionClass;
 use RuntimeException;
-use Smpl\Inspector\Collections\StructureProperties;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\Type;
@@ -29,25 +28,9 @@ class Structure implements StructureContract
         $this->type          = $type;
     }
 
-    /**
-     * @return array<string, \Smpl\Inspector\Elements\Property>
-     */
-    private function buildProperties(): array
+    public function getReflection(): ReflectionClass
     {
-        $propertyReflections = $this->reflection->getProperties();
-        $properties          = [];
-
-        foreach ($propertyReflections as $propertyReflection) {
-            $properties[$propertyReflection->getName()] = new Property(
-                $this,
-                $propertyReflection,
-                $propertyReflection->hasType()
-                    ? Inspector::getInstance()->types()->make($propertyReflection->getType())
-                    : null
-            );
-        }
-
-        return $properties;
+        return $this->reflection;
     }
 
     public function getType(): Type
@@ -112,10 +95,7 @@ class Structure implements StructureContract
         }
 
         if (! isset($this->properties)) {
-            $this->properties = new StructureProperties(
-                $this,
-                $this->buildProperties()
-            );
+            $this->properties = Inspector::getInstance()->properties()->make($this);
         }
 
         return $this->properties;

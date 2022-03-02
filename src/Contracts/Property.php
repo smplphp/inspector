@@ -2,10 +2,13 @@
 
 namespace Smpl\Inspector\Contracts;
 
+use ReflectionProperty;
 use Smpl\Inspector\Support\Visibility;
 
 interface Property
 {
+    public function getReflection(): ReflectionProperty;
+
     public function getStructure(): Structure;
 
     public function getName(): string;
