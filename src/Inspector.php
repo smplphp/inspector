@@ -21,10 +21,17 @@ class Inspector
 
     private Contracts\StructureFactory $structures;
 
-    public function __construct(?Contracts\TypeFactory $types = null, ?Contracts\StructureFactory $structures = null)
+    private Contracts\PropertyFactory $properties;
+
+    public function __construct(
+        ?Contracts\TypeFactory $types = null,
+        ?Contracts\StructureFactory $structures = null,
+        ?Contracts\PropertyFactory $properties = null
+    )
     {
         $this->types      = $types ?? new Factories\TypeFactory();
         $this->structures = $structures ?? new Factories\StructureFactory($this->types);
+        $this->properties = $properties ?? new Factories\PropertyFactory($this->types);
     }
 
     public function types(): Contracts\TypeFactory
@@ -35,5 +42,10 @@ class Inspector
     public function structures(): Contracts\StructureFactory
     {
         return $this->structures;
+    }
+
+    public function properties(): Contracts\PropertyFactory
+    {
+        return $this->properties;
     }
 }
