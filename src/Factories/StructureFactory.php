@@ -92,7 +92,7 @@ class StructureFactory implements StructureFactoryContract
             return $this->makeFromReflection($class);
         }
 
-        if ($this->isValidClass($class)) {
+        if (self::isValidClass($class)) {
             try {
                 return $this->makeFromReflection(new ReflectionClass($class));
                 // @codeCoverageIgnoreStart
