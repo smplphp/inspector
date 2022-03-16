@@ -8,7 +8,8 @@ A simple modern PHP class inspector and mapper library.
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/smplphp/inspector)
 ![GitHub](https://img.shields.io/github/license/smplphp/inspector)
 [![codecov](https://codecov.io/gh/smplphp/inspector/branch/main/graph/badge.svg?token=FHJ41NQMTA)](https://codecov.io/gh/smplphp/inspector)
-[![Build Status](https://travis-ci.com/smplphp/inspector.svg?branch=main)](https://travis-ci.com/smplphp/inspector)
+[![CircleCI](https://circleci.com/gh/smplphp/inspector/tree/main.svg?style=shield)](https://circleci.com/gh/smplphp/inspector/tree/main)
+![Scrutinizer coverage (GitHub/BitBucket)](https://img.shields.io/scrutinizer/coverage/g/smplphp/inspector/main)
 
 ## Install
 
