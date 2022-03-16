@@ -114,7 +114,7 @@ class StructureTest extends TestCase
         self::assertSame('Smpl\Inspector\Support', $structure->getNamespace());
         self::assertSame(StructureType::Enum, $structure->getStructureType());
         self::assertSame(StructureType::class, $structure->getType()->getName());
-        self::assertTrue($structure->isInstantiable());
+        self::assertFalse($structure->isInstantiable());
         self::assertNull($structure->getParent());
     }
 
