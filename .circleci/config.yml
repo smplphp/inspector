@@ -23,7 +23,7 @@ jobs:
           paths:
             - ./vendor
 
-      - run: composer test
+      - run: composer test-coverage
 
       - store_artifacts:
           path:  build/coverage
