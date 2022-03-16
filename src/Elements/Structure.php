@@ -7,6 +7,7 @@ namespace Smpl\Inspector\Elements;
 use ReflectionClass;
 use RuntimeException;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
+use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
@@ -20,6 +21,7 @@ class Structure implements StructureContract
     private ?StructureContract          $parent = null;
     private bool                        $hasParent;
     private StructurePropertyCollection $properties;
+    private StructureMethodCollection   $methods;
 
     public function __construct(ReflectionClass $reflection, StructureType $structureType, Type $type)
     {
@@ -28,6 +30,9 @@ class Structure implements StructureContract
         $this->type          = $type;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getReflection(): ReflectionClass
     {
         return $this->reflection;
@@ -75,7 +80,7 @@ class Structure implements StructureContract
                 $this->hasParent = true;
                 $this->parent    = Inspector::getInstance()
                                             ->structures()
-                                            ->make($parentReflection);
+                                            ->makeStructure($parentReflection);
             } else {
                 $this->hasParent = false;
                 $this->parent    = null;
@@ -95,9 +100,18 @@ class Structure implements StructureContract
         }
 
         if (! isset($this->properties)) {
-            $this->properties = Inspector::getInstance()->properties()->make($this);
+            $this->properties = Inspector::getInstance()->structures()->makeProperties($this);
         }
 
         return $this->properties;
+    }
+
+    public function getMethods(): StructureMethodCollection
+    {
+        if (! isset($this->methods)) {
+            $this->methods = Inspector::getInstance()->structures()->makeMethods($this);
+        }
+
+        return $this->methods;
     }
 }

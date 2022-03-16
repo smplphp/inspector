@@ -32,7 +32,7 @@ class StructureFactoryFromReflectionTest extends TestCase
      */
     public function can_create_structure_from_class_reflection(): void
     {
-        $structure = $this->factory->make(new ReflectionClass(Structure::class));
+        $structure = $this->factory->makeStructure(new ReflectionClass(Structure::class));
 
         self::assertSame('Structure', $structure->getName());
         self::assertSame(Structure::class, $structure->getFullName());
@@ -46,7 +46,7 @@ class StructureFactoryFromReflectionTest extends TestCase
      */
     public function can_create_structure_from_interface_reflection(): void
     {
-        $structure = $this->factory->make(new ReflectionClass(StructureContract::class));
+        $structure = $this->factory->makeStructure(new ReflectionClass(StructureContract::class));
 
         self::assertSame('Structure', $structure->getName());
         self::assertSame(StructureContract::class, $structure->getFullName());
@@ -60,7 +60,7 @@ class StructureFactoryFromReflectionTest extends TestCase
      */
     public function can_create_structure_from_enum_reflection(): void
     {
-        $structure = $this->factory->make(new ReflectionClass(StructureType::class));
+        $structure = $this->factory->makeStructure(new ReflectionClass(StructureType::class));
 
         self::assertSame('StructureType', $structure->getName());
         self::assertSame(StructureType::class, $structure->getFullName());
@@ -74,7 +74,7 @@ class StructureFactoryFromReflectionTest extends TestCase
      */
     public function can_create_structure_from_trait_reflection(): void
     {
-        $structure = $this->factory->make(new ReflectionClass(ExampleTrait::class));
+        $structure = $this->factory->makeStructure(new ReflectionClass(ExampleTrait::class));
 
         self::assertSame('ExampleTrait', $structure->getName());
         self::assertSame(ExampleTrait::class, $structure->getFullName());

@@ -7,7 +7,7 @@ namespace Smpl\Inspector\Tests\Fixtures;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Types\StringType;
 
-class TypeReflectableClass
+abstract class TypeReflectableClass
 {
     public array $array = [];
 
@@ -38,4 +38,36 @@ class TypeReflectableClass
     public function voidReturn(): void
     {
     }
+
+    private function privateMethod()
+    {
+
+    }
+
+    protected function protectedMethod(): void
+    {
+
+    }
+
+    public function publicMethodInt(): int
+    {
+        return 0;
+    }
+
+    protected function protectedMethodString(): string
+    {
+        return 'string';
+    }
+
+    public function publicMethodWithParameter(int $param = 1): float|int
+    {
+        return $param * 2;
+    }
+
+    public static function publicMethodWithParameters(int $param1, int $param2, int $param3): float|int
+    {
+        return $param1 + $param2 + $param3;
+    }
+
+    abstract protected function anAbstractFunction(): void;
 }

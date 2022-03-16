@@ -10,6 +10,7 @@ enum StructureType: string
     case Interface = 'interface';
     case Enum = 'enum';
     case Trait = 'trait';
+    case Attribute = 'attribute';
 
     public function canExtend(): bool
     {

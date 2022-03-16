@@ -50,7 +50,7 @@ class StructureTest extends TestCase
      */
     public function accurately_represents_a_class(): void
     {
-        $structure = $this->factory->make(Structure::class);
+        $structure = $this->factory->makeStructure(Structure::class);
 
         self::assertSame('Structure', $structure->getName());
         self::assertSame(Structure::class, $structure->getFullName());
@@ -66,7 +66,7 @@ class StructureTest extends TestCase
      */
     public function accurately_represents_a_class_with_a_parent(): void
     {
-        $string = $this->factory->make(StringType::class);
+        $string = $this->factory->makeStructure(StringType::class);
         $parent = $string->getParent();
 
         self::assertSame('StringType', $string->getName());
@@ -91,7 +91,7 @@ class StructureTest extends TestCase
      */
     public function accurately_represents_an_interface(): void
     {
-        $structure = $this->factory->make(StructureContract::class);
+        $structure = $this->factory->makeStructure(StructureContract::class);
 
         self::assertSame('Structure', $structure->getName());
         self::assertSame(StructureContract::class, $structure->getFullName());
@@ -107,7 +107,7 @@ class StructureTest extends TestCase
      */
     public function accurately_represents_an_enum(): void
     {
-        $structure = $this->factory->make(StructureType::class);
+        $structure = $this->factory->makeStructure(StructureType::class);
 
         self::assertSame('StructureType', $structure->getName());
         self::assertSame(StructureType::class, $structure->getFullName());
@@ -123,7 +123,7 @@ class StructureTest extends TestCase
      */
     public function accurately_represents_a_trait(): void
     {
-        $structure = $this->factory->make(ExampleTrait::class);
+        $structure = $this->factory->makeStructure(ExampleTrait::class);
 
         self::assertSame('ExampleTrait', $structure->getName());
         self::assertSame(ExampleTrait::class, $structure->getFullName());

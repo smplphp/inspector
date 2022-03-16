@@ -107,31 +107,12 @@ class PropertyFilter implements PropertyFilterContract
 
     public function check(Property $property): bool
     {
-        if (! $this->checkVisibility($property)) {
-            return false;
-        }
-
-        if (! $this->checkTyped($property)) {
-            return false;
-        }
-
-        if (! $this->checkType($property)) {
-            return false;
-        }
-
-        if (! $this->checkStatic($property)) {
-            return false;
-        }
-
-        if (! $this->checkNullable($property)) {
-            return false;
-        }
-
-        if (! $this->checkDefaultValue($property)) {
-            return false;
-        }
-
-        return true;
+        return $this->checkVisibility($property)
+            && $this->checkTyped($property)
+            && $this->checkType($property)
+            && $this->checkStatic($property)
+            && $this->checkNullable($property)
+            && $this->checkDefaultValue($property);
     }
 
     protected function checkVisibility(Property $property): bool

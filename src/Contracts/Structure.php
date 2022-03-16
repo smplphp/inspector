@@ -24,4 +24,6 @@ interface Structure
     public function getParent(): ?Structure;
 
     public function getProperties(): StructurePropertyCollection;
+
+    public function getMethods(): StructureMethodCollection;
 }

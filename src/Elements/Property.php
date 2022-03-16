@@ -22,6 +22,9 @@ class Property implements PropertyContract
         $this->type       = $type;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getReflection(): ReflectionProperty
     {
         return $this->reflection;

@@ -30,7 +30,7 @@ class StructureFactoryTest extends TestCase
      */
     public function can_create_structure_for_class_name(): void
     {
-        $structure = $this->factory->make(Structure::class);
+        $structure = $this->factory->makeStructure(Structure::class);
 
         self::assertSame('Structure', $structure->getName());
         self::assertSame(Structure::class, $structure->getFullName());
@@ -44,7 +44,7 @@ class StructureFactoryTest extends TestCase
      */
     public function can_create_structure_for_interface_name(): void
     {
-        $structure = $this->factory->make(StructureContract::class);
+        $structure = $this->factory->makeStructure(StructureContract::class);
 
         self::assertSame('Structure', $structure->getName());
         self::assertSame(StructureContract::class, $structure->getFullName());
@@ -58,7 +58,7 @@ class StructureFactoryTest extends TestCase
      */
     public function can_create_structure_for_enum_name(): void
     {
-        $structure = $this->factory->make(StructureType::class);
+        $structure = $this->factory->makeStructure(StructureType::class);
 
         self::assertSame('StructureType', $structure->getName());
         self::assertSame(StructureType::class, $structure->getFullName());
@@ -72,7 +72,7 @@ class StructureFactoryTest extends TestCase
      */
     public function can_create_structure_for_trait_name(): void
     {
-        $structure = $this->factory->make(ExampleTrait::class);
+        $structure = $this->factory->makeStructure(ExampleTrait::class);
 
         self::assertSame('ExampleTrait', $structure->getName());
         self::assertSame(ExampleTrait::class, $structure->getFullName());
@@ -89,7 +89,7 @@ class StructureFactoryTest extends TestCase
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage('Provided class \'invalid\' is invalid');
 
-        $this->factory->make('invalid');
+        $this->factory->makeStructure('invalid');
     }
 
     /**
@@ -97,8 +97,8 @@ class StructureFactoryTest extends TestCase
      */
     public function only_makes_one_instance_per_class(): void
     {
-        $structure1 = $this->factory->make(Structure::class);
-        $structure2 = $this->factory->make(Structure::class);
+        $structure1 = $this->factory->makeStructure(Structure::class);
+        $structure2 = $this->factory->makeStructure(Structure::class);
 
         self::assertSame($structure1, $structure2);
     }

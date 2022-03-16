@@ -54,7 +54,7 @@ class NullableType extends BaseType
          *      type|null
          *      null|type
          *      type1|null|type2
-         * 
+         *
          */
         return $typeName === 'null'
             || str_starts_with($typeName, '?')

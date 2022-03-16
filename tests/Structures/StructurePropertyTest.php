@@ -7,11 +7,11 @@ namespace Smpl\Inspector\Tests\Structures;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Smpl\Inspector\Contracts\Property;
-use Smpl\Inspector\Contracts\Structure as StructureContract;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Filters\PropertyFilter;
 use Smpl\Inspector\Support\Visibility;
+use Smpl\Inspector\Tests\Fixtures\ExampleInterface;
 use Smpl\Inspector\Tests\Fixtures\TypeReflectableClass;
 use Smpl\Inspector\Types\ArrayType;
 use Smpl\Inspector\Types\BoolType;
@@ -47,7 +47,7 @@ class StructurePropertyTest extends TestCase
      */
     public function correctly_loads_properties_for_classes(): void
     {
-        $structure  = $this->factory->make(TypeReflectableClass::class);
+        $structure  = $this->factory->makeStructure(TypeReflectableClass::class);
         $properties = $structure->getProperties();
 
         self::assertCount(13, $properties);
@@ -58,7 +58,7 @@ class StructurePropertyTest extends TestCase
      */
     public function structure_properties_are_accurate(): void
     {
-        $structure  = $this->factory->make(TypeReflectableClass::class);
+        $structure  = $this->factory->makeStructure(TypeReflectableClass::class);
         $properties = $structure->getProperties();
 
         self::assertTrue($properties->has('array'));
@@ -162,7 +162,6 @@ class StructurePropertyTest extends TestCase
         self::assertSame(Visibility::Public, $properties->get('union')->getVisibility());
         self::assertSame(Visibility::Private, $properties->get('noType')->getVisibility());
 
-        self::assertInstanceOf(Property::class, $properties->get('array'));
         self::assertInstanceOf(ArrayType::class, $properties->get('array')->getType());
         self::assertInstanceOf(BoolType::class, $properties->get('bool')->getType());
         self::assertInstanceOf(ClassType::class, $properties->get('class')->getType());
@@ -183,7 +182,7 @@ class StructurePropertyTest extends TestCase
      */
     public function structure_property_collections_are_iterable(): void
     {
-        $structure  = $this->factory->make(TypeReflectableClass::class);
+        $structure  = $this->factory->makeStructure(TypeReflectableClass::class);
         $properties = $structure->getProperties();
 
         self::assertIsIterable($properties);
@@ -195,7 +194,7 @@ class StructurePropertyTest extends TestCase
      */
     public function structure_property_collections_belong_to_their_parent_structure(): void
     {
-        $structure  = $this->factory->make(TypeReflectableClass::class);
+        $structure  = $this->factory->makeStructure(TypeReflectableClass::class);
         $properties = $structure->getProperties();
 
         self::assertSame($structure, $properties->getStructure());
@@ -206,7 +205,7 @@ class StructurePropertyTest extends TestCase
      */
     public function can_filter_properties_by_their_static_modifier(): void
     {
-        $structure           = $this->factory->make(TypeReflectableClass::class);
+        $structure           = $this->factory->makeStructure(TypeReflectableClass::class);
         $staticProperties    = $structure->getProperties()->filter(PropertyFilter::make()->static());
         $nonStaticProperties = $structure->getProperties()->filter(PropertyFilter::make()->notStatic());
 
@@ -219,7 +218,7 @@ class StructurePropertyTest extends TestCase
      */
     public function can_filter_properties_by_their_visibility(): void
     {
-        $structure           = $this->factory->make(TypeReflectableClass::class);
+        $structure           = $this->factory->makeStructure(TypeReflectableClass::class);
         $publicProperties    = $structure->getProperties()->filter(PropertyFilter::make()->publicOnly());
         $protectedProperties = $structure->getProperties()->filter(PropertyFilter::make()->protectedOnly());
         $privateProperties   = $structure->getProperties()->filter(PropertyFilter::make()->privateOnly());
@@ -248,7 +247,7 @@ class StructurePropertyTest extends TestCase
      */
     public function can_filter_properties_by_their_nullability(): void
     {
-        $structure             = $this->factory->make(TypeReflectableClass::class);
+        $structure             = $this->factory->makeStructure(TypeReflectableClass::class);
         $nullableProperties    = $structure->getProperties()->filter(PropertyFilter::make()->nullable());
         $nonNullableProperties = $structure->getProperties()->filter(PropertyFilter::make()->notNullable());
 
@@ -261,7 +260,7 @@ class StructurePropertyTest extends TestCase
      */
     public function can_filter_properties_by_having_a_default_value(): void
     {
-        $structure            = $this->factory->make(TypeReflectableClass::class);
+        $structure            = $this->factory->makeStructure(TypeReflectableClass::class);
         $defaultProperties    = $structure->getProperties()->filter(PropertyFilter::make()->hasDefaultValue());
         $nonDefaultProperties = $structure->getProperties()->filter(PropertyFilter::make()->noDefaultValue());
 
@@ -274,7 +273,7 @@ class StructurePropertyTest extends TestCase
      */
     public function can_filter_properties_by_whether_they_have_a_type(): void
     {
-        $structure          = $this->factory->make(TypeReflectableClass::class);
+        $structure          = $this->factory->makeStructure(TypeReflectableClass::class);
         $typedProperties    = $structure->getProperties()->filter(PropertyFilter::make()->typed());
         $notTypedProperties = $structure->getProperties()->filter(PropertyFilter::make()->notTyped());
 
@@ -287,7 +286,7 @@ class StructurePropertyTest extends TestCase
      */
     public function can_filter_properties_by_their_type(): void
     {
-        $structure        = $this->factory->make(TypeReflectableClass::class);
+        $structure        = $this->factory->makeStructure(TypeReflectableClass::class);
         $stringProperties = $structure->getProperties()->filter(PropertyFilter::make()->hasType('string'));
         $typeProperties   = $structure->getProperties()->filter(
             PropertyFilter::make()->hasType($this->types->make('string'))
@@ -300,11 +299,33 @@ class StructurePropertyTest extends TestCase
     /**
      * @test
      */
+    public function can_get_property_from_structure_reflection(): void
+    {
+        $structure = $this->factory->makeStructure(TypeReflectableClass::class);
+        $property  = $this->factory->makeProperty('array', $structure);
+
+        self::assertNotNull($property);
+    }
+
+    /**
+     * @test
+     */
     public function throws_an_exception_when_the_structure_cant_have_properties(): void
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('Structures of type \'interface\' do not have properties');
 
-        $this->factory->make(StructureContract::class)->getProperties();
+        $this->factory->makeStructure(ExampleInterface::class)->getProperties();
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_the_structure_cant_have_properties_and_accessing_properties_directly(): void
+    {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Structures of type \'interface\' do not have properties');
+
+        $this->factory->makeProperty('invalid', ExampleInterface::class);
     }
 }
