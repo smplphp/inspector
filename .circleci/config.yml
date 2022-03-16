@@ -25,7 +25,7 @@ jobs:
           paths:
             - ./vendor
 
-      - run: ./vendor/bin/phpunit --verbose --colors=always --coverage-clover build/coverage.xml --log-junit build/junit.xml
+      - run: XDEBUG_MODE=coverage ./vendor/bin/phpunit --verbose --colors=always --coverage-clover build/coverage.xml --log-junit build/junit.xml
 
       - run: bash <(curl -s https://codecov.io/bash)
 
