@@ -12,8 +12,6 @@ jobs:
 
       - run: sudo apt update
 
-      - run: sudo docker-php-ext-install zip xdebug
-
       - restore_cache:
           keys:
             - v1-dependencies-
