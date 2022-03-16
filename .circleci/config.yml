@@ -10,9 +10,9 @@ jobs:
     steps:
       - checkout
 
-      - run: sudo apt update
+      - run: sudo pecl channel-update pecl.php.net
 
-      - run: pecl install xdebug
+      - run: sudo pecl install xdebug
 
       - restore_cache:
           keys:
