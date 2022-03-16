@@ -12,6 +12,8 @@ jobs:
 
       - run: sudo apt update
 
+      - run: pecl install xdebug
+
       - restore_cache:
           keys:
             - v1-dependencies-
@@ -23,7 +25,9 @@ jobs:
           paths:
             - ./vendor
 
-      - run: composer test-coverage
+      - run: ./vendor/bin/phpunit --verbose --colors=always --coverage-clover build/coverage.xml --log-junit build/junit.xml
 
-      - store_artifacts:
-          path:  build/coverage
+      - run: bash <(curl -s https://codecov.io/bash)
+
+      - store_test_results:
+          path:  build
