@@ -4,26 +4,41 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Factories;
 
-use Attribute;
+use Attribute as BaseAttribute;
 use InvalidArgumentException;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionProperty;
 use RuntimeException;
+use Smpl\Inspector\Collections\AttributeMetadata;
+use Smpl\Inspector\Collections\MethodAttributes;
 use Smpl\Inspector\Collections\MethodParameters;
+use Smpl\Inspector\Collections\ParameterAttributes;
+use Smpl\Inspector\Collections\PropertyAttributes;
+use Smpl\Inspector\Collections\StructureAttributes;
 use Smpl\Inspector\Collections\StructureMethods;
 use Smpl\Inspector\Collections\StructureProperties;
+use Smpl\Inspector\Contracts\Attribute as AttributeContract;
+use Smpl\Inspector\Contracts\Metadata as MetadataContract;
+use Smpl\Inspector\Contracts\MetadataCollection;
 use Smpl\Inspector\Contracts\Method as MethodContract;
+use Smpl\Inspector\Contracts\MethodAttributeCollection;
 use Smpl\Inspector\Contracts\MethodParameterCollection;
 use Smpl\Inspector\Contracts\Parameter as ParameterContract;
+use Smpl\Inspector\Contracts\ParameterAttributeCollection;
 use Smpl\Inspector\Contracts\Property as PropertyContract;
+use Smpl\Inspector\Contracts\PropertyAttributeCollection;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
+use Smpl\Inspector\Contracts\StructureAttributeCollection;
 use Smpl\Inspector\Contracts\StructureFactory as StructureFactoryContract;
 use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\TypeFactory;
+use Smpl\Inspector\Elements\Attribute;
+use Smpl\Inspector\Elements\Metadata;
 use Smpl\Inspector\Elements\Method;
 use Smpl\Inspector\Elements\Parameter;
 use Smpl\Inspector\Elements\Property;
@@ -55,13 +70,41 @@ class StructureFactory implements StructureFactoryContract
      */
     private array $structures = [];
 
+    /**
+     * @var array<class-string, \Smpl\Inspector\Contracts\Attribute>
+     */
+    private array $attributes = [];
+
     public function __construct(TypeFactory $types)
     {
         $this->types = $types;
     }
 
+    private function getBaseAttribute(ReflectionAttribute $reflection): BaseAttribute
+    {
+        if (! self::isValidClass($reflection->getName())) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid attribute provided \'%s\'', $reflection->getName()
+            ));
+        }
+
+        $classReflection = new ReflectionClass($reflection->getName());
+        $baseAttribute   = $classReflection->getAttributes(
+                BaseAttribute::class, ReflectionAttribute::IS_INSTANCEOF
+            )[0] ?? null;
+
+        if ($baseAttribute === null) {
+            throw new InvalidArgumentException(sprintf(
+                'Invalid attribute provided \'%s\'', $reflection->getName()
+            ));
+        }
+
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return $baseAttribute->newInstance();
+    }
+
     /**
-     * @param \ReflectionMethod|string|\Smpl\Inspector\Contracts\Method        $method
+     * @param \ReflectionMethod|string|\Smpl\Inspector\Contracts\Method              $method
      * @param \ReflectionClass|class-string|\Smpl\Inspector\Contracts\Structure|null $class
      *
      * @return array{MethodContract, StructureContract}
@@ -103,7 +146,7 @@ class StructureFactory implements StructureFactoryContract
             return StructureType::Trait;
         }
 
-        if (! empty($reflection->getAttributes(Attribute::class))) {
+        if (! empty($reflection->getAttributes(BaseAttribute::class))) {
             return StructureType::Attribute;
         }
 
@@ -156,6 +199,44 @@ class StructureFactory implements StructureFactoryContract
         }
 
         throw new RuntimeException(sprintf('Provided class \'%s\' is invalid', $class));
+    }
+
+    /**
+     * @param ReflectionAttribute[] $attributesReflections
+     *
+     * @return array{list<AttributeContract>, array<class-string, MetadataCollection>}
+     *
+     * @psalm-suppress LessSpecificReturnStatement
+     * @psalm-suppress MoreSpecificReturnType
+     */
+    private function makeAttributesAndMetadata(array $attributesReflections): array
+    {
+        $attributes = $metadata = [];
+
+        foreach ($attributesReflections as $attributesReflection) {
+            $attribute = $this->makeAttribute($attributesReflection);
+
+            if (! isset($attributes[$attribute->getName()])) {
+                $attributes[$attribute->getName()] = $attribute;
+            }
+
+            $metadata[$attribute->getName()][] = $this->makeMetadata($attribute, $attributesReflection);
+        }
+
+        /**
+         * @var array<class-string, MetadataCollection> $attributeMetadata
+         */
+        $attributeMetadata = [];
+
+        foreach ($metadata as $attributeName => $metadataArray) {
+            $attribute                                = $attributes[$attributeName];
+            $attributeMetadata[$attribute->getName()] = new AttributeMetadata(
+                $attribute,
+                $metadataArray
+            );
+        }
+
+        return [array_values($attributes), $attributeMetadata];
     }
 
     /**
@@ -295,5 +376,106 @@ class StructureFactory implements StructureFactoryContract
         }
 
         return new MethodParameters($method, $parameters);
+    }
+
+    /**
+     * @param \ReflectionAttribute $reflection
+     *
+     * @return \Smpl\Inspector\Contracts\Attribute
+     *
+     * @psalm-suppress PropertyTypeCoercion
+     */
+    public function makeAttribute(ReflectionAttribute $reflection): AttributeContract
+    {
+        if (! isset($this->attributes[$reflection->getName()])) {
+            $this->attributes[$reflection->getName()] = new Attribute(
+                $reflection->getName(),
+                $this->getBaseAttribute($reflection)
+            );
+        }
+
+        return $this->attributes[$reflection->getName()];
+    }
+
+    public function makeStructureAttributes(StructureContract $structure): StructureAttributeCollection
+    {
+        $reflection            = $structure->getReflection();
+        $attributesReflections = $reflection->getAttributes();
+
+        if (empty($attributesReflections)) {
+            return new StructureAttributes($structure, [], []);
+        }
+
+        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
+
+        /**
+         * @psalm-suppress InvalidArgument
+         */
+        return new StructureAttributes($structure, $attributes, $metadata);
+    }
+
+    public function makePropertyAttributes(PropertyContract $property): PropertyAttributeCollection
+    {
+        $reflection            = $property->getReflection();
+        $attributesReflections = $reflection->getAttributes();
+
+        if (empty($attributesReflections)) {
+            return new PropertyAttributes($property, [], []);
+        }
+
+        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
+
+        /**
+         * @psalm-suppress InvalidArgument
+         */
+        return new PropertyAttributes($property, $attributes, $metadata);
+    }
+
+    public function makeMethodAttributes(MethodContract $method): MethodAttributeCollection
+    {
+        $reflection            = $method->getReflection();
+        $attributesReflections = $reflection->getAttributes();
+
+        if (empty($attributesReflections)) {
+            return new MethodAttributes($method, [], []);
+        }
+
+        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
+
+        /**
+         * @psalm-suppress InvalidArgument
+         */
+        return new MethodAttributes($method, $attributes, $metadata);
+    }
+
+    public function makeParameterAttributes(ParameterContract $parameter): ParameterAttributeCollection
+    {
+        $reflection            = $parameter->getReflection();
+        $attributesReflections = $reflection->getAttributes();
+
+        if (empty($attributesReflections)) {
+            return new ParameterAttributes($parameter, [], []);
+        }
+
+        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
+
+        /**
+         * @psalm-suppress InvalidArgument
+         */
+        return new ParameterAttributes($parameter, $attributes, $metadata);
+    }
+
+    /**
+     * @param \Smpl\Inspector\Contracts\Attribute $attribute
+     * @param \ReflectionAttribute                $reflection
+     *
+     * @return \Smpl\Inspector\Contracts\Metadata
+     */
+    public function makeMetadata(AttributeContract $attribute, ReflectionAttribute $reflection): MetadataContract
+    {
+        return new Metadata(
+            $attribute,
+            $reflection
+        );
     }
 }

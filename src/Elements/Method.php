@@ -6,6 +6,7 @@ namespace Smpl\Inspector\Elements;
 
 use ReflectionMethod;
 use Smpl\Inspector\Contracts\Method as MethodContract;
+use Smpl\Inspector\Contracts\MethodAttributeCollection;
 use Smpl\Inspector\Contracts\MethodParameterCollection;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
@@ -19,6 +20,7 @@ class Method implements MethodContract
     private ?Type                     $type;
     private Visibility                $visibility;
     private MethodParameterCollection $parameters;
+    private MethodAttributeCollection $attributes;
 
     public function __construct(Structure $structure, ReflectionMethod $reflection, ?Type $type = null)
     {
@@ -64,6 +66,11 @@ class Method implements MethodContract
         return $this->reflection->isAbstract();
     }
 
+    public function isConstructor(): bool
+    {
+        return $this->getReflection()->isConstructor();
+    }
+
     public function getReturnType(): ?Type
     {
         return $this->type;
@@ -81,5 +88,14 @@ class Method implements MethodContract
         }
 
         return $this->parameters;
+    }
+
+    public function getAttributes(): MethodAttributeCollection
+    {
+        if (! isset($this->attributes)) {
+            $this->attributes = Inspector::getInstance()->structures()->makeMethodAttributes($this);
+        }
+
+        return $this->attributes;
     }
 }

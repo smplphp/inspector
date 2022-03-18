@@ -29,4 +29,6 @@ interface Parameter
     public function isVariadic(): bool;
 
     public function isPromoted(): bool;
+
+    public function getAttributes(): ParameterAttributeCollection;
 }

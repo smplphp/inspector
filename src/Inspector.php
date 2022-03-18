@@ -39,4 +39,9 @@ class Inspector
     {
         return $this->structures;
     }
+
+    public function inspectClass(string $className): Contracts\Structure
+    {
+        return $this->structures()->makeStructure($className);
+    }
 }

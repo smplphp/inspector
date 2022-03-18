@@ -6,7 +6,9 @@ namespace Smpl\Inspector\Elements;
 
 use ReflectionClass;
 use RuntimeException;
+use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
+use Smpl\Inspector\Contracts\StructureAttributeCollection;
 use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\Type;
@@ -15,13 +17,14 @@ use Smpl\Inspector\Support\StructureType;
 
 class Structure implements StructureContract
 {
-    private ReflectionClass             $reflection;
-    private StructureType               $structureType;
-    private Type                        $type;
-    private ?StructureContract          $parent = null;
-    private bool                        $hasParent;
-    private StructurePropertyCollection $properties;
-    private StructureMethodCollection   $methods;
+    private ReflectionClass              $reflection;
+    private StructureType                $structureType;
+    private Type                         $type;
+    private ?StructureContract           $parent = null;
+    private bool                         $hasParent;
+    private StructurePropertyCollection  $properties;
+    private StructureMethodCollection    $methods;
+    private StructureAttributeCollection $attributes;
 
     public function __construct(ReflectionClass $reflection, StructureType $structureType, Type $type)
     {
@@ -113,5 +116,29 @@ class Structure implements StructureContract
         }
 
         return $this->methods;
+    }
+
+    /**
+     * @return \Smpl\Inspector\Contracts\Method|null
+     * @throws \Exception
+     */
+    public function getConstructor(): ?Method
+    {
+        foreach ($this->getMethods() as $method) {
+            if ($method->isConstructor()) {
+                return $method;
+            }
+        }
+
+        return null;
+    }
+
+    public function getAttributes(): StructureAttributeCollection
+    {
+        if (! isset($this->attributes)) {
+            $this->attributes = Inspector::getInstance()->structures()->makeStructureAttributes($this);
+        }
+
+        return $this->attributes;
     }
 }

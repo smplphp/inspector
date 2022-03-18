@@ -24,4 +24,6 @@ interface Property
     public function hasDefault(): bool;
 
     public function getDefault(): mixed;
+
+    public function getAttributes(): PropertyAttributeCollection;
 }

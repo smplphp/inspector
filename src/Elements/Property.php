@@ -3,17 +3,21 @@
 namespace Smpl\Inspector\Elements;
 
 use ReflectionProperty;
+use Smpl\Inspector\Contracts\AttributeCollection;
 use Smpl\Inspector\Contracts\Property as PropertyContract;
+use Smpl\Inspector\Contracts\PropertyAttributeCollection;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
 class Property implements PropertyContract
 {
-    private ReflectionProperty $reflection;
-    private Structure          $structure;
-    private ?Type              $type;
-    private Visibility         $visibility;
+    private ReflectionProperty          $reflection;
+    private Structure                   $structure;
+    private ?Type                       $type;
+    private Visibility                  $visibility;
+    private PropertyAttributeCollection $attributes;
 
     public function __construct(Structure $structure, ReflectionProperty $reflection, ?Type $type = null)
     {
@@ -76,5 +80,14 @@ class Property implements PropertyContract
     public function getDefault(): mixed
     {
         return $this->reflection->getDefaultValue();
+    }
+
+    public function getAttributes(): PropertyAttributeCollection
+    {
+        if (! isset($this->attributes)) {
+            $this->attributes = Inspector::getInstance()->structures()->makePropertyAttributes($this);
+        }
+
+        return $this->attributes;
     }
 }

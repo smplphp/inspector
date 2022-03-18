@@ -21,9 +21,13 @@ interface Structure
 
     public function isInstantiable(): bool;
 
+    public function getConstructor(): ?Method;
+
     public function getParent(): ?Structure;
 
     public function getProperties(): StructurePropertyCollection;
 
     public function getMethods(): StructureMethodCollection;
+
+    public function getAttributes(): StructureAttributeCollection;
 }

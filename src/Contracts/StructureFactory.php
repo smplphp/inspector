@@ -2,6 +2,7 @@
 
 namespace Smpl\Inspector\Contracts;
 
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
@@ -62,4 +63,16 @@ interface StructureFactory
      * @return \Smpl\Inspector\Contracts\MethodParameterCollection
      */
     public function makeParameters(ReflectionMethod|Method|string $method, ReflectionClass|Structure|string|null $class = null): MethodParameterCollection;
+
+    public function makeAttribute(ReflectionAttribute $reflection): Attribute;
+
+    public function makeStructureAttributes(Structure $structure): StructureAttributeCollection;
+
+    public function makePropertyAttributes(Property $property): PropertyAttributeCollection;
+
+    public function makeMethodAttributes(Method $method): MethodAttributeCollection;
+
+    public function makeParameterAttributes(Parameter $parameter): ParameterAttributeCollection;
+
+    public function makeMetadata(Attribute $attribute, ReflectionAttribute $reflection): Metadata;
 }

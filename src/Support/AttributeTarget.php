@@ -65,7 +65,7 @@ enum AttributeTarget: int
         $targets = [];
 
         foreach (self::cases() as $target) {
-            if ($target !== self::All && $target->value & $flags) {
+            if ($target !== self::All && ($target->value & $flags)) {
                 $targets[] = $target;
             }
         }

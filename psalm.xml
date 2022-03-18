@@ -21,6 +21,7 @@
         <ArgumentTypeCoercion>
             <errorLevel type="suppress">
                 <file name="src/Factories/TypeFactory.php"/>
+                <file name="src/Factories/StructureFactory.php"/>
                 <file name="src/Types/ClassType.php"/>
             </errorLevel>
         </ArgumentTypeCoercion>
