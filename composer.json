@@ -1,5 +1,5 @@
 {
-  "name": "smplphp/inspect",
+  "name": "smplphp/inspector",
   "description": "A simple modern PHP class inspector and mapper library",
   "minimum-stability": "stable",
   "license": "MIT",
