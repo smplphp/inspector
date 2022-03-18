@@ -19,7 +19,7 @@ final class ParameterAttributes extends Attributes implements ParameterAttribute
     private Parameter $parameter;
 
     /**
-     * @param list<\Smpl\Inspector\Contracts\Attribute>                         $attributes
+     * @param array<class-string, \Smpl\Inspector\Contracts\Attribute>             $attributes
      * @param array<class-string, \Smpl\Inspector\Contracts\MetadataCollection<I>> $metadata
      */
     public function __construct(Parameter $parameter, array $attributes, array $metadata)

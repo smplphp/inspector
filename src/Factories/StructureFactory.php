@@ -80,6 +80,9 @@ class StructureFactory implements StructureFactoryContract
         $this->types = $types;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     private function getBaseAttribute(ReflectionAttribute $reflection): BaseAttribute
     {
         if (! self::isValidClass($reflection->getName())) {
@@ -204,7 +207,7 @@ class StructureFactory implements StructureFactoryContract
     /**
      * @param ReflectionAttribute[] $attributesReflections
      *
-     * @return array{list<AttributeContract>, array<class-string, MetadataCollection>}
+     * @return array{array<class-string, AttributeContract>, array<class-string, MetadataCollection>}
      *
      * @psalm-suppress LessSpecificReturnStatement
      * @psalm-suppress MoreSpecificReturnType
@@ -214,6 +217,11 @@ class StructureFactory implements StructureFactoryContract
         $attributes = $metadata = [];
 
         foreach ($attributesReflections as $attributesReflection) {
+            // We want to skip if the attribute is the core base attribute provided by PHP
+            if ($attributesReflection->getName() === BaseAttribute::class) {
+                continue;
+            }
+
             $attribute = $this->makeAttribute($attributesReflection);
 
             if (! isset($attributes[$attribute->getName()])) {
@@ -236,7 +244,7 @@ class StructureFactory implements StructureFactoryContract
             );
         }
 
-        return [array_values($attributes), $attributeMetadata];
+        return [$attributes, $attributeMetadata];
     }
 
     /**

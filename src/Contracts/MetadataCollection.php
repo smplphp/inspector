@@ -2,10 +2,15 @@
 
 namespace Smpl\Inspector\Contracts;
 
+use Countable;
+use IteratorAggregate;
+
 /**
  * @template I of object
+ *
+ * @extends IteratorAggregate<int, \Smpl\Inspector\Contracts\Metadata>
  */
-interface MetadataCollection
+interface MetadataCollection extends IteratorAggregate, Countable
 {
     public function getAttribute(): Attribute;
 

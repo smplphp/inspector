@@ -42,7 +42,7 @@ final class MethodParameters implements MethodParameterCollection
             $positions[$parameter->getPosition()] = $parameter->getName();
         }
 
-        sort($positions);
+        ksort($positions);
 
         return $positions;
     }

@@ -20,7 +20,7 @@ final class StructureAttributes extends Attributes implements StructureAttribute
 
     /**
      * @param \Smpl\Inspector\Contracts\Structure                                  $structure
-     * @param list<\Smpl\Inspector\Contracts\Attribute>                            $attributes
+     * @param array<class-string, \Smpl\Inspector\Contracts\Attribute>             $attributes
      * @param array<class-string, \Smpl\Inspector\Contracts\MetadataCollection<I>> $metadata
      */
     public function __construct(Structure $structure, array $attributes, array $metadata)

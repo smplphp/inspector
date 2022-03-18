@@ -20,7 +20,7 @@ final class MethodAttributes extends Attributes implements MethodAttributeCollec
 
     /**
      * @param \Smpl\Inspector\Contracts\Method                                     $method
-     * @param list<\Smpl\Inspector\Contracts\Attribute>                            $attributes
+     * @param array<class-string, \Smpl\Inspector\Contracts\Attribute>             $attributes
      * @param array<class-string, \Smpl\Inspector\Contracts\MetadataCollection<I>> $metadata
      */
     public function __construct(Method $method, array $attributes, array $metadata)

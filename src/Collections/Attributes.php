@@ -28,7 +28,7 @@ abstract class Attributes implements AttributeCollection
     private array $metadata;
 
     /**
-     * @param list<\Smpl\Inspector\Contracts\Attribute>                               $attributes
+     * @param array<class-string, \Smpl\Inspector\Contracts\Attribute>             $attributes
      * @param array<class-string, \Smpl\Inspector\Contracts\MetadataCollection<I>> $metadata
      */
     public function __construct(array $attributes = [], array $metadata = [])

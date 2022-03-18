@@ -5,30 +5,15 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Tests\Structures;
 
 use PHPUnit\Framework\TestCase;
-use RuntimeException;
-use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
 use Smpl\Inspector\Elements\Structure;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Support\StructureType;
-use Smpl\Inspector\Support\Visibility;
 use Smpl\Inspector\Tests\Fixtures\ExampleTrait;
-use Smpl\Inspector\Tests\Fixtures\TypeReflectableClass;
-use Smpl\Inspector\Types\ArrayType;
+use Smpl\Inspector\Tests\Fixtures\MethodParameterClass;
 use Smpl\Inspector\Types\BaseType;
-use Smpl\Inspector\Types\BoolType;
-use Smpl\Inspector\Types\ClassType;
-use Smpl\Inspector\Types\FloatType;
-use Smpl\Inspector\Types\IntersectionType;
-use Smpl\Inspector\Types\IntType;
-use Smpl\Inspector\Types\IterableType;
-use Smpl\Inspector\Types\MixedType;
-use Smpl\Inspector\Types\NullableType;
-use Smpl\Inspector\Types\ObjectType;
 use Smpl\Inspector\Types\StringType;
-use Smpl\Inspector\Types\UnionType;
-use Traversable;
 
 /**
  * @group factories
@@ -132,5 +117,17 @@ class StructureTest extends TestCase
         self::assertSame(ExampleTrait::class, $structure->getType()->getName());
         self::assertFalse($structure->isInstantiable());
         self::assertNull($structure->getParent());
+    }
+
+    /**
+     * @test
+     */
+    public function structures_know_if_they_have_a_constructor(): void
+    {
+        $structure1 = $this->factory->makeStructure(ExampleTrait::class);
+        $structure2 = $this->factory->makeStructure(MethodParameterClass::class);
+
+        self::assertNull($structure1->getConstructor());
+        self::assertNotNull($structure2->getConstructor());
     }
 }

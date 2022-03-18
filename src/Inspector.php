@@ -40,6 +40,11 @@ class Inspector
         return $this->structures;
     }
 
+    /**
+     * @param class-string $className
+     *
+     * @return \Smpl\Inspector\Contracts\Structure
+     */
     public function inspectClass(string $className): Contracts\Structure
     {
         return $this->structures()->makeStructure($className);

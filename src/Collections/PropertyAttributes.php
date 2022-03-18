@@ -19,7 +19,7 @@ final class PropertyAttributes extends Attributes implements PropertyAttributeCo
     private Property $property;
 
     /**
-     * @param list<\Smpl\Inspector\Contracts\Attribute>                         $attributes
+     * @param array<class-string, \Smpl\Inspector\Contracts\Attribute>             $attributes
      * @param array<class-string, \Smpl\Inspector\Contracts\MetadataCollection<I>> $metadata
      */
     public function __construct(Property $property, array $attributes, array $metadata)

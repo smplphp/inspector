@@ -85,11 +85,15 @@ class Parameter implements ParameterContract
 
     public function getProperty(): ?Property
     {
-        if (! isset($this->property) && $this->isPromoted()) {
-            $this->property = Inspector::getInstance()->structures()->makeProperty(
-                $this->getName(),
-                $this->getMethod()->getStructure()
-            );
+        if (! isset($this->property)) {
+            if ($this->isPromoted()) {
+                $this->property = Inspector::getInstance()->structures()->makeProperty(
+                    $this->getName(),
+                    $this->getMethod()->getStructure()
+                );
+            } else {
+                $this->property = null;
+            }
         }
 
         return $this->property;

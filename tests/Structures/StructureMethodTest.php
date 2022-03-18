@@ -79,22 +79,38 @@ class StructureMethodTest extends TestCase
         self::assertEquals('publicMethodWithParameters', $methods->get('publicMethodWithParameters')->getName());
         self::assertEquals('anAbstractFunction', $methods->get('anAbstractFunction')->getName());
 
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::voidReturn', $methods->get('voidReturn')
-                                                                                                     ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::privateMethod', $methods->get('privateMethod')
-                                                                                                        ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::protectedMethod', $methods->get('protectedMethod')
-                                                                                                          ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::publicMethodInt', $methods->get('publicMethodInt')
-                                                                                                          ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::protectedMethodString', $methods->get('protectedMethodString')
-                                                                                                                ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::publicMethodWithParameter', $methods->get('publicMethodWithParameter')
-                                                                                                                    ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::publicMethodWithParameters', $methods->get('publicMethodWithParameters')
-                                                                                                                     ->getFullName());
-        self::assertEquals('Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::anAbstractFunction', $methods->get('anAbstractFunction')
-                                                                                                             ->getFullName());
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::voidReturn',
+            $methods->get('voidReturn')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::privateMethod',
+            $methods->get('privateMethod')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::protectedMethod',
+            $methods->get('protectedMethod')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::publicMethodInt',
+            $methods->get('publicMethodInt')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::protectedMethodString',
+            $methods->get('protectedMethodString')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::publicMethodWithParameter',
+            $methods->get('publicMethodWithParameter')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::publicMethodWithParameters',
+            $methods->get('publicMethodWithParameters')->getFullName()
+        );
+        self::assertEquals(
+            'Smpl\Inspector\Tests\Fixtures\TypeReflectableClass::anAbstractFunction',
+            $methods->get('anAbstractFunction')->getFullName()
+        );
 
         self::assertFalse($methods->get('voidReturn')->isStatic());
         self::assertFalse($methods->get('privateMethod')->isStatic());
@@ -305,16 +321,18 @@ class StructureMethodTest extends TestCase
         $parameters = $method->getParameters();
 
         self::assertCount(2, $parameters);
-        self::assertTrue($parameters->has(1));
+        self::assertTrue($parameters->has(0));
         self::assertTrue($parameters->has('promoted'));
-        self::assertNotNull($parameters->get(1));
+        self::assertNotNull($parameters->get(0));
         self::assertNotNull($parameters->get('promoted'));
-        self::assertInstanceOf(StringType::class, $parameters->get(1)->getType());
+        self::assertTrue($parameters->get(0)->isPromoted());
+        self::assertNotNull($parameters->get(0)->getProperty());
+        self::assertInstanceOf(StringType::class, $parameters->get(0)->getType());
         self::assertFalse($parameters->get(1)->isNullable());
-        self::assertTrue($parameters->get(1)->isPromoted());
+        self::assertFalse($parameters->get(1)->isPromoted());
         self::assertFalse($parameters->get(1)->isVariadic());
         self::assertFalse($parameters->get(1)->hasDefault());
-        self::assertNotNull($parameters->get(1)->getProperty());
+        self::assertNull($parameters->get(1)->getProperty());
     }
 
     /**
@@ -466,5 +484,18 @@ class StructureMethodTest extends TestCase
         $this->expectExceptionMessage('No class/structure provided for method when attempting to retrieve parameters');
 
         $this->factory->makeParameters('__construct');
+    }
+
+    /**
+     * @test
+     */
+    public function methods_know_if_they_are_a_constructor(): void
+    {
+        $structure = $this->factory->makeStructure(MethodParameterClass::class);
+        $method1   = $structure->getMethods()->get('__construct');
+        $method2   = $structure->getMethods()->get('someParameters');
+
+        self::assertTrue($method1->isConstructor());
+        self::assertFalse($method2->isConstructor());
     }
 }
