@@ -14,19 +14,19 @@ use Traversable;
 class Methods implements MethodCollection
 {
     /**
-     * @param array<string, \Smpl\Inspector\Contracts\Method> $methods
+     * @param \Smpl\Inspector\Contracts\Method[] $methods
      *
-     * @return array<int, string>
+     * @return array<string, \Smpl\Inspector\Contracts\Method>
      */
-    private static function mapIndexes(array $methods): array
+    private static function keyByMethodName(array $methods): array
     {
-        $indexes = [];
+        $keyed = [];
 
         foreach ($methods as $method) {
-            $indexes[] = $method->getName();
+            $keyed[$method->getName()] = $method;
         }
 
-        return $indexes;
+        return $keyed;
     }
 
     /**
@@ -40,12 +40,12 @@ class Methods implements MethodCollection
     private array $indexes;
 
     /**
-     * @param array<string, \Smpl\Inspector\Contracts\Method> $methods
+     * @param \Smpl\Inspector\Contracts\Method[] $methods
      */
     public function __construct(array $methods)
     {
-        $this->methods   = $methods;
-        $this->indexes   = self::mapIndexes($this->methods);
+        $this->methods = self::keyByMethodName($methods);
+        $this->indexes = array_keys($this->methods);
     }
 
     public function getIterator(): Traversable
