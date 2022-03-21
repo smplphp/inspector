@@ -14,14 +14,6 @@ use Smpl\Inspector\Types;
 
 class TypeFactory implements Contracts\TypeFactory
 {
-    private static function isClass(string $className): bool
-    {
-        return class_exists($className)
-            || interface_exists($className)
-            || enum_exists($className)
-            || trait_exists($className);
-    }
-
     /**
      * @param ReflectionNamedType[]|\Smpl\Inspector\Contracts\Type[] $types
      *
@@ -167,7 +159,7 @@ class TypeFactory implements Contracts\TypeFactory
 
     private function createBaseType(string $typeName): Contracts\Type
     {
-        if (self::isClass($typeName)) {
+        if (StructureFactory::isValidClass($typeName)) {
             return new Types\ClassType($typeName);
         }
 
