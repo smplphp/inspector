@@ -18,4 +18,9 @@ interface MetadataCollection extends IteratorAggregate, Countable
      * @return \Smpl\Inspector\Contracts\Metadata<I>[]
      */
     public function getMetadata(): array;
+
+    /**
+     * @return \Smpl\Inspector\Contracts\Metadata<I>|null
+     */
+    public function first(): ?Metadata;
 }

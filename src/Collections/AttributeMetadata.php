@@ -6,6 +6,7 @@ namespace Smpl\Inspector\Collections;
 
 use ArrayIterator;
 use Smpl\Inspector\Contracts\Attribute;
+use Smpl\Inspector\Contracts\Metadata;
 use Smpl\Inspector\Contracts\MetadataCollection as MetadataCollectionContract;
 use Traversable;
 
@@ -17,6 +18,7 @@ use Traversable;
 final class AttributeMetadata implements MetadataCollectionContract
 {
     private Attribute $attribute;
+
     /**
      * @var \Smpl\Inspector\Contracts\Metadata<I>[]
      */
@@ -53,5 +55,10 @@ final class AttributeMetadata implements MetadataCollectionContract
     public function count(): int
     {
         return count($this->metadata);
+    }
+
+    public function first(): ?Metadata
+    {
+        return $this->metadata[0];
     }
 }
