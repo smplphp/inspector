@@ -16,5 +16,9 @@ interface StructureMethodCollection extends IteratorAggregate, Countable
 
     public function has(string $name): bool;
 
+    public function indexOf(int $index): ?Method;
+
+    public function first(): ?Method;
+
     public function filter(MethodFilter $filter): self;
 }
