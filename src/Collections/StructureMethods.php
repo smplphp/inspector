@@ -38,4 +38,16 @@ final class StructureMethods extends Methods implements StructureMethodCollectio
             array_filter($this->methods, $filter->check(...))
         );
     }
+
+    public function countInherited(): int
+    {
+        return abs($this->count() - $this->countDeclared());
+    }
+
+    public function countDeclared(): int
+    {
+        return count(
+            $this->filter(Filter::make()->declaredBy($this->getStructure()))
+        );
+    }
 }

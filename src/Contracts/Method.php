@@ -25,6 +25,10 @@ interface Method extends AttributableElement
 
     public function getStructure(): Structure;
 
+    public function getDeclaringStructure(): Structure;
+
+    public function isInherited(): bool;
+
     public function getParameters(): MethodParameterCollection;
 
     public function getAllMetadata(): MethodMetadataCollection;
