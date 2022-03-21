@@ -2,13 +2,10 @@
 
 namespace Smpl\Inspector\Contracts;
 
-use IteratorAggregate;
-use Countable;
-
 /**
- * @extends IteratorAggregate<string, \Smpl\Inspector\Contracts\Parameter>
+ * @extends \Smpl\Inspector\Contracts\Collection<string, \Smpl\Inspector\Contracts\Parameter>
  */
-interface ParameterCollection extends IteratorAggregate, Countable
+interface ParameterCollection extends Collection
 {
     public function get(string|int $name): ?Parameter;
 

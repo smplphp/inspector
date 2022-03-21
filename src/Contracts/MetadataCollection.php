@@ -2,14 +2,12 @@
 
 namespace Smpl\Inspector\Contracts;
 
-use Countable;
-use IteratorAggregate;
 use Smpl\Inspector\Support\AttributeTarget;
 
 /**
- * @extends IteratorAggregate<int, \Smpl\Inspector\Contracts\Metadata>
+ * @extends \Smpl\Inspector\Contracts\Collection<int, \Smpl\Inspector\Contracts\Metadata>
  */
-interface MetadataCollection extends IteratorAggregate, Countable
+interface MetadataCollection extends Collection
 {
     /**
      * @return \Smpl\Inspector\Contracts\Attribute[]

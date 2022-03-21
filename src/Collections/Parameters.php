@@ -99,4 +99,14 @@ class Parameters implements ParameterCollection
             array_filter($this->parameters, $filter->check(...))
         );
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->count() === 0;
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return ! $this->isEmpty();
+    }
 }

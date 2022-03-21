@@ -85,4 +85,19 @@ class Methods implements MethodCollection
             array_filter($this->methods, $filter->check(...))
         );
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->count() === 0;
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return ! $this->isEmpty();
+    }
+
+    public function names(): array
+    {
+        return $this->indexes;
+    }
 }

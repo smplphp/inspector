@@ -54,4 +54,14 @@ class Properties implements PropertyCollection
             array_filter($this->properties, $filter->check(...))
         );
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->count() === 0;
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return ! $this->isEmpty();
+    }
 }

@@ -2,13 +2,10 @@
 
 namespace Smpl\Inspector\Contracts;
 
-use Countable;
-use IteratorAggregate;
-
 /**
- * @extends IteratorAggregate<string, \Smpl\Inspector\Contracts\Property>
+ * @extends \Smpl\Inspector\Contracts\Collection<string, \Smpl\Inspector\Contracts\Property>
  */
-interface PropertyCollection extends IteratorAggregate, Countable
+interface PropertyCollection extends Collection
 {
     public function get(string $name): ?Property;
 

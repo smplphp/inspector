@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Collections;
 
 use Smpl\Inspector\Contracts\Method;
+use Smpl\Inspector\Contracts\MethodParameterCollection;
 use Smpl\Inspector\Contracts\ParameterFilter;
 
-final class MethodParameters extends Parameters
+final class MethodParameters extends Parameters implements MethodParameterCollection
 {
     private Method $method;
 

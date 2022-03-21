@@ -6,8 +6,9 @@ namespace Smpl\Inspector\Collections;
 
 use Smpl\Inspector\Contracts\PropertyFilter;
 use Smpl\Inspector\Contracts\Structure;
+use Smpl\Inspector\Contracts\StructurePropertyCollection;
 
-final class StructureProperties extends Properties
+final class StructureProperties extends Properties implements StructurePropertyCollection
 {
     private Structure $structure;
 

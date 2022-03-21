@@ -6,9 +6,16 @@ namespace Smpl\Inspector\Collections;
 
 use Smpl\Inspector\Contracts\MethodFilter;
 use Smpl\Inspector\Contracts\Structure;
+use Smpl\Inspector\Contracts\StructureMethodCollection;
+use Smpl\Inspector\Filters\MethodFilter as Filter;
 
-final class StructureMethods extends Methods
+final class StructureMethods extends Methods implements StructureMethodCollection
 {
+    /**
+     * @var \Smpl\Inspector\Contracts\Structure
+     */
+    private Structure $structure;
+
     /**
      * @param \Smpl\Inspector\Contracts\Structure             $structure
      * @param array<string, \Smpl\Inspector\Contracts\Method> $methods
