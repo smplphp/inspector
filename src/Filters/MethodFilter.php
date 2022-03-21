@@ -6,6 +6,8 @@ namespace Smpl\Inspector\Filters;
 
 use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\MethodFilter as MethodFilterContract;
+use Smpl\Inspector\Contracts\ParameterFilter;
+use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
@@ -33,6 +35,11 @@ class MethodFilter implements MethodFilterContract
      */
     protected ?string $attribute              = null;
     private bool      $attributeInstanceCheck = false;
+    /**
+     * @var class-string
+     */
+    private string          $declaredBy;
+    private ParameterFilter $parameterFilter;
 
     public function publicOnly(): static
     {
@@ -118,6 +125,18 @@ class MethodFilter implements MethodFilterContract
         return $this;
     }
 
+    public function declaredBy(string|Structure $class): static
+    {
+        $this->declaredBy = $class instanceof Structure ? $class->getName() : $class;
+        return $this;
+    }
+
+    public function parametersMatch(ParameterFilter $filter): static
+    {
+        $this->parameterFilter = $filter;
+        return $this;
+    }
+
     public function check(Method $method): bool
     {
         return $this->checkVisibility($method)
@@ -126,7 +145,9 @@ class MethodFilter implements MethodFilterContract
             && $this->checkStatic($method)
             && $this->checkParameters($method)
             && $this->checkParameterCount($method)
-            && $this->checkAttribute($method);
+            && $this->checkAttribute($method)
+            && $this->checkDeclaredBy($method)
+            && $this->checkParameterMatch($method);
     }
 
     protected function checkVisibility(Method $method): bool
@@ -201,5 +222,23 @@ class MethodFilter implements MethodFilterContract
         }
 
         return $method->hasAttribute($this->attribute, $this->attributeInstanceCheck);
+    }
+
+    private function checkDeclaredBy(Method $method): bool
+    {
+        if (! isset($this->declaredBy)) {
+            return true;
+        }
+
+        return $method->getDeclaringStructure()->getName() === $this->declaredBy;
+    }
+
+    private function checkParameterMatch(Method $method): bool
+    {
+        if (! isset($this->parameterFilter)) {
+            return true;
+        }
+
+        return $method->getParameters()->filter($this->parameterFilter)->isNotEmpty();
     }
 }

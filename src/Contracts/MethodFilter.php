@@ -28,6 +28,8 @@ interface MethodFilter
 
     public function parameterCount(int $parameterCount): static;
 
+    public function declaredBy(string|Structure $class): static;
+
     /**
      * @param class-string $attribute
      * @param bool         $instanceOf
@@ -35,6 +37,8 @@ interface MethodFilter
      * @return static
      */
     public function hasAttribute(string $attribute, bool $instanceOf = false): static;
+
+    public function parametersMatch(ParameterFilter $filter): static;
 
     public function check(Method $method): bool;
 }
