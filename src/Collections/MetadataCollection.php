@@ -148,4 +148,14 @@ abstract class MetadataCollection implements MetadataCollectionContract
     {
         return count($this->get($attribute, $instanceOf));
     }
+
+    public function isEmpty(): bool
+    {
+        return $this->count() === 0;
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return ! $this->isEmpty();
+    }
 }
