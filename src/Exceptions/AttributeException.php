@@ -6,17 +6,17 @@ namespace Smpl\Inspector\Exceptions;
 
 class AttributeException extends InspectorException
 {
-    public static function invalidAttribute(string $attribute): static
+    public static function invalidAttribute(string $attribute): self
     {
-        return new static(sprintf(
+        return new self(sprintf(
             'Attribute \'%s\' is not a valid attribute',
             $attribute
         ));
     }
 
-    public static function nonRepeatableAttribute(string $attribute): static
+    public static function nonRepeatableAttribute(string $attribute): self
     {
-        return new static(sprintf(
+        return new self(sprintf(
             'Attribute \'%s\' is not repeatable, but is provided multiple times',
             $attribute
         ));

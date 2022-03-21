@@ -5,7 +5,7 @@ namespace Smpl\Inspector\Contracts;
 use ReflectionProperty;
 use Smpl\Inspector\Support\Visibility;
 
-interface Property
+interface Property extends AttributableElement
 {
     public function getReflection(): ReflectionProperty;
 
@@ -25,5 +25,5 @@ interface Property
 
     public function getDefault(): mixed;
 
-    public function getAttributes(): PropertyAttributeCollection;
+    public function getAllMetadata(): PropertyMetadataCollection;
 }

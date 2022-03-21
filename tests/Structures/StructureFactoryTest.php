@@ -7,6 +7,7 @@ namespace Smpl\Inspector\Tests\Structures;
 use PHPUnit\Framework\TestCase;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
 use Smpl\Inspector\Elements\Structure;
+use Smpl\Inspector\Exceptions\StructureException;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Support\StructureType;
@@ -86,8 +87,8 @@ class StructureFactoryTest extends TestCase
      */
     public function throws_an_exception_when_the_class_is_invalid(): void
     {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Provided class \'invalid\' is invalid');
+        $this->expectException(StructureException::class);
+        $this->expectExceptionMessage('Provided class \'invalid\' is not valid');
 
         $this->factory->makeStructure('invalid');
     }

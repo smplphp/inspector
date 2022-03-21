@@ -4,23 +4,59 @@ namespace Smpl\Inspector\Contracts;
 
 use Countable;
 use IteratorAggregate;
+use Smpl\Inspector\Support\AttributeTarget;
 
 /**
- * @template I of object
- *
  * @extends IteratorAggregate<int, \Smpl\Inspector\Contracts\Metadata>
  */
 interface MetadataCollection extends IteratorAggregate, Countable
 {
-    public function getAttribute(): Attribute;
+    /**
+     * @return \Smpl\Inspector\Contracts\Attribute[]
+     */
+    public function getAttributes(): array;
 
     /**
-     * @return \Smpl\Inspector\Contracts\Metadata<I>[]
+     * @param class-string $attributeName
+     *
+     * @return \Smpl\Inspector\Contracts\Attribute|null
      */
-    public function getMetadata(): array;
+    public function getAttribute(string $attributeName): ?Attribute;
 
     /**
-     * @return \Smpl\Inspector\Contracts\Metadata<I>|null
+     * @param class-string|\Smpl\Inspector\Contracts\Attribute $attribute
+     * @param bool                                             $instanceOf
+     *
+     * @return \Smpl\Inspector\Contracts\Metadata[]
      */
-    public function first(): ?Metadata;
+    public function get(string|Attribute $attribute, bool $instanceOf = false): array;
+
+    /**
+     * @param class-string|\Smpl\Inspector\Contracts\Attribute|null $attribute
+     * @param bool                                                  $instanceOf
+     *
+     * @return \Smpl\Inspector\Contracts\Metadata|null
+     */
+    public function first(string|Attribute|null $attribute = null, bool $instanceOf = false): ?Metadata;
+
+    /**
+     * @param class-string|\Smpl\Inspector\Contracts\Attribute $attribute
+     * @param bool                                             $instanceOf
+     *
+     * @return bool
+     */
+    public function has(string|Attribute $attribute, bool $instanceOf = false): bool;
+
+    /**
+     * @param class-string|\Smpl\Inspector\Contracts\Attribute $attribute
+     * @param bool                                             $instanceOf
+     *
+     * @return int
+     */
+    public function instances(string|Attribute $attribute, bool $instanceOf = false): int;
+
+    /**
+     * @return \Smpl\Inspector\Support\AttributeTarget
+     */
+    public function getAttributeTarget(): AttributeTarget;
 }

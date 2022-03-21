@@ -12,26 +12,25 @@ use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionProperty;
 use Smpl\Inspector\Collections\AttributeMetadata;
-use Smpl\Inspector\Collections\MethodAttributes;
+use Smpl\Inspector\Collections\MethodMetadata;
 use Smpl\Inspector\Collections\MethodParameters;
-use Smpl\Inspector\Collections\ParameterAttributes;
-use Smpl\Inspector\Collections\PropertyAttributes;
-use Smpl\Inspector\Collections\StructureAttributes;
+use Smpl\Inspector\Collections\ParameterMetadata;
+use Smpl\Inspector\Collections\PropertyMetadata;
+use Smpl\Inspector\Collections\StructureMetadata;
 use Smpl\Inspector\Collections\StructureMethods;
 use Smpl\Inspector\Collections\StructureProperties;
 use Smpl\Inspector\Contracts\Attribute as AttributeContract;
 use Smpl\Inspector\Contracts\Metadata as MetadataContract;
-use Smpl\Inspector\Contracts\MetadataCollection;
 use Smpl\Inspector\Contracts\Method as MethodContract;
-use Smpl\Inspector\Contracts\MethodAttributeCollection;
+use Smpl\Inspector\Contracts\MethodMetadataCollection;
 use Smpl\Inspector\Contracts\MethodParameterCollection;
 use Smpl\Inspector\Contracts\Parameter as ParameterContract;
-use Smpl\Inspector\Contracts\ParameterAttributeCollection;
+use Smpl\Inspector\Contracts\ParameterMetadataCollection;
 use Smpl\Inspector\Contracts\Property as PropertyContract;
-use Smpl\Inspector\Contracts\PropertyAttributeCollection;
+use Smpl\Inspector\Contracts\PropertyMetadataCollection;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
-use Smpl\Inspector\Contracts\StructureAttributeCollection;
 use Smpl\Inspector\Contracts\StructureFactory as StructureFactoryContract;
+use Smpl\Inspector\Contracts\StructureMetadataCollection;
 use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\TypeFactory;
@@ -208,16 +207,16 @@ class StructureFactory implements StructureFactoryContract
     /**
      * @param ReflectionAttribute[] $attributesReflections
      *
-     * @return array{array<class-string, AttributeContract>, array<class-string, MetadataCollection>}
+     * @return \Smpl\Inspector\Contracts\Metadata[]
      *
      * @psalm-suppress LessSpecificReturnStatement
      * @psalm-suppress MoreSpecificReturnType
      *
      * @throws \Smpl\Inspector\Exceptions\AttributeException
      */
-    private function makeAttributesAndMetadata(array $attributesReflections): array
+    private function makeMetadataArray(array $attributesReflections): array
     {
-        $attributes = $metadata = [];
+        $attributes = $metadata = $metadataCount = [];
 
         foreach ($attributesReflections as $attributesReflection) {
             // We want to skip if the attribute is the core base attribute provided by PHP
@@ -232,30 +231,19 @@ class StructureFactory implements StructureFactoryContract
             }
 
             if (! isset($attributes[$attribute->getName()])) {
-                $attributes[$attribute->getName()] = $attribute;
+                $attributes[$attribute->getName()]    = $attribute;
+                $metadataCount[$attribute->getName()] = 0;
             }
 
-            if (! $attribute->isRepeatable() && count($metadata[$attribute->getName()]) > 0) {
+            if (! $attribute->isRepeatable() && $metadataCount[$attribute->getName()] > 0) {
                 throw Exceptions\AttributeException::nonRepeatableAttribute($attribute->getName());
             }
 
-            $metadata[$attribute->getName()][] = $this->makeMetadata($attribute, $attributesReflection);
+            $metadata[] = $this->makeMetadata($attribute, $attributesReflection);
+            ++$metadataCount[$attribute->getName()];
         }
 
-        /**
-         * @var array<class-string, MetadataCollection> $attributeMetadata
-         */
-        $attributeMetadata = [];
-
-        foreach ($metadata as $attributeName => $metadataArray) {
-            $attribute                                = $attributes[$attributeName];
-            $attributeMetadata[$attribute->getName()] = new AttributeMetadata(
-                $attribute,
-                $metadataArray
-            );
-        }
-
-        return [$attributes, $attributeMetadata];
+        return $metadata;
     }
 
     /**
@@ -290,7 +278,7 @@ class StructureFactory implements StructureFactoryContract
         $structure = $class instanceof StructureContract ? $class : $this->makeStructure($class);
 
         if (! $structure->getStructureType()->canHaveProperties()) {
-            throw Exceptions\StructureException::noProperties($class, $structure->getStructureType()->value);
+            throw Exceptions\StructureException::noProperties($structure->getFullName(), $structure->getStructureType()->value);
         }
 
         $reflection = $property instanceof ReflectionProperty
@@ -426,72 +414,76 @@ class StructureFactory implements StructureFactoryContract
         return $this->attributes[$reflection->getName()];
     }
 
-    public function makeStructureAttributes(StructureContract $structure): StructureAttributeCollection
+    public function makeStructureMetadata(StructureContract $structure): StructureMetadataCollection
     {
         $reflection            = $structure->getReflection();
         $attributesReflections = $reflection->getAttributes();
 
         if (empty($attributesReflections)) {
-            return new StructureAttributes($structure, [], []);
+            return new StructureMetadata($structure, []);
         }
-
-        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
 
         /**
          * @psalm-suppress InvalidArgument
          */
-        return new StructureAttributes($structure, $attributes, $metadata);
+        return new StructureMetadata(
+            $structure,
+            $this->makeMetadataArray($attributesReflections)
+        );
     }
 
-    public function makePropertyAttributes(PropertyContract $property): PropertyAttributeCollection
+    public function makePropertyMetadata(PropertyContract $property): PropertyMetadataCollection
     {
         $reflection            = $property->getReflection();
         $attributesReflections = $reflection->getAttributes();
 
         if (empty($attributesReflections)) {
-            return new PropertyAttributes($property, [], []);
+            return new PropertyMetadata($property, []);
         }
-
-        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
 
         /**
          * @psalm-suppress InvalidArgument
          */
-        return new PropertyAttributes($property, $attributes, $metadata);
+        return new PropertyMetadata(
+            $property,
+            $this->makeMetadataArray($attributesReflections)
+        );
     }
 
-    public function makeMethodAttributes(MethodContract $method): MethodAttributeCollection
+    public function makeMethodMetadata(MethodContract $method): MethodMetadataCollection
     {
         $reflection            = $method->getReflection();
         $attributesReflections = $reflection->getAttributes();
 
         if (empty($attributesReflections)) {
-            return new MethodAttributes($method, [], []);
+            return new MethodMetadata($method, []);
         }
-
-        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
 
         /**
          * @psalm-suppress InvalidArgument
          */
-        return new MethodAttributes($method, $attributes, $metadata);
+        return new MethodMetadata(
+            $method,
+            $this->makeMetadataArray($attributesReflections)
+        );
     }
 
-    public function makeParameterAttributes(ParameterContract $parameter): ParameterAttributeCollection
+    public function makeParameterMetadata(ParameterContract $parameter): ParameterMetadataCollection
     {
         $reflection            = $parameter->getReflection();
         $attributesReflections = $reflection->getAttributes();
 
         if (empty($attributesReflections)) {
-            return new ParameterAttributes($parameter, [], []);
+            return new ParameterMetadata($parameter, []);
         }
-
-        [$attributes, $metadata] = $this->makeAttributesAndMetadata($attributesReflections);
 
         /**
          * @psalm-suppress InvalidArgument
          */
-        return new ParameterAttributes($parameter, $attributes, $metadata);
+        return new ParameterMetadata(
+            $parameter,
+            $this->makeMetadataArray($attributesReflections)
+        );
     }
 
     /**

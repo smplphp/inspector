@@ -66,13 +66,13 @@ interface StructureFactory
 
     public function makeAttribute(ReflectionAttribute $reflection): ?Attribute;
 
-    public function makeStructureAttributes(Structure $structure): StructureAttributeCollection;
+    public function makeStructureMetadata(Structure $structure): StructureMetadataCollection;
 
-    public function makePropertyAttributes(Property $property): PropertyAttributeCollection;
+    public function makePropertyMetadata(Property $property): PropertyMetadataCollection;
 
-    public function makeMethodAttributes(Method $method): MethodAttributeCollection;
+    public function makeMethodMetadata(Method $method): MethodMetadataCollection;
 
-    public function makeParameterAttributes(Parameter $parameter): ParameterAttributeCollection;
+    public function makeParameterMetadata(Parameter $parameter): ParameterMetadataCollection;
 
     public function makeMetadata(Attribute $attribute, ReflectionAttribute $reflection): Metadata;
 }

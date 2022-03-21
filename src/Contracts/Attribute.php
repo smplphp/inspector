@@ -2,7 +2,9 @@
 
 namespace Smpl\Inspector\Contracts;
 
-interface Attribute
+use Stringable;
+
+interface Attribute extends Stringable
 {
     /**
      * @return class-string

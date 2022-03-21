@@ -14,12 +14,17 @@ use Traversable;
 
 final class StructureMethods implements StructureMethodCollection
 {
+    /**
+     * @param array<string, \Smpl\Inspector\Contracts\Method> $methods
+     *
+     * @return array<int, string>
+     */
     private static function mapIndexes(array $methods): array
     {
         $indexes = [];
 
-        foreach ($methods as $name => $method) {
-            $indexes[] = $name;
+        foreach ($methods as $method) {
+            $indexes[] = $method->getName();
         }
 
         return $indexes;

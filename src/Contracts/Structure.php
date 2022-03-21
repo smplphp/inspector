@@ -5,7 +5,7 @@ namespace Smpl\Inspector\Contracts;
 use ReflectionClass;
 use Smpl\Inspector\Support\StructureType;
 
-interface Structure
+interface Structure extends AttributableElement
 {
     public function getReflection(): ReflectionClass;
 
@@ -29,5 +29,5 @@ interface Structure
 
     public function getMethods(): StructureMethodCollection;
 
-    public function getAttributes(): StructureAttributeCollection;
+    public function getAllMetadata(): StructureMetadataCollection;
 }

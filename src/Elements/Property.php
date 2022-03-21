@@ -3,9 +3,9 @@
 namespace Smpl\Inspector\Elements;
 
 use ReflectionProperty;
-use Smpl\Inspector\Contracts\AttributeCollection;
+use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Property as PropertyContract;
-use Smpl\Inspector\Contracts\PropertyAttributeCollection;
+use Smpl\Inspector\Contracts\PropertyMetadataCollection;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
@@ -13,11 +13,13 @@ use Smpl\Inspector\Support\Visibility;
 
 class Property implements PropertyContract
 {
-    private ReflectionProperty          $reflection;
-    private Structure                   $structure;
-    private ?Type                       $type;
-    private Visibility                  $visibility;
-    private PropertyAttributeCollection $attributes;
+    use HasAttributes;
+
+    private ReflectionProperty         $reflection;
+    private Structure                  $structure;
+    private ?Type                      $type;
+    private Visibility                 $visibility;
+    private PropertyMetadataCollection $metadata;
 
     public function __construct(Structure $structure, ReflectionProperty $reflection, ?Type $type = null)
     {
@@ -82,12 +84,12 @@ class Property implements PropertyContract
         return $this->reflection->getDefaultValue();
     }
 
-    public function getAttributes(): PropertyAttributeCollection
+    public function getAllMetadata(): PropertyMetadataCollection
     {
-        if (! isset($this->attributes)) {
-            $this->attributes = Inspector::getInstance()->structures()->makePropertyAttributes($this);
+        if (! isset($this->metadata)) {
+            $this->metadata = Inspector::getInstance()->structures()->makePropertyMetadata($this);
         }
 
-        return $this->attributes;
+        return $this->metadata;
     }
 }

@@ -6,7 +6,7 @@ namespace Smpl\Inspector\Contracts;
 
 use ReflectionParameter;
 
-interface Parameter
+interface Parameter extends AttributableElement
 {
     public function getReflection(): ReflectionParameter;
 
@@ -30,5 +30,5 @@ interface Parameter
 
     public function isPromoted(): bool;
 
-    public function getAttributes(): ParameterAttributeCollection;
+    public function getAllMetadata(): ParameterMetadataCollection;
 }

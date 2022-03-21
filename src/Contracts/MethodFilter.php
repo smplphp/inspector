@@ -28,6 +28,11 @@ interface MethodFilter
 
     public function parameterCount(int $parameterCount): static;
 
+    /**
+     * @param class-string $attribute
+     *
+     * @return static
+     */
     public function hasAttribute(string $attribute): static;
 
     public function check(Method $method): bool;

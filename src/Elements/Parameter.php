@@ -5,20 +5,23 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Elements;
 
 use ReflectionParameter;
+use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\Parameter as ParameterContract;
-use Smpl\Inspector\Contracts\ParameterAttributeCollection;
+use Smpl\Inspector\Contracts\ParameterMetadataCollection;
 use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
 
 class Parameter implements ParameterContract
 {
-    private Method                       $method;
-    private ?Property                    $property;
-    private ReflectionParameter          $reflection;
-    private ?Type                        $type;
-    private ParameterAttributeCollection $attributes;
+    use HasAttributes;
+
+    private Method                      $method;
+    private ?Property                   $property;
+    private ReflectionParameter         $reflection;
+    private ?Type                       $type;
+    private ParameterMetadataCollection $metadata;
 
     public function __construct(Method $method, ReflectionParameter $reflection, ?Type $type = null)
     {
@@ -99,12 +102,12 @@ class Parameter implements ParameterContract
         return $this->property;
     }
 
-    public function getAttributes(): ParameterAttributeCollection
+    public function getAllMetadata(): ParameterMetadataCollection
     {
-        if (! isset($this->attributes)) {
-            $this->attributes = Inspector::getInstance()->structures()->makeParameterAttributes($this);
+        if (! isset($this->metadata)) {
+            $this->metadata = Inspector::getInstance()->structures()->makeParameterMetadata($this);
         }
 
-        return $this->attributes;
+        return $this->metadata;
     }
 }

@@ -15,7 +15,7 @@ class Attribute implements AttributeContract
     /**
      * @var class-string
      */
-    private string        $class;
+    private string $class;
 
     /**
      * @var \Smpl\Inspector\Support\AttributeTarget[]
@@ -23,8 +23,8 @@ class Attribute implements AttributeContract
     private array $targets;
 
     /**
-     * @param class-string     $class
-     * @param \Attribute $attribute
+     * @param class-string $class
+     * @param \Attribute   $attribute
      */
     public function __construct(string $class, BaseAttribute $attribute)
     {
@@ -60,5 +60,10 @@ class Attribute implements AttributeContract
         }
 
         return $this->targets;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName();
     }
 }

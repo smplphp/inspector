@@ -5,7 +5,7 @@ namespace Smpl\Inspector\Contracts;
 use ReflectionMethod;
 use Smpl\Inspector\Support\Visibility;
 
-interface Method
+interface Method extends AttributableElement
 {
     public function getReflection(): ReflectionMethod;
 
@@ -27,5 +27,5 @@ interface Method
 
     public function getParameters(): MethodParameterCollection;
 
-    public function getAttributes(): MethodAttributeCollection;
+    public function getAllMetadata(): MethodMetadataCollection;
 }

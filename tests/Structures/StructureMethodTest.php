@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Tests\Structures;
 
 use PHPUnit\Framework\TestCase;
+use Smpl\Inspector\Exceptions\StructureException;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Filters\MethodFilter;
@@ -480,8 +481,8 @@ class StructureMethodTest extends TestCase
      */
     public function throws_an_exception_when_getting_method_parameters_from_method_string_without_a_class(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('No class/structure provided for method when attempting to retrieve parameters');
+        $this->expectException(StructureException::class);
+        $this->expectExceptionMessage('No class or structure was provided when attempting to retrieve parameters for \'__construct\'');
 
         $this->factory->makeParameters('__construct');
     }

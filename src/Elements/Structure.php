@@ -6,9 +6,10 @@ namespace Smpl\Inspector\Elements;
 
 use ReflectionClass;
 use RuntimeException;
+use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
-use Smpl\Inspector\Contracts\StructureAttributeCollection;
+use Smpl\Inspector\Contracts\StructureMetadataCollection;
 use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\Type;
@@ -17,14 +18,16 @@ use Smpl\Inspector\Support\StructureType;
 
 class Structure implements StructureContract
 {
-    private ReflectionClass              $reflection;
-    private StructureType                $structureType;
-    private Type                         $type;
-    private ?StructureContract           $parent = null;
-    private bool                         $hasParent;
-    private StructurePropertyCollection  $properties;
-    private StructureMethodCollection    $methods;
-    private StructureAttributeCollection $attributes;
+    use HasAttributes;
+
+    private ReflectionClass             $reflection;
+    private StructureType               $structureType;
+    private Type                        $type;
+    private ?StructureContract          $parent = null;
+    private bool                        $hasParent;
+    private StructurePropertyCollection $properties;
+    private StructureMethodCollection   $methods;
+    private StructureMetadataCollection $metadata;
 
     public function __construct(ReflectionClass $reflection, StructureType $structureType, Type $type)
     {
@@ -133,12 +136,12 @@ class Structure implements StructureContract
         return null;
     }
 
-    public function getAttributes(): StructureAttributeCollection
+    public function getAllMetadata(): StructureMetadataCollection
     {
-        if (! isset($this->attributes)) {
-            $this->attributes = Inspector::getInstance()->structures()->makeStructureAttributes($this);
+        if (! isset($this->metadata)) {
+            $this->metadata = Inspector::getInstance()->structures()->makeStructureMetadata($this);
         }
 
-        return $this->attributes;
+        return $this->metadata;
     }
 }

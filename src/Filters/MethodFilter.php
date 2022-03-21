@@ -28,7 +28,11 @@ class MethodFilter implements MethodFilterContract
     protected bool        $hasDefaultValue;
     protected ?int        $parameterCount = null;
     protected ?bool       $hasParameters  = null;
-    protected ?string     $attribute      = null;
+    /**
+     * @var class-string|null
+     */
+    protected ?string $attribute              = null;
+    private bool      $attributeInstanceCheck = false;
 
     public function publicOnly(): static
     {
@@ -101,9 +105,16 @@ class MethodFilter implements MethodFilterContract
         return $this;
     }
 
-    public function hasAttribute(string $attribute): static
+    /**
+     * @param class-string $attribute
+     * @param bool         $instanceOf
+     *
+     * @return static
+     */
+    public function hasAttribute(string $attribute, bool $instanceOf = false): static
     {
-        $this->attribute = $attribute;
+        $this->attribute              = $attribute;
+        $this->attributeInstanceCheck = $instanceOf;
         return $this;
     }
 
@@ -189,6 +200,6 @@ class MethodFilter implements MethodFilterContract
             return true;
         }
 
-        return $method->getAttributes()->has($this->attribute);
+        return $method->hasAttribute($this->attribute, $this->attributeInstanceCheck);
     }
 }

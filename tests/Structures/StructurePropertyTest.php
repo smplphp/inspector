@@ -6,7 +6,7 @@ namespace Smpl\Inspector\Tests\Structures;
 
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
-use Smpl\Inspector\Contracts\Property;
+use Smpl\Inspector\Exceptions\StructureException;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Filters\PropertyFilter;
@@ -323,8 +323,8 @@ class StructurePropertyTest extends TestCase
      */
     public function throws_an_exception_when_the_structure_cant_have_properties_and_accessing_properties_directly(): void
     {
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Structures of type \'interface\' do not have properties');
+        $this->expectException(StructureException::class);
+        $this->expectExceptionMessage('Class \'' . ExampleInterface::class . '\' of type \'interface\' does not support properties');
 
         $this->factory->makeProperty('invalid', ExampleInterface::class);
     }
