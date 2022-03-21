@@ -28,6 +28,7 @@ class MethodFilter implements MethodFilterContract
     protected bool        $hasDefaultValue;
     protected ?int        $parameterCount = null;
     protected ?bool       $hasParameters  = null;
+    protected ?string     $attribute      = null;
 
     public function publicOnly(): static
     {
@@ -100,6 +101,12 @@ class MethodFilter implements MethodFilterContract
         return $this;
     }
 
+    public function hasAttribute(string $attribute): static
+    {
+        $this->attribute = $attribute;
+        return $this;
+    }
+
     public function check(Method $method): bool
     {
         return $this->checkVisibility($method)
@@ -107,7 +114,8 @@ class MethodFilter implements MethodFilterContract
             && $this->checkType($method)
             && $this->checkStatic($method)
             && $this->checkParameters($method)
-            && $this->checkParameterCount($method);
+            && $this->checkParameterCount($method)
+            && $this->checkAttribute($method);
     }
 
     protected function checkVisibility(Method $method): bool
@@ -173,5 +181,14 @@ class MethodFilter implements MethodFilterContract
         }
 
         return $method->getParameters()->count() === $this->parameterCount;
+    }
+
+    private function checkAttribute(Method $method): bool
+    {
+        if ($this->attribute === null) {
+            return true;
+        }
+
+        return $method->getAttributes()->has($this->attribute);
     }
 }

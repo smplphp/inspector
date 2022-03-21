@@ -28,5 +28,7 @@ interface MethodFilter
 
     public function parameterCount(int $parameterCount): static;
 
+    public function hasAttribute(string $attribute): static;
+
     public function check(Method $method): bool;
 }
