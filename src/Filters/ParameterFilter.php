@@ -22,6 +22,11 @@ class ParameterFilter implements ParameterFilterContract
     protected ?bool       $isVariadic;
     protected bool        $isNullable;
     protected bool        $hasDefaultValue;
+    /**
+     * @var class-string|null
+     */
+    protected ?string $attribute              = null;
+    private bool      $attributeInstanceCheck = false;
 
     public function typed(): static
     {
@@ -89,6 +94,19 @@ class ParameterFilter implements ParameterFilterContract
         return $this;
     }
 
+    /**
+     * @param class-string $attribute
+     * @param bool         $instanceOf
+     *
+     * @return static
+     */
+    public function hasAttribute(string $attribute, bool $instanceOf = false): static
+    {
+        $this->attribute              = $attribute;
+        $this->attributeInstanceCheck = $instanceOf;
+        return $this;
+    }
+
     public function check(Parameter $parameter): bool
     {
         return $this->checkTyped($parameter)
@@ -96,7 +114,8 @@ class ParameterFilter implements ParameterFilterContract
             && $this->checkNullable($parameter)
             && $this->checkDefaultValue($parameter)
             && $this->checkPromoted($parameter)
-            && $this->checkVariadic($parameter);
+            && $this->checkVariadic($parameter)
+            && $this->checkAttribute($parameter);
     }
 
     protected function checkTyped(Parameter $parameter): bool
@@ -162,5 +181,14 @@ class ParameterFilter implements ParameterFilterContract
         }
 
         return $this->isVariadic === $parameter->isVariadic();
+    }
+
+    private function checkAttribute(Parameter $parameter): bool
+    {
+        if ($this->attribute === null) {
+            return true;
+        }
+
+        return $parameter->hasAttribute($this->attribute, $this->attributeInstanceCheck);
     }
 }

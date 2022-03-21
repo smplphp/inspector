@@ -30,10 +30,11 @@ interface MethodFilter
 
     /**
      * @param class-string $attribute
+     * @param bool         $instanceOf
      *
      * @return static
      */
-    public function hasAttribute(string $attribute): static;
+    public function hasAttribute(string $attribute, bool $instanceOf = false): static;
 
     public function check(Method $method): bool;
 }

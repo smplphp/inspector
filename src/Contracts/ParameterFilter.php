@@ -26,5 +26,13 @@ interface ParameterFilter
 
     public function noDefaultValue(): static;
 
+    /**
+     * @param class-string $attribute
+     * @param bool         $instanceOf
+     *
+     * @return static
+     */
+    public function hasAttribute(string $attribute, bool $instanceOf = false): static;
+
     public function check(Parameter $parameter): bool;
 }

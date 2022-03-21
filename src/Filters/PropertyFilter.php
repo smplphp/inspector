@@ -26,6 +26,11 @@ class PropertyFilter implements PropertyFilterContract
     protected bool        $isStatic;
     protected bool        $isNullable;
     protected bool        $hasDefaultValue;
+    /**
+     * @var class-string|null
+     */
+    protected ?string $attribute              = null;
+    private bool      $attributeInstanceCheck = false;
 
     public function publicOnly(): static
     {
@@ -105,6 +110,19 @@ class PropertyFilter implements PropertyFilterContract
         return $this;
     }
 
+    /**
+     * @param class-string $attribute
+     * @param bool         $instanceOf
+     *
+     * @return static
+     */
+    public function hasAttribute(string $attribute, bool $instanceOf = false): static
+    {
+        $this->attribute              = $attribute;
+        $this->attributeInstanceCheck = $instanceOf;
+        return $this;
+    }
+
     public function check(Property $property): bool
     {
         return $this->checkVisibility($property)
@@ -112,7 +130,8 @@ class PropertyFilter implements PropertyFilterContract
             && $this->checkType($property)
             && $this->checkStatic($property)
             && $this->checkNullable($property)
-            && $this->checkDefaultValue($property);
+            && $this->checkDefaultValue($property)
+            && $this->checkAttribute($property);
     }
 
     protected function checkVisibility(Property $property): bool
@@ -178,5 +197,14 @@ class PropertyFilter implements PropertyFilterContract
         }
 
         return $this->hasDefaultValue === $property->hasDefault();
+    }
+
+    private function checkAttribute(Property $property): bool
+    {
+        if ($this->attribute === null) {
+            return true;
+        }
+
+        return $property->hasAttribute($this->attribute, $this->attributeInstanceCheck);
     }
 }
