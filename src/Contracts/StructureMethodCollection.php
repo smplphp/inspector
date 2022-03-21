@@ -2,23 +2,7 @@
 
 namespace Smpl\Inspector\Contracts;
 
-use Countable;
-use IteratorAggregate;
-
-/**
- * @extends IteratorAggregate<string, \Smpl\Inspector\Contracts\Method>
- */
-interface StructureMethodCollection extends IteratorAggregate, Countable
+interface StructureMethodCollection extends MethodCollection
 {
     public function getStructure(): Structure;
-
-    public function get(string $name): ?Method;
-
-    public function has(string $name): bool;
-
-    public function indexOf(int $index): ?Method;
-
-    public function first(): ?Method;
-
-    public function filter(MethodFilter $filter): self;
 }
