@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Factories;
 
 use Attribute as BaseAttribute;
-use InvalidArgumentException;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionProperty;
-use RuntimeException;
 use Smpl\Inspector\Collections\AttributeMetadata;
 use Smpl\Inspector\Collections\MethodAttributes;
 use Smpl\Inspector\Collections\MethodParameters;
@@ -43,6 +41,7 @@ use Smpl\Inspector\Elements\Method;
 use Smpl\Inspector\Elements\Parameter;
 use Smpl\Inspector\Elements\Property;
 use Smpl\Inspector\Elements\Structure;
+use Smpl\Inspector\Exceptions;
 use Smpl\Inspector\Support\StructureType;
 
 class StructureFactory implements StructureFactoryContract
@@ -83,12 +82,15 @@ class StructureFactory implements StructureFactoryContract
     /**
      * @codeCoverageIgnore
      */
-    private function getBaseAttribute(ReflectionAttribute $reflection): BaseAttribute
+    private function getBaseAttribute(ReflectionAttribute $reflection): ?BaseAttribute
     {
         if (! self::isValidClass($reflection->getName())) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid attribute provided \'%s\'', $reflection->getName()
-            ));
+            trigger_error(
+                sprintf('Attribute \'%s\' does not exist', $reflection->getName()),
+                E_USER_WARNING
+            );
+
+            return null;
         }
 
         $classReflection = new ReflectionClass($reflection->getName());
@@ -97,9 +99,7 @@ class StructureFactory implements StructureFactoryContract
             )[0] ?? null;
 
         if ($baseAttribute === null) {
-            throw new InvalidArgumentException(sprintf(
-                'Invalid attribute provided \'%s\'', $reflection->getName()
-            ));
+            throw Exceptions\AttributeException::invalidAttribute($classReflection->getName());
         }
 
         /** @noinspection PhpIncompatibleReturnTypeInspection */
@@ -113,6 +113,7 @@ class StructureFactory implements StructureFactoryContract
      * @return array{MethodContract, StructureContract}
      *
      * @throws \ReflectionException
+     * @throws \Smpl\Inspector\Exceptions\StructureException
      * @psalm-suppress PossiblyInvalidMethodCall
      */
     private function getMethodAndStructure(ReflectionMethod|string|MethodContract $method, ReflectionClass|string|StructureContract|null $class): array
@@ -121,9 +122,7 @@ class StructureFactory implements StructureFactoryContract
             $structure = $method->getStructure();
         } else {
             if (is_string($method) && $class === null) {
-                throw new InvalidArgumentException(
-                    'No class/structure provided for method when attempting to retrieve parameters'
-                );
+                throw Exceptions\StructureException::methodParametersWithoutClass($method);
             }
 
             $structure = $class instanceof StructureContract ? $class : $this->makeStructure(
@@ -179,6 +178,8 @@ class StructureFactory implements StructureFactoryContract
      *
      * @psalm-suppress InvalidNullableReturnType
      * @psalm-suppress NullableReturnStatement
+     *
+     * @throws \Smpl\Inspector\Exceptions\StructureException
      */
     public function makeStructure(ReflectionClass|string $class): StructureContract
     {
@@ -201,7 +202,7 @@ class StructureFactory implements StructureFactoryContract
             // @codeCoverageIgnoreEnd
         }
 
-        throw new RuntimeException(sprintf('Provided class \'%s\' is invalid', $class));
+        throw Exceptions\StructureException::invalidClass($class);
     }
 
     /**
@@ -211,6 +212,8 @@ class StructureFactory implements StructureFactoryContract
      *
      * @psalm-suppress LessSpecificReturnStatement
      * @psalm-suppress MoreSpecificReturnType
+     *
+     * @throws \Smpl\Inspector\Exceptions\AttributeException
      */
     private function makeAttributesAndMetadata(array $attributesReflections): array
     {
@@ -224,8 +227,16 @@ class StructureFactory implements StructureFactoryContract
 
             $attribute = $this->makeAttribute($attributesReflection);
 
+            if ($attribute === null) {
+                continue;
+            }
+
             if (! isset($attributes[$attribute->getName()])) {
                 $attributes[$attribute->getName()] = $attribute;
+            }
+
+            if (! $attribute->isRepeatable() && count($metadata[$attribute->getName()]) > 0) {
+                throw Exceptions\AttributeException::nonRepeatableAttribute($attribute->getName());
             }
 
             $metadata[$attribute->getName()][] = $this->makeMetadata($attribute, $attributesReflection);
@@ -270,17 +281,16 @@ class StructureFactory implements StructureFactoryContract
      * @param \ReflectionClass|class-string|\Smpl\Inspector\Contracts\Structure $class
      *
      * @return \Smpl\Inspector\Contracts\Property
+     *
      * @throws \ReflectionException
+     * @throws \Smpl\Inspector\Exceptions\StructureException
      */
     public function makeProperty(string|ReflectionProperty $property, ReflectionClass|string|StructureContract $class): PropertyContract
     {
         $structure = $class instanceof StructureContract ? $class : $this->makeStructure($class);
 
         if (! $structure->getStructureType()->canHaveProperties()) {
-            throw new RuntimeException(sprintf(
-                'Structures of type \'%s\' do not have properties',
-                $structure->getStructureType()->value
-            ));
+            throw Exceptions\StructureException::noProperties($class, $structure->getStructureType()->value);
         }
 
         $reflection = $property instanceof ReflectionProperty
@@ -300,7 +310,9 @@ class StructureFactory implements StructureFactoryContract
      * @param \ReflectionClass|class-string|\Smpl\Inspector\Contracts\Structure $class
      *
      * @return \Smpl\Inspector\Contracts\StructurePropertyCollection
+     *
      * @throws \ReflectionException
+     * @throws \Smpl\Inspector\Exceptions\StructureException
      */
     public function makeProperties(ReflectionClass|string|StructureContract $class): StructurePropertyCollection
     {
@@ -320,7 +332,9 @@ class StructureFactory implements StructureFactoryContract
      * @param \ReflectionClass|class-string|\Smpl\Inspector\Contracts\Structure $class
      *
      * @return \Smpl\Inspector\Contracts\Method
+     *
      * @throws \ReflectionException
+     * @throws \Smpl\Inspector\Exceptions\StructureException
      *
      * @psalm-suppress PossiblyNullArgument
      */
@@ -345,7 +359,9 @@ class StructureFactory implements StructureFactoryContract
      * @param \ReflectionClass|class-string|\Smpl\Inspector\Contracts\Structure $class
      *
      * @return \Smpl\Inspector\Contracts\StructureMethodCollection
+     *
      * @throws \ReflectionException
+     * @throws \Smpl\Inspector\Exceptions\StructureException
      */
     public function makeMethods(ReflectionClass|string|StructureContract $class): StructureMethodCollection
     {
@@ -389,17 +405,22 @@ class StructureFactory implements StructureFactoryContract
     /**
      * @param \ReflectionAttribute $reflection
      *
-     * @return \Smpl\Inspector\Contracts\Attribute
+     * @return \Smpl\Inspector\Contracts\Attribute|null
      *
      * @psalm-suppress PropertyTypeCoercion
+     *
+     * @throws \Smpl\Inspector\Exceptions\AttributeException
      */
-    public function makeAttribute(ReflectionAttribute $reflection): AttributeContract
+    public function makeAttribute(ReflectionAttribute $reflection): ?AttributeContract
     {
         if (! isset($this->attributes[$reflection->getName()])) {
-            $this->attributes[$reflection->getName()] = new Attribute(
-                $reflection->getName(),
-                $this->getBaseAttribute($reflection)
-            );
+            $baseAttribute = $this->getBaseAttribute($reflection);
+
+            if ($baseAttribute === null) {
+                return null;
+            }
+
+            $this->attributes[$reflection->getName()] = new Attribute($reflection->getName(), $baseAttribute);
         }
 
         return $this->attributes[$reflection->getName()];
