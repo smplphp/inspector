@@ -64,7 +64,7 @@ interface StructureFactory
      */
     public function makeParameters(ReflectionMethod|Method|string $method, ReflectionClass|Structure|string|null $class = null): MethodParameterCollection;
 
-    public function makeAttribute(ReflectionAttribute $reflection): Attribute;
+    public function makeAttribute(ReflectionAttribute $reflection): ?Attribute;
 
     public function makeStructureAttributes(Structure $structure): StructureAttributeCollection;
 
