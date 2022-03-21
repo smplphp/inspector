@@ -25,5 +25,9 @@ interface Property extends AttributableElement
 
     public function getDefault(): mixed;
 
+    public function getDeclaringStructure(): Structure;
+
+    public function isInherited(): bool;
+
     public function getAllMetadata(): PropertyMetadataCollection;
 }

@@ -20,6 +20,8 @@ class Property implements PropertyContract
     private ?Type                      $type;
     private Visibility                 $visibility;
     private PropertyMetadataCollection $metadata;
+    private bool                       $hasTrueStructure;
+    private Structure                  $trueStructure;
 
     public function __construct(Structure $structure, ReflectionProperty $reflection, ?Type $type = null)
     {
@@ -91,5 +93,23 @@ class Property implements PropertyContract
         }
 
         return $this->metadata;
+    }
+
+    public function getDeclaringStructure(): Structure
+    {
+        if (! isset($this->hasTrueStructure)) {
+            $this->hasTrueStructure = $this->getStructure()->getFullName() === $this->getReflection()->class;
+
+            if ($this->hasTrueStructure) {
+                $this->trueStructure = Inspector::getInstance()->structures()->makeStructure($this->getReflection()->getDeclaringClass());
+            }
+        }
+
+        return $this->hasTrueStructure ? $this->trueStructure : $this->getStructure();
+    }
+
+    public function isInherited(): bool
+    {
+        return $this->getDeclaringStructure()->getName() === $this->getStructure()->getName();
     }
 }
