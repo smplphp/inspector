@@ -19,13 +19,15 @@ class ObjectType extends BaseType
         return is_object($value);
     }
 
-    /**
-     * @psalm-suppress ArgumentTypeCoercion
-     */
     public function accepts(Type|string $type): bool
     {
         return parent::accepts($type)
             || $type instanceof ClassType
             || (is_string($type) && StructureFactory::isValidClass($type));
+    }
+
+    public function isPrimitive(): bool
+    {
+        return false;
     }
 }

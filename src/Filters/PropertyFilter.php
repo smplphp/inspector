@@ -152,16 +152,15 @@ class PropertyFilter implements PropertyFilterContract
         return $this->isTyped ? $property->getType() !== null : $property->getType() === null;
     }
 
-    /**
-     * @psalm-suppress PossiblyNullArgument
-     */
     protected function checkType(Property $property): bool
     {
         if (! isset($this->hasType)) {
             return true;
         }
 
-        if ($property->getType() === null) {
+        $type = $property->getType();
+
+        if ($type === null) {
             return false;
         }
 
@@ -169,7 +168,7 @@ class PropertyFilter implements PropertyFilterContract
             $this->hasType = Inspector::getInstance()->types()->make($this->hasType);
         }
 
-        return $this->hasType->accepts($property->getType());
+        return $this->hasType->accepts($type);
     }
 
     protected function checkStatic(Property $property): bool

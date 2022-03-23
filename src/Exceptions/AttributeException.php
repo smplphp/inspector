@@ -6,6 +6,11 @@ namespace Smpl\Inspector\Exceptions;
 
 class AttributeException extends InspectorException
 {
+    public static function baseAttribute(): self
+    {
+        return new self('Cannot create an attribute instance for PHPs base attribute');
+    }
+
     public static function invalidAttribute(string $attribute): self
     {
         return new self(sprintf(

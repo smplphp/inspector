@@ -75,12 +75,6 @@ class Parameter implements ParameterContract
         return $this->getReflection()->isVariadic();
     }
 
-    /**
-     * @return bool
-     *
-     * @psalm-suppress MixedReturnStatement
-     * @psalm-suppress MixedInferredReturnType
-     */
     public function isPromoted(): bool
     {
         return $this->getReflection()->isPromoted();
@@ -90,10 +84,7 @@ class Parameter implements ParameterContract
     {
         if (! isset($this->property)) {
             if ($this->isPromoted()) {
-                $this->property = Inspector::getInstance()->structures()->makeProperty(
-                    $this->getName(),
-                    $this->getMethod()->getStructure()
-                );
+                $this->property = $this->getMethod()->getStructure()->getProperty($this->getName());
             } else {
                 $this->property = null;
             }

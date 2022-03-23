@@ -37,22 +37,11 @@ class Attribute implements AttributeContract
         return $this->class;
     }
 
-    /**
-     * @return bool
-     *
-     * @psalm-suppress MixedOperand
-     */
     public function isRepeatable(): bool
     {
         return (bool)($this->attribute->flags & BaseAttribute::IS_REPEATABLE);
     }
 
-    /**
-     * @return \Smpl\Inspector\Support\AttributeTarget[]
-     *
-     * @psalm-suppress MixedArgument
-     * @psalm-suppress MixedOperand
-     */
     public function getTargets(): array
     {
         if (! isset($this->targets)) {

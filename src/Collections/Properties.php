@@ -8,26 +8,47 @@ use ArrayIterator;
 use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\PropertyCollection;
 use Smpl\Inspector\Contracts\PropertyFilter;
+use Smpl\Inspector\Contracts\Structure;
 use Traversable;
 
 class Properties implements PropertyCollection
 {
     /**
-     * @var \Smpl\Inspector\Contracts\Property[]
+     * @var array<string, \Smpl\Inspector\Contracts\Property>
      */
     protected array $properties;
 
     /**
-     * @param array<string, \Smpl\Inspector\Contracts\Property> $properties
+     * @var array<int, string>
+     */
+    private array $indexes;
+
+    /**
+     * @param list<\Smpl\Inspector\Contracts\Property> $properties
      */
     public function __construct(array $properties)
     {
-        $this->properties = $properties;
+        $this->buildPropertiesAndIndexes($properties);
     }
 
     /**
-     * @return \Traversable<string, \Smpl\Inspector\Contracts\Property>
+     * Build the properties and index properties.
+     *
+     * @param list<\Smpl\Inspector\Contracts\Property> $properties
+     *
+     * @return void
      */
+    private function buildPropertiesAndIndexes(array $properties): void
+    {
+        $this->properties = [];
+        $this->indexes    = [];
+
+        foreach ($properties as $property) {
+            $this->properties[$property->getFullName()] = $property;
+            $this->indexes[]                            = $property->getFullName();
+        }
+    }
+
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->properties);
@@ -48,11 +69,15 @@ class Properties implements PropertyCollection
         return $this->get($name) !== null;
     }
 
+    /**
+     * @psalm-suppress ArgumentTypeCoercion
+     */
     public function filter(PropertyFilter $filter): static
     {
-        return new self(
-            array_filter($this->properties, $filter->check(...))
-        );
+        $filtered = clone $this;
+        $filtered->buildPropertiesAndIndexes(array_filter($this->values(), $filter->check(...)));
+
+        return $filtered;
     }
 
     public function isEmpty(): bool
@@ -63,5 +88,42 @@ class Properties implements PropertyCollection
     public function isNotEmpty(): bool
     {
         return ! $this->isEmpty();
+    }
+
+    public function indexOf(int $index): ?Property
+    {
+        if (! isset($this->indexes[$index])) {
+            return null;
+        }
+
+        return $this->get($this->indexes[$index]);
+    }
+
+    public function first(): ?Property
+    {
+        return $this->indexOf(0);
+    }
+
+    public function names(bool $includeClass = true): array
+    {
+        $names = $this->indexes;
+
+        if (! $includeClass) {
+            $names = array_map(
+                static function (string $name) {
+                    return str_contains($name, Structure::SEPARATOR)
+                        ? explode(Structure::SEPARATOR, $name)[1]
+                        : $name;
+                },
+                $names
+            );
+        }
+
+        return array_unique($names);
+    }
+
+    public function values(): array
+    {
+        return array_values($this->properties);
     }
 }

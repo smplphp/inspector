@@ -9,6 +9,8 @@ use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Method as MethodContract;
 use Smpl\Inspector\Contracts\MethodMetadataCollection;
 use Smpl\Inspector\Contracts\MethodParameterCollection;
+use Smpl\Inspector\Contracts\Parameter;
+use Smpl\Inspector\Contracts\ParameterFilter;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
@@ -24,8 +26,6 @@ class Method implements MethodContract
     private Visibility                $visibility;
     private MethodParameterCollection $parameters;
     private MethodMetadataCollection  $metadata;
-    private bool                      $hasTrueStructure;
-    private Structure                 $trueStructure;
 
     public function __construct(Structure $structure, ReflectionMethod $reflection, ?Type $type = null)
     {
@@ -49,7 +49,7 @@ class Method implements MethodContract
 
     public function getFullName(): string
     {
-        return $this->getStructure()->getFullName() . '::' . $this->getName();
+        return $this->getStructure()->getFullName() . Structure::SEPARATOR . $this->getName();
     }
 
     public function getVisibility(): Visibility
@@ -86,10 +86,14 @@ class Method implements MethodContract
         return $this->structure;
     }
 
-    public function getParameters(): MethodParameterCollection
+    public function getParameters(?ParameterFilter $filter = null): MethodParameterCollection
     {
         if (! isset($this->parameters)) {
-            $this->parameters = Inspector::getInstance()->structures()->makeParameters($this);
+            $this->parameters = Inspector::getInstance()->structures()->makeMethodParameters($this);
+        }
+
+        if ($filter !== null) {
+            return $this->parameters->filter($filter);
         }
 
         return $this->parameters;
@@ -104,21 +108,13 @@ class Method implements MethodContract
         return $this->metadata;
     }
 
-    public function getDeclaringStructure(): Structure
+    public function getParameter(int|string $parameter): ?Parameter
     {
-        if (! isset($this->hasTrueStructure)) {
-            $this->hasTrueStructure = $this->getStructure()->getFullName() === $this->getReflection()->class;
-
-            if ($this->hasTrueStructure) {
-                $this->trueStructure = Inspector::getInstance()->structures()->makeStructure($this->getReflection()->getDeclaringClass());
-            }
-        }
-
-        return $this->hasTrueStructure ? $this->trueStructure : $this->getStructure();
+        return $this->getParameters()->get($parameter);
     }
 
-    public function isInherited(): bool
+    public function hasParameter(int|string $parameter): bool
     {
-        return $this->getDeclaringStructure()->getName() === $this->getStructure()->getName();
+        return $this->getParameters()->has($parameter);
     }
 }

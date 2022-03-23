@@ -13,8 +13,8 @@ final class MethodMetadata extends MetadataCollection implements MethodMetadataC
     private Method $method;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Method    $method
-     * @param \Smpl\Inspector\Contracts\Metadata[] $metadata
+     * @param \Smpl\Inspector\Contracts\Method         $method
+     * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
      */
     public function __construct(Method $method, array $metadata)
     {

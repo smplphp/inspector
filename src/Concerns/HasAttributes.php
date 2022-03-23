@@ -7,6 +7,9 @@ namespace Smpl\Inspector\Concerns;
 use Smpl\Inspector\Contracts\Metadata;
 use Smpl\Inspector\Contracts\MetadataCollection;
 
+/**
+ * @psalm-require-implements \Smpl\Inspector\Contracts\AttributableElement
+ */
 trait HasAttributes
 {
     /**
@@ -48,7 +51,7 @@ trait HasAttributes
     }
 
     /**
-     * @return \Smpl\Inspector\Contracts\Attribute[]
+     * @return list<\Smpl\Inspector\Contracts\Attribute>
      */
     public function getAttributes(): array
     {

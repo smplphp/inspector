@@ -50,6 +50,18 @@ class TypeFactory implements Contracts\TypeFactory
     private array $nullableTypes = [];
 
     /**
+     * Create a new class type instance.
+     *
+     * @param class-string $typeName
+     *
+     * @return \Smpl\Inspector\Types\ClassType
+     */
+    private function createClassType(string $typeName): Types\ClassType
+    {
+        return new Types\ClassType($typeName);
+    }
+
+    /**
      * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string> $types
      *
      * @return \Smpl\Inspector\Contracts\Type[]
@@ -157,10 +169,15 @@ class TypeFactory implements Contracts\TypeFactory
         return $nullable ? $this->makeNullable($baseType) : $baseType;
     }
 
+    /**
+     * @param string|class-string $typeName
+     *
+     * @return \Smpl\Inspector\Contracts\Type
+     */
     private function createBaseType(string $typeName): Contracts\Type
     {
         if (StructureFactory::isValidClass($typeName)) {
-            return new Types\ClassType($typeName);
+            return $this->createClassType($typeName);
         }
 
         return match ($typeName) {

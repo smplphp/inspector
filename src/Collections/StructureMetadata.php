@@ -13,8 +13,8 @@ final class StructureMetadata extends MetadataCollection implements StructureMet
     private Structure $structure;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Structure  $structure
-     * @param \Smpl\Inspector\Contracts\Metadata[] $metadata
+     * @param \Smpl\Inspector\Contracts\Structure      $structure
+     * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
      */
     public function __construct(Structure $structure, array $metadata)
     {

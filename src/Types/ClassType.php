@@ -4,15 +4,27 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Types;
 
+use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Inspector;
+
 class ClassType extends BaseType
 {
+    /**
+     * @var class-string
+     */
     private string $className;
 
+    /**
+     * @param class-string $className
+     */
     public function __construct(string $className)
     {
         $this->className = $className;
     }
 
+    /**
+     * @return class-string
+     */
     public function getName(): string
     {
         return $this->className;
@@ -31,8 +43,26 @@ class ClassType extends BaseType
         return $value === $this->className || is_subclass_of($value, $this->className);
     }
 
+    public function isPrimitive(): bool
+    {
+        return false;
+    }
+
     public function isBuiltin(): bool
     {
         return false;
+    }
+
+    public function accepts(Type|string $type): bool
+    {
+        if (! ($type instanceof Type)) {
+            $type = Inspector::getInstance()->types()->make($type);
+        }
+
+        if ($type instanceof static) {
+            return $this->matches($type->getName());
+        }
+
+        return parent::accepts($type);
     }
 }

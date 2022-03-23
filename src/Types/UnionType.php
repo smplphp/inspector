@@ -51,6 +51,17 @@ class UnionType extends BaseType
         return parent::accepts($type);
     }
 
+    public function isPrimitive(): bool
+    {
+        foreach ($this->types as $type) {
+            if ($type->isPrimitive() === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public function isBuiltin(): bool
     {
         foreach ($this->types as $type) {

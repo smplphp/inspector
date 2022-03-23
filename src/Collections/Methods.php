@@ -9,26 +9,11 @@ use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\Method as MethodContract;
 use Smpl\Inspector\Contracts\MethodCollection;
 use Smpl\Inspector\Contracts\MethodFilter;
+use Smpl\Inspector\Contracts\Structure;
 use Traversable;
 
 class Methods implements MethodCollection
 {
-    /**
-     * @param \Smpl\Inspector\Contracts\Method[] $methods
-     *
-     * @return array<string, \Smpl\Inspector\Contracts\Method>
-     */
-    private static function keyByMethodName(array $methods): array
-    {
-        $keyed = [];
-
-        foreach ($methods as $method) {
-            $keyed[$method->getName()] = $method;
-        }
-
-        return $keyed;
-    }
-
     /**
      * @var array<string, \Smpl\Inspector\Contracts\Method>
      */
@@ -40,12 +25,29 @@ class Methods implements MethodCollection
     private array $indexes;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Method[] $methods
+     * @param list<\Smpl\Inspector\Contracts\Method> $methods
      */
     public function __construct(array $methods)
     {
-        $this->methods = self::keyByMethodName($methods);
-        $this->indexes = array_keys($this->methods);
+        $this->buildMethodsAndIndexes($methods);
+    }
+
+    /**
+     * Build the methods and index properties.
+     *
+     * @param list<\Smpl\Inspector\Contracts\Method> $methods
+     *
+     * @return void
+     */
+    private function buildMethodsAndIndexes(array $methods): void
+    {
+        $this->methods = [];
+        $this->indexes = [];
+
+        foreach ($methods as $method) {
+            $this->methods[$method->getFullName()] = $method;
+            $this->indexes[]                       = $method->getFullName();
+        }
     }
 
     public function getIterator(): Traversable
@@ -79,11 +81,15 @@ class Methods implements MethodCollection
         return $this->get($name) !== null;
     }
 
+    /**
+     * @psalm-suppress ArgumentTypeCoercion
+     */
     public function filter(MethodFilter $filter): static
     {
-        return new self(
-            array_filter($this->methods, $filter->check(...))
-        );
+        $filtered = clone $this;
+        $filtered->buildMethodsAndIndexes(array_filter($this->values(), $filter->check(...)));
+
+        return $filtered;
     }
 
     public function isEmpty(): bool
@@ -96,8 +102,26 @@ class Methods implements MethodCollection
         return ! $this->isEmpty();
     }
 
-    public function names(): array
+    public function names(bool $includeClass = true): array
     {
-        return $this->indexes;
+        $names = $this->indexes;
+
+        if (! $includeClass) {
+            $names = array_map(
+                static function (string $name) {
+                    return str_contains($name, Structure::SEPARATOR)
+                        ? explode(Structure::SEPARATOR, $name)[1]
+                        : $name;
+                },
+                $names
+            );
+        }
+
+        return array_unique($names);
+    }
+
+    public function values(): array
+    {
+        return array_values($this->methods);
     }
 }

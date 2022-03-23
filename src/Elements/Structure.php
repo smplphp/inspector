@@ -6,9 +6,12 @@ namespace Smpl\Inspector\Elements;
 
 use ReflectionClass;
 use RuntimeException;
+use Smpl\Inspector\Collections\Structures;
 use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Method;
+use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\Structure as StructureContract;
+use Smpl\Inspector\Contracts\StructureCollection;
 use Smpl\Inspector\Contracts\StructureMetadataCollection;
 use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
@@ -28,6 +31,8 @@ class Structure implements StructureContract
     private StructurePropertyCollection $properties;
     private StructureMethodCollection   $methods;
     private StructureMetadataCollection $metadata;
+    private StructureCollection         $interfaces;
+    private StructureCollection         $traits;
 
     public function __construct(ReflectionClass $reflection, StructureType $structureType, Type $type)
     {
@@ -106,16 +111,26 @@ class Structure implements StructureContract
         }
 
         if (! isset($this->properties)) {
-            $this->properties = Inspector::getInstance()->structures()->makeProperties($this);
+            $this->properties = Inspector::getInstance()->structures()->makeStructureProperties($this);
         }
 
         return $this->properties;
     }
 
+    public function getProperty(string $name): ?Property
+    {
+        return $this->getProperties()->get($name);
+    }
+
+    public function hasProperty(string $name): bool
+    {
+        return $this->getProperties()->has($name);
+    }
+
     public function getMethods(): StructureMethodCollection
     {
         if (! isset($this->methods)) {
-            $this->methods = Inspector::getInstance()->structures()->makeMethods($this);
+            $this->methods = Inspector::getInstance()->structures()->makeStructureMethods($this);
         }
 
         return $this->methods;
@@ -127,13 +142,17 @@ class Structure implements StructureContract
      */
     public function getConstructor(): ?Method
     {
-        foreach ($this->getMethods() as $method) {
-            if ($method->isConstructor()) {
-                return $method;
-            }
-        }
+        return $this->getMethod('__constructor');
+    }
 
-        return null;
+    public function getMethod(string $name): ?Method
+    {
+        return $this->getMethods()->get($name);
+    }
+
+    public function hasMethod(string $name): bool
+    {
+        return $this->getMethods()->has($name);
     }
 
     public function getAllMetadata(): StructureMetadataCollection
@@ -143,5 +162,51 @@ class Structure implements StructureContract
         }
 
         return $this->metadata;
+    }
+
+    public function getInterfaces(): StructureCollection
+    {
+        if (! isset($this->interfaces)) {
+            $interfaces = [];
+            $inspector  = Inspector::getInstance();
+
+            foreach ($this->getReflection()->getInterfaces() as $reflection) {
+                $interfaces[] = $inspector->structures()->makeStructure($reflection->getName());
+            }
+
+            $this->interfaces = new Structures($interfaces);
+        }
+
+        return $this->interfaces;
+    }
+
+    public function getTraits(): StructureCollection
+    {
+        if (! isset($this->traits)) {
+            $traits    = [];
+            $inspector = Inspector::getInstance();
+
+            foreach ($this->getReflection()->getTraits() as $reflection) {
+                $traits[] = $inspector->structures()->makeStructure($reflection->getName());
+            }
+
+            $this->traits = new Structures($traits);
+        }
+
+        return $this->traits;
+    }
+
+    public function implements(string|StructureContract $interface): bool
+    {
+        return $this->getInterfaces()->has(
+            $interface instanceof StructureContract ? $interface->getFullName() : $interface
+        );
+    }
+
+    public function uses(string|StructureContract $trait): bool
+    {
+        return $this->getTraits()->has(
+            $trait instanceof StructureContract ? $trait->getFullName() : $trait
+        );
     }
 }

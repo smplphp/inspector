@@ -9,21 +9,21 @@ use Smpl\Inspector\Contracts\Attribute;
 use Smpl\Inspector\Contracts\Metadata as MetadataContract;
 
 /**
- * @template T of Structure|Method|Property|Parameter
  * @template I of object
  * @implements \Smpl\Inspector\Contracts\Metadata<I>
- * @psalm-suppress ImplementedReturnTypeMismatch
- * @psalm-suppress InvalidReturnType
- * @psalm-suppress InvalidReturnStatement
  */
 class Metadata implements MetadataContract
 {
-    private Attribute           $attribute;
+    private Attribute $attribute;
+
+    /**
+     * @var \ReflectionAttribute<I>
+     */
     private ReflectionAttribute $reflection;
 
     /**
      * @param \Smpl\Inspector\Contracts\Attribute $attribute
-     * @param \ReflectionAttribute                $reflection
+     * @param \ReflectionAttribute<I>             $reflection
      */
     public function __construct(Attribute $attribute, ReflectionAttribute $reflection)
     {
@@ -41,9 +41,6 @@ class Metadata implements MetadataContract
         return $this->reflection;
     }
 
-    /**
-     * @return I
-     */
     public function getInstance(): object
     {
         return $this->getReflection()->newInstance();

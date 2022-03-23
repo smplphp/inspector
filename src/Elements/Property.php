@@ -20,8 +20,6 @@ class Property implements PropertyContract
     private ?Type                      $type;
     private Visibility                 $visibility;
     private PropertyMetadataCollection $metadata;
-    private bool                       $hasTrueStructure;
-    private Structure                  $trueStructure;
 
     public function __construct(Structure $structure, ReflectionProperty $reflection, ?Type $type = null)
     {
@@ -48,6 +46,11 @@ class Property implements PropertyContract
         return $this->reflection->getName();
     }
 
+    public function getFullName(): string
+    {
+        return $this->getStructure()->getFullName() . Structure::SEPARATOR . $this->getName();
+    }
+
     public function getType(): ?Type
     {
         return $this->type;
@@ -72,10 +75,6 @@ class Property implements PropertyContract
         return $this->reflection->getType()?->allowsNull() ?? true;
     }
 
-    /**
-     * @psalm-suppress MixedInferredReturnType
-     * @psalm-suppress MixedReturnStatement
-     */
     public function hasDefault(): bool
     {
         return $this->reflection->hasDefaultValue();
@@ -93,23 +92,5 @@ class Property implements PropertyContract
         }
 
         return $this->metadata;
-    }
-
-    public function getDeclaringStructure(): Structure
-    {
-        if (! isset($this->hasTrueStructure)) {
-            $this->hasTrueStructure = $this->getStructure()->getFullName() === $this->getReflection()->class;
-
-            if ($this->hasTrueStructure) {
-                $this->trueStructure = Inspector::getInstance()->structures()->makeStructure($this->getReflection()->getDeclaringClass());
-            }
-        }
-
-        return $this->hasTrueStructure ? $this->trueStructure : $this->getStructure();
-    }
-
-    public function isInherited(): bool
-    {
-        return $this->getDeclaringStructure()->getName() === $this->getStructure()->getName();
     }
 }

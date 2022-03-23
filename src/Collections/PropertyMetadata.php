@@ -13,7 +13,7 @@ final class PropertyMetadata extends MetadataCollection implements PropertyMetad
     private Property $property;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Metadata[] $metadata
+     * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
      */
     public function __construct(Property $property, array $metadata)
     {

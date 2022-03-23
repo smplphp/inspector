@@ -22,9 +22,11 @@ abstract class BaseType implements Type
         return true;
     }
 
-    /**
-     * @psalm-suppress ArgumentTypeCoercion
-     */
+    public function isPrimitive(): bool
+    {
+        return true;
+    }
+
     public function accepts(Type|string $type): bool
     {
         if (! ($type instanceof Type)) {
@@ -35,8 +37,6 @@ abstract class BaseType implements Type
             $type = $type->getBaseType();
         }
 
-        return $type instanceof static
-            || $type->getName() === $this->getName()
-            || is_subclass_of($this->getName(), $type->getName());
+        return $type instanceof static || $type->getName() === $this->getName();
     }
 }

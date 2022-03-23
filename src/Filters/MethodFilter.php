@@ -7,7 +7,6 @@ namespace Smpl\Inspector\Filters;
 use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\MethodFilter as MethodFilterContract;
 use Smpl\Inspector\Contracts\ParameterFilter;
-use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
@@ -33,12 +32,8 @@ class MethodFilter implements MethodFilterContract
     /**
      * @var class-string|null
      */
-    protected ?string $attribute              = null;
-    private bool      $attributeInstanceCheck = false;
-    /**
-     * @var class-string
-     */
-    private string          $declaredBy;
+    protected ?string       $attribute              = null;
+    private bool            $attributeInstanceCheck = false;
     private ParameterFilter $parameterFilter;
 
     public function publicOnly(): static
@@ -125,12 +120,6 @@ class MethodFilter implements MethodFilterContract
         return $this;
     }
 
-    public function declaredBy(string|Structure $class): static
-    {
-        $this->declaredBy = $class instanceof Structure ? $class->getName() : $class;
-        return $this;
-    }
-
     public function parametersMatch(ParameterFilter $filter): static
     {
         $this->parameterFilter = $filter;
@@ -146,7 +135,6 @@ class MethodFilter implements MethodFilterContract
             && $this->checkParameters($method)
             && $this->checkParameterCount($method)
             && $this->checkAttribute($method)
-            && $this->checkDeclaredBy($method)
             && $this->checkParameterMatch($method);
     }
 
@@ -168,16 +156,15 @@ class MethodFilter implements MethodFilterContract
         return $this->isTyped === ($method->getReturnType() !== null);
     }
 
-    /**
-     * @psalm-suppress PossiblyNullArgument
-     */
     protected function checkType(Method $method): bool
     {
         if (! isset($this->hasReturnType)) {
             return true;
         }
 
-        if ($method->getReturnType() === null) {
+        $type = $method->getReturnType();
+
+        if ($type === null) {
             return false;
         }
 
@@ -185,7 +172,7 @@ class MethodFilter implements MethodFilterContract
             $this->hasReturnType = Inspector::getInstance()->types()->make($this->hasReturnType);
         }
 
-        return $this->hasReturnType->accepts($method->getReturnType());
+        return $this->hasReturnType->accepts($type);
     }
 
     protected function checkStatic(Method $method): bool
@@ -222,15 +209,6 @@ class MethodFilter implements MethodFilterContract
         }
 
         return $method->hasAttribute($this->attribute, $this->attributeInstanceCheck);
-    }
-
-    private function checkDeclaredBy(Method $method): bool
-    {
-        if (! isset($this->declaredBy)) {
-            return true;
-        }
-
-        return $method->getDeclaringStructure()->getName() === $this->declaredBy;
     }
 
     private function checkParameterMatch(Method $method): bool

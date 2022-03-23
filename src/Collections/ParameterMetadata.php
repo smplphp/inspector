@@ -13,8 +13,8 @@ final class ParameterMetadata extends MetadataCollection implements ParameterMet
     private Parameter $parameter;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Parameter  $parameter
-     * @param \Smpl\Inspector\Contracts\Metadata[] $metadata
+     * @param \Smpl\Inspector\Contracts\Parameter      $parameter
+     * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
      */
     public function __construct(Parameter $parameter, array $metadata)
     {

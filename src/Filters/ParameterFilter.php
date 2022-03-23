@@ -127,16 +127,15 @@ class ParameterFilter implements ParameterFilterContract
         return $this->isTyped ? $parameter->getType() !== null : $parameter->getType() === null;
     }
 
-    /**
-     * @psalm-suppress PossiblyNullArgument
-     */
     protected function checkType(Parameter $parameter): bool
     {
         if (! isset($this->hasType)) {
             return true;
         }
 
-        if ($parameter->getType() === null) {
+        $type = $parameter->getType();
+
+        if ($type === null) {
             return false;
         }
 
@@ -144,7 +143,7 @@ class ParameterFilter implements ParameterFilterContract
             $this->hasType = Inspector::getInstance()->types()->make($this->hasType);
         }
 
-        return $this->hasType->accepts($parameter->getType());
+        return $this->hasType->accepts($type);
     }
 
     protected function checkNullable(Parameter $parameter): bool

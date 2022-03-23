@@ -55,6 +55,11 @@ class IntersectionType extends BaseType
         return true;
     }
 
+    public function isPrimitive(): bool
+    {
+        return false;
+    }
+
     public function isBuiltin(): bool
     {
         return false;

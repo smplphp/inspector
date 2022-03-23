@@ -14,6 +14,11 @@ use Traversable;
 abstract class MetadataCollection implements MetadataCollectionContract
 {
     /**
+     * Get the name of an attribute.
+     *
+     * This method returns the name from the attribute instance, or the value
+     * provided if it's a string.
+     *
      * @param \Smpl\Inspector\Contracts\Attribute|class-string $attribute
      *
      * @return class-string
@@ -24,18 +29,35 @@ abstract class MetadataCollection implements MetadataCollectionContract
     }
 
     /**
+     * Make an array of attributes from an array of metadata.
+     *
      * @param \Smpl\Inspector\Contracts\Metadata[] $metadata
      *
-     * @return \Smpl\Inspector\Contracts\Attribute[]
+     * @return list<\Smpl\Inspector\Contracts\Attribute>
      */
     private static function makeAttributes(array $metadata): array
     {
-        return array_unique(
-            array_map(static fn(Metadata $metadata) => $metadata->getAttribute(), $metadata)
-        );
+        $attributes = [];
+        $used       = [];
+
+        foreach ($metadata as $metadatum) {
+            $attribute = $metadatum->getAttribute();
+
+            if (isset($used[$attribute->getName()])) {
+                continue;
+            }
+
+            $used[$attribute->getName()] = true;
+            $attributes[]                = $attribute;
+
+        }
+
+        return $attributes;
     }
 
     /**
+     * Get a filter for performing a comparison of metadata attribute.
+     *
      * @param class-string $attribute
      *
      * @return \Closure
@@ -46,6 +68,8 @@ abstract class MetadataCollection implements MetadataCollectionContract
     }
 
     /**
+     * Get a filter for performing an instanceof check on a metadata attribute.
+     *
      * @param class-string $attribute
      *
      * @return \Closure
@@ -56,7 +80,7 @@ abstract class MetadataCollection implements MetadataCollectionContract
     }
 
     /**
-     * @var \Smpl\Inspector\Contracts\Attribute[]
+     * @var list<\Smpl\Inspector\Contracts\Attribute>
      */
     private array $attributes;
 
@@ -66,7 +90,7 @@ abstract class MetadataCollection implements MetadataCollectionContract
     private array $metadata;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Metadata[] $metadata
+     * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
      */
     public function __construct(array $metadata)
     {
@@ -89,11 +113,6 @@ abstract class MetadataCollection implements MetadataCollectionContract
         return $this->attributes;
     }
 
-    /**
-     * @param class-string $attributeName
-     *
-     * @return \Smpl\Inspector\Contracts\Attribute|null
-     */
     public function getAttribute(string $attributeName): ?Attribute
     {
         return array_filter(
@@ -102,12 +121,6 @@ abstract class MetadataCollection implements MetadataCollectionContract
                )[0] ?? null;
     }
 
-    /**
-     * @param \Smpl\Inspector\Contracts\Attribute|class-string $attribute
-     * @param bool                                             $instanceOf
-     *
-     * @return \Smpl\Inspector\Contracts\Metadata[]
-     */
     public function get(Attribute|string $attribute, bool $instanceOf = false): array
     {
         $attribute = self::getAttributeName($attribute);
@@ -118,12 +131,6 @@ abstract class MetadataCollection implements MetadataCollectionContract
         );
     }
 
-    /**
-     * @param \Smpl\Inspector\Contracts\Attribute|class-string|null $attribute
-     * @param bool                                                  $instanceOf
-     *
-     * @return \Smpl\Inspector\Contracts\Metadata|null
-     */
     public function first(Attribute|string|null $attribute = null, bool $instanceOf = false): ?Metadata
     {
         if ($attribute === null) {
@@ -133,18 +140,12 @@ abstract class MetadataCollection implements MetadataCollectionContract
         return $this->get($attribute, $instanceOf)[0] ?? null;
     }
 
-    /**
-     * @param \Smpl\Inspector\Contracts\Attribute|class-string $attribute
-     * @param bool                                             $instanceOf
-     *
-     * @return bool
-     */
     public function has(Attribute|string $attribute, bool $instanceOf = false): bool
     {
         return ! empty($this->get($attribute, $instanceOf));
     }
 
-    public function instances(Attribute|string $attribute, bool $instanceOf = false): int
+    public function countInstances(Attribute|string $attribute, bool $instanceOf = false): int
     {
         return count($this->get($attribute, $instanceOf));
     }

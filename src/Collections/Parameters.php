@@ -13,40 +13,6 @@ use Traversable;
 class Parameters implements ParameterCollection
 {
     /**
-     * @param \Smpl\Inspector\Contracts\Parameter[] $parameters
-     *
-     * @return array<string, \Smpl\Inspector\Contracts\Parameter>
-     */
-    private static function keyByName(array $parameters): array
-    {
-        $keyed = [];
-
-        foreach ($parameters as $parameter) {
-            $keyed[$parameter->getName()] = $parameter;
-        }
-
-        return $keyed;
-    }
-
-    /**
-     * @param \Smpl\Inspector\Contracts\Parameter[] $parameters
-     *
-     * @return array<int, string>
-     */
-    private static function mapPositionsToName(array $parameters): array
-    {
-        $positions = [];
-
-        foreach ($parameters as $parameter) {
-            $positions[$parameter->getPosition()] = $parameter->getName();
-        }
-
-        ksort($positions);
-
-        return $positions;
-    }
-
-    /**
      * @var array<string, \Smpl\Inspector\Contracts\Parameter>
      */
     protected array $parameters;
@@ -57,12 +23,31 @@ class Parameters implements ParameterCollection
     private array $positions;
 
     /**
-     * @param \Smpl\Inspector\Contracts\Parameter[] $parameters
+     * @param list<\Smpl\Inspector\Contracts\Parameter> $parameters
      */
     public function __construct(array $parameters)
     {
-        $this->parameters = self::keyByName($parameters);
-        $this->positions  = self::mapPositionsToName($this->parameters);
+        $this->buildParametersAndPositions($parameters);
+    }
+
+    /**
+     * Build the parameters and index properties.
+     *
+     * @param list<\Smpl\Inspector\Contracts\Parameter> $parameters
+     *
+     * @return void
+     */
+    private function buildParametersAndPositions(array $parameters): void
+    {
+        $this->parameters = [];
+        $this->positions  = [];
+
+        foreach ($parameters as $parameter) {
+            $this->parameters[$parameter->getName()]    = $parameter;
+            $this->positions[$parameter->getPosition()] = $parameter->getName();
+        }
+
+        ksort($this->positions, SORT_NUMERIC);
     }
 
     public function getIterator(): Traversable
@@ -93,11 +78,15 @@ class Parameters implements ParameterCollection
         return $this->get($name) !== null;
     }
 
+    /**
+     * @psalm-suppress ArgumentTypeCoercion
+     */
     public function filter(ParameterFilter $filter): static
     {
-        return new self(
-            array_filter($this->parameters, $filter->check(...))
-        );
+        $filtered = clone $this;
+        $filtered->buildParametersAndPositions(array_filter($this->values(), $filter->check(...)));
+
+        return $filtered;
     }
 
     public function isEmpty(): bool
@@ -108,5 +97,29 @@ class Parameters implements ParameterCollection
     public function isNotEmpty(): bool
     {
         return ! $this->isEmpty();
+    }
+
+    public function indexOf(int $position): ?Parameter
+    {
+        if (! isset($this->positions[$position])) {
+            return null;
+        }
+
+        return $this->get($this->positions[$position]);
+    }
+
+    public function first(): ?Parameter
+    {
+        return $this->indexOf(0);
+    }
+
+    public function names(): array
+    {
+        return array_values($this->positions);
+    }
+
+    public function values(): array
+    {
+        return array_values($this->parameters);
     }
 }
