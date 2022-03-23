@@ -64,4 +64,12 @@ class IntersectionType extends BaseType
     {
         return false;
     }
+
+    /**
+     * @return \Smpl\Inspector\Contracts\Type[]
+     */
+    public function getSubtypes(): array
+    {
+        return $this->types;
+    }
 }

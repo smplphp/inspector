@@ -72,4 +72,12 @@ class UnionType extends BaseType
 
         return true;
     }
+
+    /**
+     * @return \Smpl\Inspector\Contracts\Type[]
+     */
+    public function getSubtypes(): array
+    {
+        return $this->types;
+    }
 }
