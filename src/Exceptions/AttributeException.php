@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Exceptions;
 
-class AttributeException extends InspectorException
+final class AttributeException extends InspectorException
 {
     public static function baseAttribute(): self
     {
