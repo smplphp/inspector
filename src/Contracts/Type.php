@@ -12,6 +12,21 @@ use Stringable;
 interface Type extends Stringable
 {
     /**
+     * The character used to denote a type as nullable.
+     */
+    public final const NULLABLE_CHARACTER = '?';
+
+    /**
+     * The separator used for union types.
+     */
+    public final const UNION_SEPARATOR    = '|';
+
+    /**
+     * The separator used for intersection types.
+     */
+    public final const INTERSECTION_SEPARATOR = '&';
+
+    /**
      * Get the name of the type.
      *
      * @return string|class-string
