@@ -134,9 +134,11 @@ class StructureFactory implements Contracts\StructureFactory
 
         try {
             return $this->makeStructureFromReflection(new ReflectionClass($name));
+            // @codeCoverageIgnoreStart
         } catch (ReflectionException $e) {
             throw Exceptions\StructureException::invalidClass($name, $e);
         }
+        // @codeCoverageIgnoreEnd
     }
 
     /**
