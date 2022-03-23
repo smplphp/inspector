@@ -231,7 +231,8 @@ class StructureFactory implements Contracts\StructureFactory
 
         return new Elements\Parameter(
             $this->makeMethod($parentReflection),
-            $reflection
+            $reflection,
+            $this->getType($reflection->getType())
         );
     }
 
