@@ -10,7 +10,7 @@ final class StructureException extends InspectorException
 {
     public static function functions(): self
     {
-        return new self('Functions are currently not supported');
+        return new self('Functions are not currently supported');
     }
 
     public static function methodParametersWithoutClass(string $method): self
