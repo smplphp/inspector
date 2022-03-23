@@ -12,7 +12,4 @@ parameters:
         - message: '#Method ([a-zA-Z\\]+)::([a-zA-Z\(\)]+) should return ([a-zA-Z\\]+) but returns ([a-zA-Z\\\|]+)#'
           paths:
               - src/Factories/StructureFactory.php
-        - '#Parameter \#1 \$class of static method Smpl\\Inspector\\Factories\\StructureFactory\:\:isValidClass\(\) expects class\-string, string given\.#'
-        - '#Parameter \#1 \$type of method Smpl\\Inspector\\Contracts\\TypeFactory\:\:make\(\) expects ReflectionType\|string, ReflectionType\|null given\.#'
-        - '#Cannot call method getDeclaringClass\(\) on ReflectionMethod\|string#'
-        - '#Method Smpl\\Inspector\\Elements\\Metadata\:\:getInstance\(\) should return I of object but returns object\.#'
+        - '#Parameter \#1 \$typeName of method Smpl\\Inspector\\Factories\\TypeFactory\:\:createClassType\(\) expects class\-string, string given#'
