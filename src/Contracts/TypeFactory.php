@@ -19,6 +19,8 @@ interface TypeFactory
      * @param \ReflectionType|string|class-string $type
      *
      * @return \Smpl\Inspector\Contracts\Type
+     *
+     * @throws \Smpl\Inspector\Exceptions\TypeException
      */
     public function make(ReflectionType|string $type): Type;
 
@@ -28,6 +30,8 @@ interface TypeFactory
      * @param \ReflectionType|\Smpl\Inspector\Contracts\Type|string|class-string $type
      *
      * @return \Smpl\Inspector\Contracts\Type
+     *
+     * @throws \Smpl\Inspector\Exceptions\TypeException
      */
     public function makeNullable(ReflectionType|Type|string $type): Type;
 
@@ -37,6 +41,8 @@ interface TypeFactory
      * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string|class-string> $types
      *
      * @return \Smpl\Inspector\Contracts\Type
+     *
+     * @throws \Smpl\Inspector\Exceptions\TypeException
      */
     public function makeUnion(array $types): Type;
 
@@ -46,6 +52,8 @@ interface TypeFactory
      * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|class-string> $types
      *
      * @return \Smpl\Inspector\Contracts\Type
+     *
+     * @throws \Smpl\Inspector\Exceptions\TypeException
      */
     public function makeIntersection(array $types): Type;
 }
