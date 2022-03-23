@@ -8,8 +8,8 @@ use ReflectionIntersectionType;
 use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
-use RuntimeException;
 use Smpl\Inspector\Contracts;
+use Smpl\Inspector\Exceptions\TypeException;
 use Smpl\Inspector\Types;
 
 class TypeFactory implements Contracts\TypeFactory
@@ -65,6 +65,8 @@ class TypeFactory implements Contracts\TypeFactory
      * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string> $types
      *
      * @return \Smpl\Inspector\Contracts\Type[]
+     *
+     * @throws \Smpl\Inspector\Exceptions\TypeException
      */
     private function getTypesFromArray(array $types): array
     {
@@ -89,9 +91,10 @@ class TypeFactory implements Contracts\TypeFactory
             $typeObject = $this->makeIntersection($type->getTypes());
         }
 
+        // If this happens there's a severe issue somewhere
         if ($typeObject === null) {
             // @codeCoverageIgnoreStart
-            throw new RuntimeException(sprintf('Unable to create type for \'%s\'', $type->__toString()));
+            throw TypeException::invalid($type->__toString());
             // @codeCoverageIgnoreEnd
         }
 
@@ -124,6 +127,21 @@ class TypeFactory implements Contracts\TypeFactory
         self::sortTypesByName($types);
         $unionType = new Types\UnionType(...$types);
 
+        $validUnionTypes = empty(array_filter($types, static function (Contracts\Type $type) {
+            return $type instanceof Types\VoidType
+                || $type instanceof Types\MixedType
+                || $type instanceof Types\NullableType
+                || $type instanceof Types\UnionType
+                || $type instanceof Types\IntersectionType;
+        }));
+
+        if (! $validUnionTypes) {
+            throw TypeException::invalidUnion(implode(
+                Contracts\Type::UNION_SEPARATOR,
+                array_map(static fn(Contracts\Type $type) => $type->getName(), $types)
+            ));
+        }
+
         if (isset($this->unionTypes[$unionType->getName()])) {
             return $this->unionTypes[$unionType->getName()];
         }
@@ -137,6 +155,18 @@ class TypeFactory implements Contracts\TypeFactory
     {
         $types = $this->getTypesFromArray($types);
         self::sortTypesByName($types);
+
+        $onlyClassTypes = empty(array_filter($types, static function (Contracts\Type $type) {
+            return ! ($type instanceof Types\ClassType);
+        }));
+
+        if (! $onlyClassTypes) {
+            throw TypeException::invalidIntersection(implode(
+                Contracts\Type::INTERSECTION_SEPARATOR,
+                array_map(static fn(Contracts\Type $type) => $type->getName(), $types)
+            ));
+        }
+
         $intersectionType = new Types\IntersectionType(...$types);
 
         if (isset($this->intersectionTypes[$intersectionType->getName()])) {
@@ -173,6 +203,8 @@ class TypeFactory implements Contracts\TypeFactory
      * @param string|class-string $typeName
      *
      * @return \Smpl\Inspector\Contracts\Type
+     *
+     * @throws \Smpl\Inspector\Exceptions\TypeException
      */
     private function createBaseType(string $typeName): Contracts\Type
     {
@@ -189,26 +221,35 @@ class TypeFactory implements Contracts\TypeFactory
             'object'   => new Types\ObjectType(),
             'string'   => new Types\StringType(),
             'void'     => new Types\VoidType(),
-            default    => new Types\MixedType()
+            'mixed'    => new Types\MixedType(),
+            default    => throw TypeException::invalidBase($typeName)
         };
     }
 
     private function makeTypeFromString(string $type): Contracts\Type
     {
-        if (str_starts_with($type, '&')) {
-            $type = substr($type, 1);
+        if ($type !== 'void' && str_contains($type, 'void')) {
+            throw TypeException::invalidVoid();
         }
 
-        if (str_starts_with($type, '?')) {
+        if ($type !== 'mixed' && str_contains($type, 'mixed')) {
+            throw TypeException::invalidMixed();
+        }
+
+        if (str_starts_with($type, Contracts\Type::NULLABLE_CHARACTER)) {
+            if (str_contains($type, Contracts\Type::UNION_SEPARATOR) || str_contains($type, Contracts\Type::INTERSECTION_SEPARATOR)) {
+                throw TypeException::invalidNullable();
+            }
+
             return $this->makeNullable($this->makeBaseType(substr($type, 1)));
         }
 
-        if (str_contains($type, '|')) {
-            return $this->makeUnion(explode('|', $type));
+        if (str_contains($type, Contracts\Type::UNION_SEPARATOR)) {
+            return $this->makeUnion(explode(Contracts\Type::UNION_SEPARATOR, $type));
         }
 
-        if (str_contains($type, '&')) {
-            return $this->makeIntersection(explode('&', $type));
+        if (str_contains($type, Contracts\Type::INTERSECTION_SEPARATOR)) {
+            return $this->makeIntersection(explode(Contracts\Type::INTERSECTION_SEPARATOR, $type));
         }
 
         return $this->makeBaseType($type);
