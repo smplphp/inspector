@@ -17,7 +17,9 @@ use Smpl\Inspector\Tests\Fixtures\BasicTrait;
 use Smpl\Inspector\Tests\Fixtures\ClassAttribute;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;
 use Smpl\Inspector\Tests\Fixtures\ExampleEnum;
+use Smpl\Inspector\Tests\Fixtures\InvalidAttributeClass;
 use Smpl\Inspector\Tests\Fixtures\MethodAttribute;
+use Smpl\Inspector\Tests\Fixtures\PropertyAttribute;
 use Smpl\Inspector\Types\IntType;
 
 /**
@@ -397,5 +399,17 @@ class StructureFactoryTest extends TestCase
 
         self::assertCount(1, $collection);
         self::assertSame($parameter, $collection->getParameter());
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_a_non_repeatable_attribute_is_repeated(): void
+    {
+        $this->expectException(AttributeException::class);
+        $this->expectExceptionMessage('Attribute \'' . PropertyAttribute::class . '\' is not repeatable, but is provided multiple times');
+
+        $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
+        $this->structureFactory->makePropertyMetadata($structure->getProperty('invalidAttributeProperty'));
     }
 }
