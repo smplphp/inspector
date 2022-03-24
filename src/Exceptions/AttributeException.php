@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Exceptions;
 
+use Smpl\Inspector\Support\AttributeTarget;
+
 final class AttributeException extends InspectorException
 {
     public static function baseAttribute(): self
@@ -24,6 +26,15 @@ final class AttributeException extends InspectorException
         return new self(sprintf(
             'Attribute \'%s\' is not repeatable, but is provided multiple times',
             $attribute
+        ));
+    }
+
+    public static function invalidTarget(string $attribute, AttributeTarget $target): self
+    {
+        return new self(sprintf(
+            'Attribute \'%s\' is not valid for the target \'%s\'',
+            $attribute,
+            $target->name
         ));
     }
 }

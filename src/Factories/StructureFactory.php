@@ -17,6 +17,7 @@ use Smpl\Inspector\Concerns;
 use Smpl\Inspector\Contracts;
 use Smpl\Inspector\Elements;
 use Smpl\Inspector\Exceptions;
+use Smpl\Inspector\Support\AttributeTarget;
 use Smpl\Inspector\Support\StructureType;
 
 class StructureFactory implements Contracts\StructureFactory
@@ -118,17 +119,22 @@ class StructureFactory implements Contracts\StructureFactory
 
     /**
      * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
+     * @param \Smpl\Inspector\Support\AttributeTarget  $target
      *
      * @return void
      *
      * @throws \Smpl\Inspector\Exceptions\AttributeException
      */
-    private function checkMetadataForRepeatingNonRepeatableAttributes(array $metadata): void
+    private function validateMetadata(array $metadata, AttributeTarget $target): void
     {
         $attributes = [];
 
         foreach ($metadata as $metadatum) {
             $attribute = $metadatum->getAttribute();
+
+            if (! in_array($target, $attribute->getTargets())) {
+                throw Exceptions\AttributeException::invalidTarget($attribute->getName(), $target);
+            }
 
             if ($attribute->isRepeatable()) {
                 continue;
@@ -333,7 +339,7 @@ class StructureFactory implements Contracts\StructureFactory
     public function makeStructureMetadata(Contracts\Structure $structure): Contracts\StructureMetadataCollection
     {
         $metadata = $this->makeMetadata(...$structure->getReflection()->getAttributes());
-        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+        $this->validateMetadata($metadata, AttributeTarget::Structure);
 
         return new Collections\StructureMetadata(
             $structure,
@@ -344,7 +350,7 @@ class StructureFactory implements Contracts\StructureFactory
     public function makePropertyMetadata(Contracts\Property $property): Contracts\PropertyMetadataCollection
     {
         $metadata = $this->makeMetadata(...$property->getReflection()->getAttributes());
-        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+        $this->validateMetadata($metadata, AttributeTarget::Property);
 
         return new Collections\PropertyMetadata(
             $property,
@@ -355,7 +361,7 @@ class StructureFactory implements Contracts\StructureFactory
     public function makeMethodMetadata(Contracts\Method $method): Contracts\MethodMetadataCollection
     {
         $metadata = $this->makeMetadata(...$method->getReflection()->getAttributes());
-        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+        $this->validateMetadata($metadata, AttributeTarget::Method);
 
         return new Collections\MethodMetadata(
             $method,
@@ -366,7 +372,7 @@ class StructureFactory implements Contracts\StructureFactory
     public function makeParameterMetadata(Contracts\Parameter $parameter): Contracts\ParameterMetadataCollection
     {
         $metadata = $this->makeMetadata(...$parameter->getReflection()->getAttributes());
-        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+        $this->validateMetadata($metadata, AttributeTarget::Parameter);
 
         return new Collections\ParameterMetadata(
             $parameter,
