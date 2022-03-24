@@ -22,6 +22,11 @@ class Metadata implements MetadataContract
     private ReflectionAttribute $reflection;
 
     /**
+     * @var I
+     */
+    private object $instance;
+
+    /**
      * @param \Smpl\Inspector\Contracts\Attribute $attribute
      * @param \ReflectionAttribute<I>             $reflection
      */
@@ -46,6 +51,10 @@ class Metadata implements MetadataContract
 
     public function getInstance(): object
     {
-        return $this->getReflection()->newInstance();
+        if (! isset($this->instance)) {
+            $this->instance = $this->getReflection()->newInstance();
+        }
+
+        return $this->instance;
     }
 }
