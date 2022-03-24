@@ -13,14 +13,6 @@ final class StructureException extends InspectorException
         return new self('Functions are not currently supported');
     }
 
-    public static function methodParametersWithoutClass(string $method): self
-    {
-        return new self(sprintf(
-            'No class or structure was provided when attempting to retrieve parameters for \'%s\'',
-            $method
-        ));
-    }
-
     /**
      * An exception for when the provided class name is invalid.
      *
