@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Tests\Factories;
 
+use Attribute;
 use PHPUnit\Framework\TestCase;
 use ReflectionFunction;
 use Smpl\Inspector\Exceptions\AttributeException;
@@ -275,7 +276,7 @@ class StructureFactoryTest extends TestCase
         $this->expectException(AttributeException::class);
         $this->expectExceptionMessage('Cannot create an attribute instance for PHPs base attribute');
 
-        $this->structureFactory->makeAttribute(\Attribute::class);
+        $this->structureFactory->makeAttribute(Attribute::class);
     }
 
     /**
@@ -356,7 +357,7 @@ class StructureFactoryTest extends TestCase
         $collection = $this->structureFactory->makeStructureMetadata($structure);
 
         self::assertCount(1, $collection);
-        self::assertFalse($collection->has(\Attribute::class));
+        self::assertFalse($collection->has(Attribute::class));
     }
 
     /**
