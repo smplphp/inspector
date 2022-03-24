@@ -6,7 +6,7 @@ namespace Smpl\Inspector\Tests\Fixtures;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD), ClassAttribute]
 class MethodAttribute
 {
 
