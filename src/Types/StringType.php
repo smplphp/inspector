@@ -16,7 +16,7 @@ class StringType extends BaseType
 
     public function matches(mixed $value): bool
     {
-        return is_string($value);
+        return is_string($value) || $value instanceof Stringable;
     }
 
     public function accepts(Type|string $type): bool
