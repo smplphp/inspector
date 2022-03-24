@@ -102,9 +102,11 @@ class StructureFactory implements Contracts\StructureFactory
             $baseAttribute = $reflection->getAttributes(
                     BaseAttribute::class, ReflectionAttribute::IS_INSTANCEOF
                 )[0] ?? null;
+            // @codeCoverageIgnoreStart
         } catch (ReflectionException $e) {
             throw Exceptions\StructureException::invalidClass($class, $e);
         }
+        // @codeCoverageIgnoreEnd
 
         if ($baseAttribute === null) {
             throw Exceptions\AttributeException::invalidAttribute($class);
