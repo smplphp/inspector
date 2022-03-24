@@ -51,6 +51,9 @@ class Attribute implements AttributeContract
         return $this->targets;
     }
 
+    /**
+     * @codeCoverageIgnore 
+     */
     public function __toString(): string
     {
         return $this->getName();
