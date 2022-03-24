@@ -75,6 +75,23 @@ class TypeFactory implements Contracts\TypeFactory
         }, $types));
     }
 
+    /**
+     * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string> $types
+     *
+     * @return bool
+     */
+    private function pullNullFromArray(array &$types): bool
+    {
+        foreach ($types as $key => $type) {
+            if ($type === 'null') {
+                unset($types[$key]);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function make(ReflectionType|string $type): Contracts\Type
     {
         if (! ($type instanceof ReflectionType)) {
@@ -121,9 +138,10 @@ class TypeFactory implements Contracts\TypeFactory
         return $this->nullableTypes[$baseTypeName];
     }
 
-    public function makeUnion(array $types): Types\UnionType
+    public function makeUnion(array $types): Types\UnionType|Types\NullableType
     {
-        $types = $this->getTypesFromArray($types);
+        $nullable = $this->pullNullFromArray($types);
+        $types    = $this->getTypesFromArray($types);
         self::sortTypesByName($types);
         $unionType = new Types\UnionType(...$types);
 
@@ -143,12 +161,14 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         if (isset($this->unionTypes[$unionType->getName()])) {
-            return $this->unionTypes[$unionType->getName()];
+            return $nullable
+                ? $this->makeNullable($this->unionTypes[$unionType->getName()])
+                : $this->unionTypes[$unionType->getName()];
         }
 
         $this->unionTypes[$unionType->getName()] = $unionType;
 
-        return $unionType;
+        return $nullable ? $this->makeNullable($unionType) : $unionType;
     }
 
     public function makeIntersection(array $types): Types\IntersectionType
