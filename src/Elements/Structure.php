@@ -142,7 +142,7 @@ class Structure implements StructureContract
      */
     public function getConstructor(): ?Method
     {
-        return $this->getMethod('__constructor');
+        return $this->getMethod('__construct');
     }
 
     public function getMethod(string $name): ?Method
