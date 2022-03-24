@@ -19,7 +19,7 @@ interface Type extends Stringable
     /**
      * The separator used for union types.
      */
-    public final const UNION_SEPARATOR    = '|';
+    public final const UNION_SEPARATOR = '|';
 
     /**
      * The separator used for intersection types.
