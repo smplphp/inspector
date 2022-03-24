@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Inspector;
 
 class NullableType extends BaseType
 {
@@ -40,11 +41,9 @@ class NullableType extends BaseType
 
     public function accepts(Type|string $type): bool
     {
-        if ($type instanceof NullableType) {
-            return true;
+        if ($type instanceof Type) {
+            return $this->getBaseType()->accepts($type);
         }
-
-        $typeName = is_string($type) ? $type : $type->getName();
 
         /*
          * This should match all variations of:
@@ -56,10 +55,16 @@ class NullableType extends BaseType
          *      type1|null|type2
          *
          */
-        return $typeName === 'null'
-            || str_starts_with($typeName, '?')
-            || str_starts_with($typeName, 'null|')
-            || str_ends_with($typeName, '|null')
-            || str_contains($typeName, '|null|');
+        $nullableString = $type === 'null'
+            || str_starts_with($type, '?')
+            || str_starts_with($type, 'null|')
+            || str_ends_with($type, '|null')
+            || str_contains($type, '|null|');
+
+        if ($nullableString) {
+            return true;
+        }
+
+        return $this->getBaseType()->accepts(Inspector::getInstance()->types()->make($type));
     }
 }
