@@ -61,7 +61,7 @@ class Properties implements PropertyCollection
 
     public function get(string $name): ?Property
     {
-        return $this->properties[$name];
+        return $this->properties[$name] ?? null;
     }
 
     public function has(string $name): bool
