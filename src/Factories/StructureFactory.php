@@ -267,6 +267,10 @@ class StructureFactory implements Contracts\StructureFactory
             throw Exceptions\AttributeException::baseAttribute();
         }
 
+        if (! self::isValidClass($class)) {
+            throw Exceptions\StructureException::invalidClass($class);
+        }
+
         if ($this->hasAttribute($class)) {
             return $this->getAttribute($class);
         }
