@@ -19,4 +19,11 @@ interface StructurePropertyCollection extends PropertyCollection
      * @return \Smpl\Inspector\Contracts\Structure
      */
     public function getStructure(): Structure;
+
+    /**
+     * Turn this collection into its base version.
+     *
+     * @return \Smpl\Inspector\Contracts\PropertyCollection
+     */
+    public function asBase(): PropertyCollection;
 }

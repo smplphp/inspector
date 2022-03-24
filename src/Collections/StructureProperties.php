@@ -44,4 +44,9 @@ final class StructureProperties extends Properties implements StructurePropertyC
     {
         return parent::has($this->normaliseKey($name));
     }
+
+    public function asBase(): PropertyCollection
+    {
+        return new Properties($this->properties);
+    }
 }

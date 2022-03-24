@@ -19,4 +19,11 @@ interface MethodParameterCollection extends ParameterCollection
      * @return \Smpl\Inspector\Contracts\Method
      */
     public function getMethod(): Method;
+
+    /**
+     * Turn this collection into its base version.
+     *
+     * @return \Smpl\Inspector\Contracts\ParameterCollection
+     */
+    public function asBase(): ParameterCollection;
 }

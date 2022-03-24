@@ -48,4 +48,9 @@ final class StructureMethods extends Methods implements StructureMethodCollectio
     {
         return parent::has($this->normaliseKey($name));
     }
+
+    public function asBase(): MethodCollection
+    {
+        return new Methods($this->methods);
+    }
 }

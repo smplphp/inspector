@@ -3,7 +3,7 @@
 namespace Smpl\Inspector\Contracts;
 
 /**
- *  Structure Method Collection
+ * Structure Method Collection
  *
  * This contract represents a collection of methods that belong to a specific
  * structure.
@@ -14,7 +14,16 @@ namespace Smpl\Inspector\Contracts;
 interface StructureMethodCollection extends MethodCollection
 {
     /**
+     * Get the structure the collection belongs to.
+     *
      * @return \Smpl\Inspector\Contracts\Structure
      */
     public function getStructure(): Structure;
+
+    /**
+     * Turn this collection into its base version.
+     *
+     * @return \Smpl\Inspector\Contracts\MethodCollection
+     */
+    public function asBase(): MethodCollection;
 }
