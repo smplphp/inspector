@@ -117,6 +117,32 @@ class StructureFactory implements Contracts\StructureFactory
     }
 
     /**
+     * @param list<\Smpl\Inspector\Contracts\Metadata> $metadata
+     *
+     * @return void
+     *
+     * @throws \Smpl\Inspector\Exceptions\AttributeException
+     */
+    private function checkMetadataForRepeatingNonRepeatableAttributes(array $metadata): void
+    {
+        $attributes = [];
+
+        foreach ($metadata as $metadatum) {
+            $attribute = $metadatum->getAttribute();
+
+            if ($attribute->isRepeatable()) {
+                continue;
+            }
+
+            if (in_array($attribute->getName(), $attributes, true)) {
+                throw Exceptions\AttributeException::nonRepeatableAttribute($attribute->getName());
+            }
+
+            $attributes[] = $attribute->getName();
+        }
+    }
+
+    /**
      * @psalm-suppress NullableReturnStatement
      * @psalm-suppress InvalidNullableReturnType
      */
@@ -306,33 +332,45 @@ class StructureFactory implements Contracts\StructureFactory
 
     public function makeStructureMetadata(Contracts\Structure $structure): Contracts\StructureMetadataCollection
     {
+        $metadata = $this->makeMetadata(...$structure->getReflection()->getAttributes());
+        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+
         return new Collections\StructureMetadata(
             $structure,
-            $this->makeMetadata(...$structure->getReflection()->getAttributes())
+            $metadata
         );
     }
 
     public function makePropertyMetadata(Contracts\Property $property): Contracts\PropertyMetadataCollection
     {
+        $metadata = $this->makeMetadata(...$property->getReflection()->getAttributes());
+        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+
         return new Collections\PropertyMetadata(
             $property,
-            $this->makeMetadata(...$property->getReflection()->getAttributes())
+            $metadata
         );
     }
 
     public function makeMethodMetadata(Contracts\Method $method): Contracts\MethodMetadataCollection
     {
+        $metadata = $this->makeMetadata(...$method->getReflection()->getAttributes());
+        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+
         return new Collections\MethodMetadata(
             $method,
-            $this->makeMetadata(...$method->getReflection()->getAttributes())
+            $metadata
         );
     }
 
     public function makeParameterMetadata(Contracts\Parameter $parameter): Contracts\ParameterMetadataCollection
     {
+        $metadata = $this->makeMetadata(...$parameter->getReflection()->getAttributes());
+        $this->checkMetadataForRepeatingNonRepeatableAttributes($metadata);
+
         return new Collections\ParameterMetadata(
             $parameter,
-            $this->makeMetadata(...$parameter->getReflection()->getAttributes())
+            $metadata
         );
     }
 }
