@@ -412,4 +412,16 @@ class StructureFactoryTest extends TestCase
         $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
         $this->structureFactory->makePropertyMetadata($structure->getProperty('invalidAttributeProperty'));
     }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_an_attribute_does_not_have_the_correct_target(): void
+    {
+        $this->expectException(AttributeException::class);
+        $this->expectExceptionMessage('Attribute \'' . MethodAttribute::class . '\' is not valid for the target \'Structure\'');
+
+        $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
+        $this->structureFactory->makeStructureMetadata($structure);
+    }
 }
