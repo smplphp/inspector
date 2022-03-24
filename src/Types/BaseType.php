@@ -37,6 +37,14 @@ abstract class BaseType implements Type
             $type = $type->getBaseType();
         }
 
-        return $type instanceof static || $type->getName() === $this->getName();
+        if (
+            $type::class === static::class
+            && $type->isPrimitive()
+            && ! method_exists($this, 'getSubtypes')
+        ) {
+            return true;
+        }
+
+        return $type->getName() === $this->getName();
     }
 }
