@@ -10,10 +10,6 @@ jobs:
     steps:
       - checkout
 
-      - run: sudo pecl channel-update pecl.php.net
-
-      - run: sudo pecl install xdebug
-
       - restore_cache:
           keys:
             - v1-dependencies-
@@ -25,9 +21,12 @@ jobs:
           paths:
             - ./vendor
 
-      - run: XDEBUG_MODE=coverage ./vendor/bin/phpunit --verbose --colors=always --coverage-clover build/coverage.xml --log-junit build/junit.xml
+      - run: phpdbg ./vendor/bin/phpunit --verbose --colors=always --coverage-html build/coverage --log-junit build/junit.xml
 
       - run: bash <(curl -s https://codecov.io/bash)
 
       - store_test_results:
-          path:  build
+          path: build
+
+      - store_artifacts:
+          path: build/coverage-report
