@@ -17,6 +17,11 @@ class IntersectionType extends BaseType
 
     public function __construct(Type ...$types)
     {
+        usort(
+            $types,
+            static fn(Type $a, Type $b) => strcmp($a->getName(), $b->getName())
+        );
+
         $this->types = $types;
         $this->name  = implode(
             '&',
