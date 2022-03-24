@@ -85,7 +85,7 @@ class TypeFactoryTest extends TestCase
     public function throws_an_exception_for_unknown_types(): void
     {
         $this->expectException(TypeException::class);
-        $this->expectExceptionMessage('Cannot create a type for the provided base type \'invalid\'');
+        $this->expectExceptionMessage('Cannot create a type for the provided value \'invalid\'');
 
         $this->factory->make('invalid');
     }
