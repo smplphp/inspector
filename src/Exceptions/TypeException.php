@@ -37,14 +37,6 @@ final class TypeException extends InspectorException
         return new self('Mixed types cannot be nullable, or part of a union type');
     }
 
-    public static function invalidBase(string $type): self
-    {
-        return new self(sprintf(
-            'Cannot create a type for the provided base type \'%s\'',
-            $type
-        ));
-    }
-
     public static function invalid(string $type): self
     {
         return new self(sprintf(

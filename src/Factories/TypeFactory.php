@@ -242,7 +242,7 @@ class TypeFactory implements Contracts\TypeFactory
             'string'   => new Types\StringType(),
             'void'     => new Types\VoidType(),
             'mixed'    => new Types\MixedType(),
-            default    => throw TypeException::invalidBase($typeName)
+            default    => throw TypeException::invalid($typeName)
         };
     }
 
