@@ -52,7 +52,7 @@ class Attribute implements AttributeContract
     }
 
     /**
-     * @codeCoverageIgnore 
+     * @codeCoverageIgnore
      */
     public function __toString(): string
     {

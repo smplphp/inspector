@@ -30,6 +30,9 @@ class Parameter implements ParameterContract
         $this->type       = $type;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getReflection(): ReflectionParameter
     {
         return $this->reflection;

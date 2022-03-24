@@ -36,6 +36,9 @@ class Metadata implements MetadataContract
         return $this->attribute;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getReflection(): ReflectionAttribute
     {
         return $this->reflection;
