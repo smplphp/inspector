@@ -30,7 +30,8 @@ class IterableType extends BaseType
         }
 
         if ($type instanceof ClassType) {
-            return $type->getName() === Traversable::class || $type->accepts(Traversable::class);
+            return $type->getName() === Traversable::class
+                || is_subclass_of($type->getName(), Traversable::class);
         }
 
         return parent::accepts($type);
