@@ -1,0 +1,14 @@
+tests/                  export-ignore
+smpl-logo.png           export-ignore
+.editorconfig           export-ignore
+.gitignore              export-ignore
+conventionalcommit.json export-ignore
+infection.json          export-ignore
+CHANGELOG.md            export-ignore
+CONTRIBUTING.md         export-ignore
+LICENSE.md              export-ignore
+README.md               export-ignore
+.changelog              export-ignore
+phpunit.xml.dist        export-ignore
+psalm.xml               export-ignore
+phpstan.neon            export-ignore
