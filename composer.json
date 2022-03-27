@@ -23,15 +23,13 @@
     "psr-4": {
       "Smpl\\Inspector\\": "src/"
     },
-    "files": [
-    ]
+    "files": []
   },
   "autoload-dev": {
     "psr-4": {
       "Smpl\\Inspector\\Tests\\": "tests/"
     },
-    "files": [
-    ]
+    "files": []
   },
   "scripts": {
     "test": "./vendor/bin/phpunit",
