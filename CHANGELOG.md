@@ -1,22 +1,12 @@
+<!--- BEGIN HEADER -->
 # Changelog
 
 All notable changes to this project will be documented in this file.
+<!--- END HEADER -->
 
-The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+## [1.0.0-beta](https://github.com/smplphp/inspector/compare/e2c2fa4fa6d37e19aa5cf55cd3681646210a3875...v1.0.0-beta) (2022-03-27)
+* Beta release
 
-## [Unreleased]
 
-### Added
+---
 
-### Changed
-
-### Deprecated
-
-### Removed
-
-### Fixed
-
-### Security
-
-[unreleased]: https://github.com/smplphp/inspector/tree/main
