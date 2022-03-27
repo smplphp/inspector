@@ -7,7 +7,7 @@ namespace Smpl\Inspector\Tests\Fixtures;
 use Attribute;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-class ClassAttribute
+class ClassAttribute implements AttributeInterface
 {
 
 }

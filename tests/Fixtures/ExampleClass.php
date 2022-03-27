@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Tests\Fixtures;
 
-#[ClassAttribute, ClassAttribute]
-class ExampleClass extends EmptyClass implements BasicInterface
+#[ClassAttribute, ClassAttribute, SecondClassAttribute]
+class ExampleClass extends EmptyishClass implements BasicInterface
 {
     use BasicTrait;
 
@@ -15,7 +15,7 @@ class ExampleClass extends EmptyClass implements BasicInterface
     #[PropertyAttribute]
     private ?int $nullablePrivateIntProperty;
 
-    private ?int $nullablePrivateIntPropertyWithDefault = null;
+    private ?int $nullablePrivateIntPropertyWithDefault = 3;
 
     protected mixed $protectedMixedProperty;
 
@@ -42,8 +42,13 @@ class ExampleClass extends EmptyClass implements BasicInterface
         return $number;
     }
 
-    private function privateMethodWithMultipleParameters(int $number1, int $number2, string $string = 'result'): string
+    private function privateMethodWithMultipleParameters(int $number1, ?int $number2, string $string = 'result'): string
     {
-        return $string . ': ' . ($number1 * $number2);
+        return $string . ': ' . ($number1 * ($number2 ?? 1));
+    }
+
+    public static function staticMethod(): void
+    {
+
     }
 }

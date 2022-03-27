@@ -1,0 +1,22 @@
+{
+  "$schema": "https://raw.githubusercontent.com/infection/infection/0.26.6/resources/schema.json",
+  "source": {
+    "directories": [
+      "src"
+    ],
+    "excludes": [
+      "src/Concerns"
+    ]
+  },
+  "logs": {
+    "html": "build/mutation/infection.html"
+  },
+  "mutators": {
+    "@default": true,
+    "global-ignore": [
+      "Smpl\\Inspector\\Inspector::__construct",
+      "Smpl\\Inspector\\Factories\\StructureFactory::makeInheritedMethods",
+      "Smpl\\Inspector\\Factories\\StructureFactory::makeInheritedProperties"
+    ]
+  }
+}

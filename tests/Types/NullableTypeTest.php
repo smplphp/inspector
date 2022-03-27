@@ -191,6 +191,7 @@ class NullableTypeTest extends TestCase
      */
     public function nullable_types_accept_nullable_string_types(): void
     {
+        self::assertTrue($this->type->accepts('null'));
         self::assertTrue($this->type->accepts('?int'));
         self::assertTrue($this->type->accepts('int|null'));
         self::assertTrue($this->type->accepts('int|null|string'));

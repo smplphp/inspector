@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 use Smpl\Inspector\Contracts\TypeFactory;
 use Smpl\Inspector\Exceptions\TypeException;
-use Smpl\Inspector\Factories\TypeFactory as TypeFactoryImpl;
+use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Tests\Fixtures\BasicInterface;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;
 use Smpl\Inspector\Tests\Fixtures\SecondInterface;
@@ -36,7 +36,7 @@ class TypeFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->factory = new TypeFactoryImpl();
+        $this->factory = Inspector::getInstance()->types();
     }
 
     /**
@@ -124,7 +124,7 @@ class TypeFactoryTest extends TestCase
      */
     public function returns_nullable_type_when_attempting_to_wrap_in_another_nullable(): void
     {
-        $nullableType = $this->factory->make('?array');
+        $nullableType = $this->factory->makeNullable('array');
 
         self::assertSame($nullableType, $this->factory->makeNullable($nullableType));
     }
@@ -194,6 +194,18 @@ class TypeFactoryTest extends TestCase
     /**
      * @test
      */
+    public function creates_nullable_union_types(): void
+    {
+        $type1 = $this->factory->make('string|int|null');
+        $type2 = $this->factory->makeUnion(['string', 'float', 'null']);
+
+        self::assertInstanceOf(NullableType::class, $type1);
+        self::assertInstanceOf(NullableType::class, $type2);
+    }
+
+    /**
+     * @test
+     */
     public function union_subtypes_are_ordered_by_name_not_definition_order(): void
     {
         $unionType = $this->factory->makeUnion(['string', 'int']);
@@ -228,6 +240,17 @@ class TypeFactoryTest extends TestCase
     /**
      * @test
      */
+    public function throws_an_exception_for_union_types_with_unknown_types(): void
+    {
+        $this->expectException(TypeException::class);
+        $this->expectExceptionMessage('Cannot create a type for the provided value \'invalid\'');
+
+        $this->factory->makeUnion(['invalid', 'also-invalid']);
+    }
+
+    /**
+     * @test
+     */
     public function creates_intersection_types_from_string(): void
     {
         $intersectionType = $this->factory->make(BasicInterface::class . '&' . ExampleClass::class);
@@ -249,12 +272,35 @@ class TypeFactoryTest extends TestCase
     /**
      * @test
      */
+    public function intersection_subtypes_are_ordered_by_name_not_definition_order(): void
+    {
+        $unionType = $this->factory->makeIntersection([ExampleClass::class, BasicInterface::class]);
+        $subtypes  = $unionType->getSubtypes();
+
+        self::assertSame(BasicInterface::class, $subtypes[0]->getName());
+        self::assertSame(ExampleClass::class, $subtypes[1]->getName());
+    }
+
+    /**
+     * @test
+     */
     public function throws_an_exception_for_intersection_types_that_include_none_classes(): void
     {
         $this->expectException(TypeException::class);
         $this->expectExceptionMessage('Invalid intersection type \'' . BasicInterface::class . '&string\'');
 
         $this->factory->makeIntersection([BasicInterface::class, 'string']);
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_for_intersection_types_with_unknown_types(): void
+    {
+        $this->expectException(TypeException::class);
+        $this->expectExceptionMessage('Cannot create a type for the provided value \'invalid\'');
+
+        $this->factory->makeIntersection(['invalid', 'also-invalid']);
     }
 
     /**

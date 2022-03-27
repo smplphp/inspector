@@ -38,7 +38,7 @@ interface TypeFactory
     /**
      * Make a union type for the provided types.
      *
-     * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|string|class-string> $types
+     * @param list<\ReflectionType|\Smpl\Inspector\Contracts\Type|string|class-string> $types
      *
      * @return \Smpl\Inspector\Contracts\Type
      *
@@ -49,7 +49,7 @@ interface TypeFactory
     /**
      * Make an intersection type for the provided types.
      *
-     * @param array<\ReflectionType|\Smpl\Inspector\Contracts\Type|class-string> $types
+     * @param list<\ReflectionType|\Smpl\Inspector\Contracts\Type|class-string> $types
      *
      * @return \Smpl\Inspector\Contracts\Type
      *

@@ -29,6 +29,23 @@ interface Property extends AttributableElement
     public function getStructure(): Structure;
 
     /**
+     * Get the declaring structure this property belongs to.
+     *
+     * This method should always return a value, even if it's the same as
+     * {@see \Smpl\Inspector\Contracts\Property::getStructure}.
+     *
+     * @return \Smpl\Inspector\Contracts\Structure
+     */
+    public function getDeclaringStructure(): Structure;
+
+    /**
+     * Check whether this property is inherited.
+     *
+     * @return bool
+     */
+    public function isInherited(): bool;
+
+    /**
      * Get the name of the property.
      *
      * @return string
@@ -83,6 +100,13 @@ interface Property extends AttributableElement
      * @return mixed
      */
     public function getDefault(): mixed;
+
+    /**
+     * Check if the property is promoted.
+     *
+     * @return bool
+     */
+    public function isPromoted(): bool;
 
     /**
      * Get a collection of metadata for this property.

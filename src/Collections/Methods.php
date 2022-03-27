@@ -67,8 +67,11 @@ class Methods implements MethodCollection
 
     public function indexOf(int $index): ?MethodContract
     {
-        $name = $this->indexes[$index] ?? null;
-        return ($name ? $this->methods[$name] : null) ?? null;
+        if (! isset($this->indexes[$index])) {
+            return null;
+        }
+
+        return $this->get($this->indexes[$index]);
     }
 
     public function first(): ?MethodContract

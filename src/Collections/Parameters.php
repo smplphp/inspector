@@ -47,6 +47,7 @@ class Parameters implements ParameterCollection
             $this->positions[$parameter->getPosition()] = $parameter->getName();
         }
 
+        /** @infection-ignore-all  */
         ksort($this->positions, SORT_NUMERIC);
     }
 
@@ -60,20 +61,12 @@ class Parameters implements ParameterCollection
         return count($this->parameters);
     }
 
-    public function get(int|string $name): ?Parameter
+    public function get(string $name): ?Parameter
     {
-        if (! is_string($name)) {
-            if (! isset($this->positions[$name])) {
-                return null;
-            }
-
-            $name = $this->positions[$name];
-        }
-
         return $this->parameters[$name] ?? null;
     }
 
-    public function has(int|string $name): bool
+    public function has(string $name): bool
     {
         return $this->get($name) !== null;
     }

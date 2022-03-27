@@ -35,7 +35,7 @@ class UnionTypeTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->type       = new UnionType(new IntType(), new StringType());
+        $this->type       = new UnionType(new StringType(), new IntType());
         $this->secondType = new UnionType(
             new ClassType(BasicInterface::class),
             new StringType()
@@ -72,6 +72,17 @@ class UnionTypeTest extends TestCase
     public function union_types_are_not_builtin_if_one_their_subtypes_are_not(): void
     {
         self::assertFalse($this->secondType->isBuiltin());
+    }
+
+    /**
+     * @test
+     */
+    public function union_types_are_ordered_by_their_name(): void
+    {
+        $subtypes = $this->type->getSubtypes();
+
+        self::assertInstanceOf(IntType::class, $subtypes[0]);
+        self::assertInstanceOf(StringType::class, $subtypes[1]);
     }
 
     /**

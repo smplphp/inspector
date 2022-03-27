@@ -23,6 +23,7 @@ use Smpl\Inspector\Types\StringType;
 use Smpl\Inspector\Types\UnionType;
 use Smpl\Inspector\Types\VoidType;
 use stdClass;
+use Stringable;
 
 /**
  * @group types
@@ -124,12 +125,20 @@ class StringTypeTest extends TestCase
      */
     public function string_types_match_stringable_objects(): void
     {
-        self::assertTrue($this->type->matches(new class implements \Stringable {
+        self::assertTrue($this->type->matches(new class implements Stringable {
             public function __toString(): string
             {
                 return 'string';
             }
         }));
+    }
+
+    /**
+     * @test
+     */
+    public function string_types_match_stringable_class_types(): void
+    {
+        self::assertTrue($this->type->matches(new ClassType(Stringable::class)));
     }
 
     /**
@@ -243,6 +252,15 @@ class StringTypeTest extends TestCase
     {
         self::assertTrue($this->type->accepts('string'));
         self::assertTrue($this->type->accepts(new StringType()));
+    }
+
+    /**
+     * @test
+     */
+    public function string_types_accept_class_types_of_stringable(): void
+    {
+        self::assertTrue($this->type->accepts(new ClassType(Stringable::class)));
+        self::assertTrue($this->type->accepts(Stringable::class));
     }
 
     /**

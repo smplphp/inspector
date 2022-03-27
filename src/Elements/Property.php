@@ -41,6 +41,16 @@ class Property implements PropertyContract
         return $this->structure;
     }
 
+    public function getDeclaringStructure(): Structure
+    {
+        return $this->getStructure();
+    }
+
+    public function isInherited(): bool
+    {
+        return false;
+    }
+
     public function getName(): string
     {
         return $this->reflection->getName();
@@ -75,6 +85,10 @@ class Property implements PropertyContract
         return $this->reflection->getType()?->allowsNull() ?? true;
     }
 
+    /**
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     */
     public function hasDefault(): bool
     {
         return $this->reflection->hasDefaultValue();
@@ -83,6 +97,15 @@ class Property implements PropertyContract
     public function getDefault(): mixed
     {
         return $this->reflection->getDefaultValue();
+    }
+
+    /**
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     */
+    public function isPromoted(): bool
+    {
+        return $this->getReflection()->isPromoted();
     }
 
     public function getAllMetadata(): PropertyMetadataCollection

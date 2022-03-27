@@ -67,6 +67,8 @@ class TypeFactory implements Contracts\TypeFactory
      * @return \Smpl\Inspector\Contracts\Type[]
      *
      * @throws \Smpl\Inspector\Exceptions\TypeException
+     *
+     * @infection-ignore-all
      */
     private function getTypesFromArray(array $types): array
     {
@@ -92,6 +94,7 @@ class TypeFactory implements Contracts\TypeFactory
         return false;
     }
 
+    /** @infection-ignore-all */
     public function make(ReflectionType|string $type): Contracts\Type
     {
         if (! ($type instanceof ReflectionType)) {
@@ -142,6 +145,7 @@ class TypeFactory implements Contracts\TypeFactory
     {
         $nullable = $this->pullNullFromArray($types);
         $types    = $this->getTypesFromArray($types);
+        /** @infection-ignore-all */
         self::sortTypesByName($types);
         $unionType = new Types\UnionType(...$types);
 
@@ -154,6 +158,7 @@ class TypeFactory implements Contracts\TypeFactory
         }));
 
         if (! $validUnionTypes) {
+            /** @infection-ignore-all */
             throw TypeException::invalidUnion(implode(
                 Contracts\Type::UNION_SEPARATOR,
                 array_map(static fn(Contracts\Type $type) => $type->getName(), $types)
@@ -168,12 +173,14 @@ class TypeFactory implements Contracts\TypeFactory
 
         $this->unionTypes[$unionType->getName()] = $unionType;
 
+        /** @infection-ignore-all */
         return $nullable ? $this->makeNullable($unionType) : $unionType;
     }
 
     public function makeIntersection(array $types): Types\IntersectionType
     {
         $types = $this->getTypesFromArray($types);
+        /** @infection-ignore-all */
         self::sortTypesByName($types);
 
         $onlyClassTypes = empty(array_filter($types, static function (Contracts\Type $type) {
@@ -181,6 +188,7 @@ class TypeFactory implements Contracts\TypeFactory
         }));
 
         if (! $onlyClassTypes) {
+            /** @infection-ignore-all */
             throw TypeException::invalidIntersection(implode(
                 Contracts\Type::INTERSECTION_SEPARATOR,
                 array_map(static fn(Contracts\Type $type) => $type->getName(), $types)
@@ -212,6 +220,7 @@ class TypeFactory implements Contracts\TypeFactory
         $nullable = $reflectionType->allowsNull();
         $baseType = $this->makeBaseType($reflectionType->getName());
 
+        /** @infection-ignore-all */
         if ($nullable && ($baseType instanceof Types\MixedType || $baseType instanceof Types\VoidType)) {
             $nullable = false;
         }
@@ -269,7 +278,11 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         if (str_contains($type, Contracts\Type::INTERSECTION_SEPARATOR)) {
-            return $this->makeIntersection(explode(Contracts\Type::INTERSECTION_SEPARATOR, $type));
+            $intersectionTypes = explode(Contracts\Type::INTERSECTION_SEPARATOR, $type);
+            /**
+             * @var list<class-string> $intersectionTypes
+             */
+            return $this->makeIntersection($intersectionTypes);
         }
 
         return $this->makeBaseType($type);

@@ -103,6 +103,9 @@ class Structures implements StructureCollection
         return $filtered;
     }
 
+    /**
+     * @infection-ignore-all
+     */
     public function names(): array
     {
         return array_values($this->indexes);

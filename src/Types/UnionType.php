@@ -17,9 +17,15 @@ class UnionType extends BaseType
 
     public function __construct(Type ...$types)
     {
+        usort(
+            $types,
+            static fn(Type $a, Type $b) => strcmp($a->getName(), $b->getName())
+        );
+
         $this->types = $types;
         $this->name  = implode(
             '|',
+            /** @infection-ignore-all */
             array_map(fn(Type $type) => $type->getName(), $this->types)
         );
     }

@@ -9,6 +9,7 @@ A simple modern PHP class inspector and mapper library.
 ![GitHub](https://img.shields.io/github/license/smplphp/inspector)
 [![codecov](https://codecov.io/gh/smplphp/inspector/branch/main/graph/badge.svg?token=FHJ41NQMTA)](https://codecov.io/gh/smplphp/inspector)
 [![CircleCI](https://circleci.com/gh/smplphp/inspector/tree/main.svg?style=shield)](https://circleci.com/gh/smplphp/inspector/tree/main)
+![Psalm Level](https://shepherd.dev/github/smplphp/inspector/level.svg)
 
 ## Install
 

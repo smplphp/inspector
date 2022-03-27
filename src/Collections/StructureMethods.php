@@ -51,6 +51,6 @@ final class StructureMethods extends Methods implements StructureMethodCollectio
 
     public function asBase(): MethodCollection
     {
-        return new Methods($this->methods);
+        return new Methods($this->values());
     }
 }

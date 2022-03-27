@@ -82,6 +82,9 @@ class Structure implements StructureContract
         return $this->reflection->isInstantiable();
     }
 
+    /**
+     * @infection-ignore-all
+     */
     public function getParent(): ?StructureContract
     {
         if (! isset($this->hasParent)) {
@@ -91,7 +94,7 @@ class Structure implements StructureContract
                 $this->hasParent = true;
                 $this->parent    = Inspector::getInstance()
                                             ->structures()
-                                            ->makeStructure($parentReflection);
+                                            ->makeStructure($parentReflection->getName());
             } else {
                 $this->hasParent = false;
                 $this->parent    = null;
@@ -103,13 +106,6 @@ class Structure implements StructureContract
 
     public function getProperties(): StructurePropertyCollection
     {
-        if (! $this->getStructureType()->canHaveProperties()) {
-            throw new RuntimeException(sprintf(
-                'Structures of type \'%s\' do not have properties',
-                $this->getStructureType()->value
-            ));
-        }
-
         if (! isset($this->properties)) {
             $this->properties = Inspector::getInstance()->structures()->makeStructureProperties($this);
         }

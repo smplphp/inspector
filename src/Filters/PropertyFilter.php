@@ -10,7 +10,7 @@ use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
-class PropertyFilter implements PropertyFilterContract
+final class PropertyFilter implements PropertyFilterContract
 {
     public static function make(): PropertyFilter
     {
@@ -134,7 +134,7 @@ class PropertyFilter implements PropertyFilterContract
             && $this->checkAttribute($property);
     }
 
-    protected function checkVisibility(Property $property): bool
+    private function checkVisibility(Property $property): bool
     {
         if (empty($this->visibilities)) {
             return true;
@@ -143,7 +143,7 @@ class PropertyFilter implements PropertyFilterContract
         return in_array($property->getVisibility(), $this->visibilities, true);
     }
 
-    protected function checkTyped(Property $property): bool
+    private function checkTyped(Property $property): bool
     {
         if (! isset($this->isTyped)) {
             return true;
@@ -152,7 +152,7 @@ class PropertyFilter implements PropertyFilterContract
         return $this->isTyped ? $property->getType() !== null : $property->getType() === null;
     }
 
-    protected function checkType(Property $property): bool
+    private function checkType(Property $property): bool
     {
         if (! isset($this->hasType)) {
             return true;
@@ -171,7 +171,7 @@ class PropertyFilter implements PropertyFilterContract
         return $this->hasType->accepts($type);
     }
 
-    protected function checkStatic(Property $property): bool
+    private function checkStatic(Property $property): bool
     {
         if (! isset($this->isStatic)) {
             return true;
@@ -180,7 +180,7 @@ class PropertyFilter implements PropertyFilterContract
         return $this->isStatic === $property->isStatic();
     }
 
-    protected function checkNullable(Property $property): bool
+    private function checkNullable(Property $property): bool
     {
         if (! isset($this->isNullable)) {
             return true;
@@ -189,7 +189,7 @@ class PropertyFilter implements PropertyFilterContract
         return $this->isNullable === $property->isNullable();
     }
 
-    protected function checkDefaultValue(Property $property): bool
+    private function checkDefaultValue(Property $property): bool
     {
         if (! isset($this->hasDefaultValue)) {
             return true;

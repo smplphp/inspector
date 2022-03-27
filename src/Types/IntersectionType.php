@@ -25,6 +25,7 @@ class IntersectionType extends BaseType
         $this->types = $types;
         $this->name  = implode(
             '&',
+            /** @infection-ignore-all */
             array_map(static fn(Type $type) => $type->getName(), $this->types)
         );
     }

@@ -86,6 +86,16 @@ class Method implements MethodContract
         return $this->structure;
     }
 
+    public function getDeclaringStructure(): Structure
+    {
+        return $this->getStructure();
+    }
+
+    public function isInherited(): bool
+    {
+        return false;
+    }
+
     public function getParameters(?ParameterFilter $filter = null): MethodParameterCollection
     {
         if (! isset($this->parameters)) {
@@ -110,11 +120,15 @@ class Method implements MethodContract
 
     public function getParameter(int|string $parameter): ?Parameter
     {
-        return $this->getParameters()->get($parameter);
+        return is_string($parameter)
+            ? $this->getParameters()->get($parameter)
+            : $this->getParameters()->indexOf($parameter);
     }
 
     public function hasParameter(int|string $parameter): bool
     {
-        return $this->getParameters()->has($parameter);
+        return is_string($parameter)
+            ? $this->getParameters()->has($parameter)
+            : $this->getParameters()->indexOf($parameter) !== null;
     }
 }

@@ -78,6 +78,23 @@ interface Method extends AttributableElement
     public function getStructure(): Structure;
 
     /**
+     * Get the declaring structure this method belongs to.
+     *
+     * This method should always return a value, even if it's the same as
+     * {@see \Smpl\Inspector\Contracts\Method::getStructure}.
+     *
+     * @return \Smpl\Inspector\Contracts\Structure
+     */
+    public function getDeclaringStructure(): Structure;
+
+    /**
+     * Check whether this method is inherited.
+     *
+     * @return bool
+     */
+    public function isInherited(): bool;
+
+    /**
      * Get a collection of parameters for this method.
      *
      * If the $filter parameter is provided the results will be filtered according

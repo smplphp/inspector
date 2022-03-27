@@ -34,6 +34,6 @@ final class MethodParameters extends Parameters implements MethodParameterCollec
 
     public function asBase(): ParameterCollection
     {
-        return new Parameters($this->parameters);
+        return new Parameters($this->values());
     }
 }

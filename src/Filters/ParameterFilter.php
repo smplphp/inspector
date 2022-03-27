@@ -9,7 +9,7 @@ use Smpl\Inspector\Contracts\ParameterFilter as ParameterFilterContract;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
 
-class ParameterFilter implements ParameterFilterContract
+final class ParameterFilter implements ParameterFilterContract
 {
     public static function make(): ParameterFilter
     {
@@ -118,7 +118,7 @@ class ParameterFilter implements ParameterFilterContract
             && $this->checkAttribute($parameter);
     }
 
-    protected function checkTyped(Parameter $parameter): bool
+    private function checkTyped(Parameter $parameter): bool
     {
         if (! isset($this->isTyped)) {
             return true;
@@ -127,7 +127,7 @@ class ParameterFilter implements ParameterFilterContract
         return $this->isTyped ? $parameter->getType() !== null : $parameter->getType() === null;
     }
 
-    protected function checkType(Parameter $parameter): bool
+    private function checkType(Parameter $parameter): bool
     {
         if (! isset($this->hasType)) {
             return true;
@@ -146,7 +146,7 @@ class ParameterFilter implements ParameterFilterContract
         return $this->hasType->accepts($type);
     }
 
-    protected function checkNullable(Parameter $parameter): bool
+    private function checkNullable(Parameter $parameter): bool
     {
         if (! isset($this->isNullable)) {
             return true;
@@ -155,7 +155,7 @@ class ParameterFilter implements ParameterFilterContract
         return $this->isNullable === $parameter->isNullable();
     }
 
-    protected function checkDefaultValue(Parameter $parameter): bool
+    private function checkDefaultValue(Parameter $parameter): bool
     {
         if (! isset($this->hasDefaultValue)) {
             return true;

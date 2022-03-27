@@ -37,8 +37,8 @@ class IntersectionTypeTest extends TestCase
     protected function setUp(): void
     {
         $this->type = new IntersectionType(
-            new ClassType(BasicInterface::class),
-            new ClassType(SecondInterface::class)
+            new ClassType(SecondInterface::class),
+            new ClassType(BasicInterface::class)
         );
     }
 
@@ -56,6 +56,17 @@ class IntersectionTypeTest extends TestCase
     public function intersection_types_are_not_builtin(): void
     {
         self::assertFalse($this->type->isBuiltin());
+    }
+
+    /**
+     * @test
+     */
+    public function union_types_are_ordered_by_their_name(): void
+    {
+        $subtypes = $this->type->getSubtypes();
+
+        self::assertSame(BasicInterface::class, $subtypes[0]->getName());
+        self::assertSame(SecondInterface::class, $subtypes[1]->getName());
     }
 
     /**

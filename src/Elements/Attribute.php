@@ -8,6 +8,10 @@ use Attribute as BaseAttribute;
 use Smpl\Inspector\Contracts\Attribute as AttributeContract;
 use Smpl\Inspector\Support\AttributeTarget;
 
+/**
+ * @psalm-suppress MixedOperand
+ * @psalm-suppress MixedArgument
+ */
 class Attribute implements AttributeContract
 {
     private BaseAttribute $attribute;
@@ -37,15 +41,25 @@ class Attribute implements AttributeContract
         return $this->class;
     }
 
+    /**
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     */
+    private function getFlags(): int
+    {
+        return $this->attribute->flags;
+    }
+
+
     public function isRepeatable(): bool
     {
-        return (bool)($this->attribute->flags & BaseAttribute::IS_REPEATABLE);
+        return (bool)($this->getFlags() & BaseAttribute::IS_REPEATABLE);
     }
 
     public function getTargets(): array
     {
         if (! isset($this->targets)) {
-            $this->targets = AttributeTarget::for($this->attribute->flags);
+            $this->targets = AttributeTarget::for($this->getFlags());
         }
 
         return $this->targets;

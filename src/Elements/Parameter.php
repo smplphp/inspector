@@ -70,7 +70,11 @@ class Parameter implements ParameterContract
 
     public function getDefault(): mixed
     {
-        return $this->getReflection()->getDefaultValue();
+        if ($this->hasDefault()) {
+            return $this->getReflection()->getDefaultValue();
+        }
+
+        return null;
     }
 
     public function isVariadic(): bool
@@ -78,6 +82,10 @@ class Parameter implements ParameterContract
         return $this->getReflection()->isVariadic();
     }
 
+    /**
+     * @psalm-suppress MixedInferredReturnType
+     * @psalm-suppress MixedReturnStatement
+     */
     public function isPromoted(): bool
     {
         return $this->getReflection()->isPromoted();

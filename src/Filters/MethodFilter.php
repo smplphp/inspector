@@ -11,7 +11,7 @@ use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
-class MethodFilter implements MethodFilterContract
+final class MethodFilter implements MethodFilterContract
 {
     public static function make(): MethodFilter
     {
@@ -138,7 +138,7 @@ class MethodFilter implements MethodFilterContract
             && $this->checkParameterMatch($method);
     }
 
-    protected function checkVisibility(Method $method): bool
+    private function checkVisibility(Method $method): bool
     {
         if (empty($this->visibilities)) {
             return true;
@@ -147,7 +147,7 @@ class MethodFilter implements MethodFilterContract
         return in_array($method->getVisibility(), $this->visibilities, true);
     }
 
-    protected function checkTyped(Method $method): bool
+    private function checkTyped(Method $method): bool
     {
         if (! isset($this->isTyped)) {
             return true;
@@ -156,7 +156,7 @@ class MethodFilter implements MethodFilterContract
         return $this->isTyped === ($method->getReturnType() !== null);
     }
 
-    protected function checkType(Method $method): bool
+    private function checkType(Method $method): bool
     {
         if (! isset($this->hasReturnType)) {
             return true;
@@ -175,7 +175,7 @@ class MethodFilter implements MethodFilterContract
         return $this->hasReturnType->accepts($type);
     }
 
-    protected function checkStatic(Method $method): bool
+    private function checkStatic(Method $method): bool
     {
         if (! isset($this->isStatic)) {
             return true;
@@ -184,7 +184,7 @@ class MethodFilter implements MethodFilterContract
         return $this->isStatic === $method->isStatic();
     }
 
-    protected function checkParameters(Method $method): bool
+    private function checkParameters(Method $method): bool
     {
         if ($this->hasParameters === null) {
             return true;
@@ -193,7 +193,7 @@ class MethodFilter implements MethodFilterContract
         return $this->hasParameters === $method->getParameters()->count() > 0;
     }
 
-    protected function checkParameterCount(Method $method): bool
+    private function checkParameterCount(Method $method): bool
     {
         if ($this->parameterCount === null) {
             return true;

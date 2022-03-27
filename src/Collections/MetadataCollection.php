@@ -25,7 +25,7 @@ abstract class MetadataCollection implements MetadataCollectionContract
      */
     private static function getAttributeName(Attribute|string $attribute): string
     {
-        return $attribute instanceof Attribute ? $attribute->getName() : $attribute;
+        return is_string($attribute) ? $attribute : $attribute->getName();
     }
 
     /**
@@ -43,12 +43,12 @@ abstract class MetadataCollection implements MetadataCollectionContract
         foreach ($metadata as $metadatum) {
             $attribute = $metadatum->getAttribute();
 
-            if (isset($used[$attribute->getName()])) {
+            if (in_array($attribute->getName(), $used, true)) {
                 continue;
             }
 
-            $used[$attribute->getName()] = true;
-            $attributes[]                = $attribute;
+            $used[]       = $attribute->getName();
+            $attributes[] = $attribute;
 
         }
 

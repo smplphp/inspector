@@ -47,6 +47,6 @@ final class StructureProperties extends Properties implements StructurePropertyC
 
     public function asBase(): PropertyCollection
     {
-        return new Properties($this->properties);
+        return new Properties($this->values());
     }
 }

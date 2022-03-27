@@ -148,6 +148,40 @@ class StructureFactory implements Contracts\StructureFactory
         }
     }
 
+    private function makeInheritedMethods(Contracts\Structure $structure, ReflectionMethod ...$methods): Contracts\MethodCollection
+    {
+        $array = [];
+
+        foreach ($methods as $method) {
+            $element = $this->makeMethod($method);
+
+            if ($element->getStructure()->getFullName() !== $structure->getFullName()) {
+                $element = new Elements\InheritedMethod($structure, $element);
+            }
+
+            $array[] = $element;
+        }
+
+        return new Collections\Methods($array);
+    }
+
+    private function makeInheritedProperties(Contracts\Structure $structure, ReflectionProperty ...$properties): Contracts\PropertyCollection
+    {
+        $array = [];
+
+        foreach ($properties as $property) {
+            $element = $this->makeProperty($property);
+
+            if ($element->getStructure()->getFullName() !== $structure->getFullName()) {
+                $element = new Elements\InheritedProperty($structure, $element);
+            }
+
+            $array[] = $element;
+        }
+
+        return new Collections\Properties($array);
+    }
+
     /**
      * @psalm-suppress NullableReturnStatement
      * @psalm-suppress InvalidNullableReturnType
@@ -158,6 +192,7 @@ class StructureFactory implements Contracts\StructureFactory
         $name = is_object($class) ? $class::class : $class;
 
         if (! self::isValidClass($name)) {
+            /** @infection-ignore-all  */
             throw Exceptions\StructureException::invalidClass($name);
         }
 
@@ -173,6 +208,27 @@ class StructureFactory implements Contracts\StructureFactory
             throw Exceptions\StructureException::invalidClass($name, $e);
         }
         // @codeCoverageIgnoreEnd
+    }
+
+    public function makeStructures(object|string ...$classes): Contracts\StructureCollection
+    {
+        $array = [];
+
+        foreach ($classes as $class) {
+            if ($class instanceof ReflectionClass) {
+                try {
+                    $array[] = $this->makeStructureFromReflection($class);
+                    // @codeCoverageIgnoreStart
+                } catch (ReflectionException $e) {
+                    throw Exceptions\StructureException::invalidClass($class->getName(), $e);
+                }
+                // @codeCoverageIgnoreEnd
+            } else {
+                $array[] = $this->makeStructure($class);
+            }
+        }
+
+        return new Collections\Structures($array);
     }
 
     /**
@@ -209,9 +265,16 @@ class StructureFactory implements Contracts\StructureFactory
 
     public function makeStructureProperties(Contracts\Structure $structure): Contracts\StructurePropertyCollection
     {
+        if (! $structure->getStructureType()->canHaveProperties()) {
+            throw Exceptions\StructureException::noProperties(
+                $structure->getFullName(),
+                $structure->getStructureType()->name
+            );
+        }
+
         return Collections\StructureProperties::for(
             $structure,
-            $this->makeProperties(...$structure->getReflection()->getProperties())
+            $this->makeInheritedProperties($structure, ...$structure->getReflection()->getProperties())
         );
     }
 
@@ -251,7 +314,7 @@ class StructureFactory implements Contracts\StructureFactory
     {
         return Collections\StructureMethods::for(
             $structure,
-            $this->makeMethods(...$structure->getReflection()->getMethods())
+            $this->makeInheritedMethods($structure, ...$structure->getReflection()->getMethods())
         );
     }
 
@@ -300,6 +363,7 @@ class StructureFactory implements Contracts\StructureFactory
         }
 
         if (! self::isValidClass($class)) {
+            /** @infection-ignore-all  */
             throw Exceptions\StructureException::invalidClass($class);
         }
 

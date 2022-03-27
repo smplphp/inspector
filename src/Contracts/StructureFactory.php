@@ -3,6 +3,7 @@
 namespace Smpl\Inspector\Contracts;
 
 use ReflectionAttribute;
+use ReflectionClass;
 use ReflectionMethod;
 use ReflectionParameter;
 use ReflectionProperty;
@@ -35,6 +36,18 @@ interface StructureFactory
      * @throws \Smpl\Inspector\Exceptions\StructureException
      */
     public function makeStructure(object|string $class): Structure;
+
+    /**
+     * Make a collection of structures.
+     *
+     * @psalm-template S of object
+     * @psalm-param ReflectionClass<S>|S|class-string<S> ...$classes
+     *
+     * @param object|string                              ...$classes
+     *
+     * @return \Smpl\Inspector\Contracts\StructureCollection
+     */
+    public function makeStructures(object|string ...$classes): StructureCollection;
 
     /**
      * Make a property from its reflection.

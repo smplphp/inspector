@@ -6,11 +6,12 @@ namespace Smpl\Inspector\Tests\Factories;
 
 use Attribute;
 use PHPUnit\Framework\TestCase;
+use ReflectionClass;
 use ReflectionFunction;
 use Smpl\Inspector\Exceptions\AttributeException;
 use Smpl\Inspector\Exceptions\StructureException;
 use Smpl\Inspector\Factories\StructureFactory;
-use Smpl\Inspector\Factories\TypeFactory;
+use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\StructureType;
 use Smpl\Inspector\Tests\Fixtures\BasicInterface;
 use Smpl\Inspector\Tests\Fixtures\BasicTrait;
@@ -19,7 +20,9 @@ use Smpl\Inspector\Tests\Fixtures\ExampleClass;
 use Smpl\Inspector\Tests\Fixtures\ExampleEnum;
 use Smpl\Inspector\Tests\Fixtures\InvalidAttributeClass;
 use Smpl\Inspector\Tests\Fixtures\MethodAttribute;
+use Smpl\Inspector\Tests\Fixtures\ParameterAttribute;
 use Smpl\Inspector\Tests\Fixtures\PropertyAttribute;
+use Smpl\Inspector\Tests\Fixtures\SecondClassAttribute;
 use Smpl\Inspector\Types\IntType;
 
 /**
@@ -28,13 +31,11 @@ use Smpl\Inspector\Types\IntType;
  */
 class StructureFactoryTest extends TestCase
 {
-    private TypeFactory      $typeFactory;
     private StructureFactory $structureFactory;
 
     protected function setUp(): void
     {
-        $this->typeFactory      = new TypeFactory();
-        $this->structureFactory = new StructureFactory($this->typeFactory);
+        $this->structureFactory = Inspector::getInstance()->structures();
     }
 
     /**
@@ -117,6 +118,35 @@ class StructureFactoryTest extends TestCase
     /**
      * @test
      */
+    public function creates_structure_collection_from_class_strings(): void
+    {
+        $structures = $this->structureFactory->makeStructures(
+            ExampleClass::class, BasicInterface::class
+        );
+
+        self::assertCount(2, $structures);
+        self::assertTrue($structures->has(ExampleClass::class));
+        self::assertTrue($structures->has(BasicInterface::class));
+    }
+
+    /**
+     * @test
+     */
+    public function creates_structure_collection_from_reflections(): void
+    {
+        $structures = $this->structureFactory->makeStructures(
+            new ReflectionClass(ExampleClass::class),
+            new ReflectionClass(BasicInterface::class)
+        );
+
+        self::assertCount(2, $structures);
+        self::assertTrue($structures->has(ExampleClass::class));
+        self::assertTrue($structures->has(BasicInterface::class));
+    }
+
+    /**
+     * @test
+     */
     public function creates_property_from_reflection(): void
     {
         $structure = $this->structureFactory->makeStructure(ExampleClass::class);
@@ -146,7 +176,7 @@ class StructureFactoryTest extends TestCase
         $structure  = $this->structureFactory->makeStructure(ExampleClass::class);
         $collection = $this->structureFactory->makeProperties(...$structure->getReflection()->getProperties());
 
-        self::assertCount(7, $collection);
+        self::assertCount(9, $collection);
     }
 
     /**
@@ -157,8 +187,21 @@ class StructureFactoryTest extends TestCase
         $structure  = $this->structureFactory->makeStructure(ExampleClass::class);
         $collection = $this->structureFactory->makeStructureProperties($structure);
 
-        self::assertCount(7, $collection);
+        self::assertCount(9, $collection);
         self::assertSame($structure, $collection->getStructure());
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_trying_to_get_properties_from_a_structure_that_cant_have_properties(): void
+    {
+        $this->expectException(StructureException::class);
+        $this->expectExceptionMessage('Class \'' . BasicInterface::class . '\' of type \'Interface\' does not support properties');
+
+        $this->structureFactory->makeStructureProperties(
+            $this->structureFactory->makeStructure(BasicInterface::class)
+        );
     }
 
     /**
@@ -193,7 +236,7 @@ class StructureFactoryTest extends TestCase
         $structure  = $this->structureFactory->makeStructure(ExampleClass::class);
         $collection = $this->structureFactory->makeMethods(...$structure->getReflection()->getMethods());
 
-        self::assertCount(5, $collection);
+        self::assertCount(7, $collection);
     }
 
     /**
@@ -204,7 +247,7 @@ class StructureFactoryTest extends TestCase
         $structure  = $this->structureFactory->makeStructure(ExampleClass::class);
         $collection = $this->structureFactory->makeStructureMethods($structure);
 
-        self::assertCount(5, $collection);
+        self::assertCount(7, $collection);
         self::assertSame($structure, $collection->getStructure());
     }
 
@@ -335,7 +378,7 @@ class StructureFactoryTest extends TestCase
         $structure  = $this->structureFactory->makeStructure(ExampleClass::class);
         $collection = $this->structureFactory->makeMetadata(...$structure->getReflection()->getAttributes());
 
-        self::assertCount(2, $collection);
+        self::assertCount(3, $collection);
     }
 
     /**
@@ -346,8 +389,9 @@ class StructureFactoryTest extends TestCase
         $structure  = $this->structureFactory->makeStructure(ExampleClass::class);
         $collection = $this->structureFactory->makeStructureMetadata($structure);
 
-        self::assertCount(2, $collection);
+        self::assertCount(3, $collection);
         self::assertSame($structure, $collection->getStructure());
+        self::assertCount(2, $collection->getAttributes());
     }
 
     /**
@@ -404,7 +448,19 @@ class StructureFactoryTest extends TestCase
     /**
      * @test
      */
-    public function throws_an_exception_when_a_non_repeatable_attribute_is_repeated(): void
+    public function throws_an_exception_when_a_non_repeatable_class_attribute_is_repeated(): void
+    {
+        $this->expectException(AttributeException::class);
+        $this->expectExceptionMessage('Attribute \'' . SecondClassAttribute::class . '\' is not repeatable, but is provided multiple times');
+
+        $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
+        $this->structureFactory->makeStructureMetadata($structure);
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_a_non_repeatable_property_attribute_is_repeated(): void
     {
         $this->expectException(AttributeException::class);
         $this->expectExceptionMessage('Attribute \'' . PropertyAttribute::class . '\' is not repeatable, but is provided multiple times');
@@ -416,12 +472,37 @@ class StructureFactoryTest extends TestCase
     /**
      * @test
      */
+    public function throws_an_exception_when_a_non_repeatable_method_attribute_is_repeated(): void
+    {
+        $this->expectException(AttributeException::class);
+        $this->expectExceptionMessage('Attribute \'' . MethodAttribute::class . '\' is not repeatable, but is provided multiple times');
+
+        $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
+        $this->structureFactory->makeMethodMetadata($structure->getMethod('invalidAttributeMethod'));
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_a_non_repeatable_parameter_attribute_is_repeated(): void
+    {
+        $this->expectException(AttributeException::class);
+        $this->expectExceptionMessage('Attribute \'' . ParameterAttribute::class . '\' is not repeatable, but is provided multiple times');
+
+        $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
+        $method    = $structure->getMethod('anotherMethod');
+        $this->structureFactory->makeParameterMetadata($method->getParameter('uhoh'));
+    }
+
+    /**
+     * @test
+     */
     public function throws_an_exception_when_an_attribute_does_not_have_the_correct_target(): void
     {
         $this->expectException(AttributeException::class);
-        $this->expectExceptionMessage('Attribute \'' . MethodAttribute::class . '\' is not valid for the target \'Structure\'');
+        $this->expectExceptionMessage('Attribute \'' . MethodAttribute::class . '\' is not valid for the target \'Property\'');
 
         $structure = $this->structureFactory->makeStructure(InvalidAttributeClass::class);
-        $this->structureFactory->makeStructureMetadata($structure);
+        $this->structureFactory->makePropertyMetadata($structure->getProperty('anotherInvalidAttributeProperty'));
     }
 }

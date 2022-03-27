@@ -15,23 +15,22 @@ namespace Smpl\Inspector\Contracts;
 interface ParameterCollection extends Collection
 {
     /**
-     * Get a parameter by name or position.
+     * Get a parameter by name.
      *
-     * @param string|int $name
+     * @param string $name
      *
      * @return \Smpl\Inspector\Contracts\Parameter|null
      */
-    public function get(string|int $name): ?Parameter;
+    public function get(string $name): ?Parameter;
 
     /**
-     * Check if this collection has a parameter by the provided name or at the
-     * provided position.
+     * Check if this collection has a parameter by the provided name.
      *
-     * @param string|int $name
+     * @param string $name
      *
      * @return bool
      */
-    public function has(string|int $name): bool;
+    public function has(string $name): bool;
 
     /**
      * Get the parameter at the provided position.
