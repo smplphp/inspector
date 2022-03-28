@@ -6,9 +6,8 @@ namespace Smpl\Inspector\Tests\Factories;
 
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Smpl\Inspector\Contracts\TypeFactory;
 use Smpl\Inspector\Exceptions\TypeException;
-use Smpl\Inspector\Inspector;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Tests\Fixtures\BasicInterface;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;
 use Smpl\Inspector\Tests\Fixtures\SecondInterface;
@@ -36,7 +35,7 @@ class TypeFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->factory = Inspector::getInstance()->types();
+        $this->factory = TypeFactory::getInstance();
     }
 
     /**

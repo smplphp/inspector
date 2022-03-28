@@ -8,6 +8,7 @@ use Smpl\Inspector\Contracts\Property as PropertyContract;
 use Smpl\Inspector\Contracts\PropertyMetadataCollection;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
@@ -111,7 +112,7 @@ class Property implements PropertyContract
     public function getAllMetadata(): PropertyMetadataCollection
     {
         if (! isset($this->metadata)) {
-            $this->metadata = Inspector::getInstance()->structures()->makePropertyMetadata($this);
+            $this->metadata = StructureFactory::getInstance()->makePropertyMetadata($this);
         }
 
         return $this->metadata;

@@ -7,6 +7,7 @@ namespace Smpl\Inspector\Filters;
 use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\PropertyFilter as PropertyFilterContract;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
@@ -165,7 +166,7 @@ final class PropertyFilter implements PropertyFilterContract
         }
 
         if (is_string($this->hasType)) {
-            $this->hasType = Inspector::getInstance()->types()->make($this->hasType);
+            $this->hasType = TypeFactory::getInstance()->make($this->hasType);
         }
 
         return $this->hasType->accepts($type);

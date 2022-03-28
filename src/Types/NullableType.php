@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Inspector;
 
 class NullableType extends BaseType
@@ -65,6 +66,8 @@ class NullableType extends BaseType
             return true;
         }
 
-        return $this->getBaseType()->accepts(Inspector::getInstance()->types()->make($type));
+        return $this->getBaseType()->accepts(
+            TypeFactory::getInstance()->make($type)
+        );
     }
 }

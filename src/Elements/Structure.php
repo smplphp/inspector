@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Elements;
 
 use ReflectionClass;
-use RuntimeException;
 use Smpl\Inspector\Collections\Structures;
 use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Method;
@@ -16,7 +15,7 @@ use Smpl\Inspector\Contracts\StructureMetadataCollection;
 use Smpl\Inspector\Contracts\StructureMethodCollection;
 use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Contracts\Type;
-use Smpl\Inspector\Inspector;
+use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Support\StructureType;
 
 class Structure implements StructureContract
@@ -92,9 +91,9 @@ class Structure implements StructureContract
 
             if ($parentReflection !== false) {
                 $this->hasParent = true;
-                $this->parent    = Inspector::getInstance()
-                                            ->structures()
-                                            ->makeStructure($parentReflection->getName());
+                $this->parent    = StructureFactory::getInstance()->makeStructure(
+                    $parentReflection->getName()
+                );
             } else {
                 $this->hasParent = false;
                 $this->parent    = null;
@@ -107,7 +106,7 @@ class Structure implements StructureContract
     public function getProperties(): StructurePropertyCollection
     {
         if (! isset($this->properties)) {
-            $this->properties = Inspector::getInstance()->structures()->makeStructureProperties($this);
+            $this->properties = StructureFactory::getInstance()->makeStructureProperties($this);
         }
 
         return $this->properties;
@@ -126,7 +125,7 @@ class Structure implements StructureContract
     public function getMethods(): StructureMethodCollection
     {
         if (! isset($this->methods)) {
-            $this->methods = Inspector::getInstance()->structures()->makeStructureMethods($this);
+            $this->methods = StructureFactory::getInstance()->makeStructureMethods($this);
         }
 
         return $this->methods;
@@ -154,7 +153,7 @@ class Structure implements StructureContract
     public function getAllMetadata(): StructureMetadataCollection
     {
         if (! isset($this->metadata)) {
-            $this->metadata = Inspector::getInstance()->structures()->makeStructureMetadata($this);
+            $this->metadata = StructureFactory::getInstance()->makeStructureMetadata($this);
         }
 
         return $this->metadata;
@@ -164,10 +163,10 @@ class Structure implements StructureContract
     {
         if (! isset($this->interfaces)) {
             $interfaces = [];
-            $inspector  = Inspector::getInstance();
+            $factory    = StructureFactory::getInstance();
 
             foreach ($this->getReflection()->getInterfaces() as $reflection) {
-                $interfaces[] = $inspector->structures()->makeStructure($reflection->getName());
+                $interfaces[] = $factory->makeStructure($reflection->getName());
             }
 
             $this->interfaces = new Structures($interfaces);
@@ -179,11 +178,11 @@ class Structure implements StructureContract
     public function getTraits(): StructureCollection
     {
         if (! isset($this->traits)) {
-            $traits    = [];
-            $inspector = Inspector::getInstance();
+            $traits  = [];
+            $factory = StructureFactory::getInstance();
 
             foreach ($this->getReflection()->getTraits() as $reflection) {
-                $traits[] = $inspector->structures()->makeStructure($reflection->getName());
+                $traits[] = $factory->makeStructure($reflection->getName());
             }
 
             $this->traits = new Structures($traits);

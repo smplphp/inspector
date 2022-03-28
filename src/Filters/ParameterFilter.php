@@ -7,6 +7,7 @@ namespace Smpl\Inspector\Filters;
 use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\ParameterFilter as ParameterFilterContract;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Inspector;
 
 final class ParameterFilter implements ParameterFilterContract
@@ -140,7 +141,7 @@ final class ParameterFilter implements ParameterFilterContract
         }
 
         if (is_string($this->hasType)) {
-            $this->hasType = Inspector::getInstance()->types()->make($this->hasType);
+            $this->hasType = TypeFactory::getInstance()->make($this->hasType);
         }
 
         return $this->hasType->accepts($type);

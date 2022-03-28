@@ -11,6 +11,7 @@ use Smpl\Inspector\Contracts\Parameter as ParameterContract;
 use Smpl\Inspector\Contracts\ParameterMetadataCollection;
 use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Inspector;
 
 class Parameter implements ParameterContract
@@ -107,7 +108,7 @@ class Parameter implements ParameterContract
     public function getAllMetadata(): ParameterMetadataCollection
     {
         if (! isset($this->metadata)) {
-            $this->metadata = Inspector::getInstance()->structures()->makeParameterMetadata($this);
+            $this->metadata =StructureFactory::getInstance()->makeParameterMetadata($this);
         }
 
         return $this->metadata;

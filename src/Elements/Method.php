@@ -13,6 +13,7 @@ use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\ParameterFilter;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
@@ -99,7 +100,7 @@ class Method implements MethodContract
     public function getParameters(?ParameterFilter $filter = null): MethodParameterCollection
     {
         if (! isset($this->parameters)) {
-            $this->parameters = Inspector::getInstance()->structures()->makeMethodParameters($this);
+            $this->parameters = StructureFactory::getInstance()->makeMethodParameters($this);
         }
 
         if ($filter !== null) {
@@ -112,7 +113,7 @@ class Method implements MethodContract
     public function getAllMetadata(): MethodMetadataCollection
     {
         if (! isset($this->metadata)) {
-            $this->metadata = Inspector::getInstance()->structures()->makeMethodMetadata($this);
+            $this->metadata = StructureFactory::getInstance()->makeMethodMetadata($this);
         }
 
         return $this->metadata;

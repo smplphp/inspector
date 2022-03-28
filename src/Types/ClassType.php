@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Inspector;
 
 class ClassType extends BaseType
@@ -56,7 +57,7 @@ class ClassType extends BaseType
     public function accepts(Type|string $type): bool
     {
         if (! ($type instanceof Type)) {
-            $type = Inspector::getInstance()->types()->make($type);
+            $type = TypeFactory::getInstance()->make($type);
         }
 
         if ($type instanceof static) {

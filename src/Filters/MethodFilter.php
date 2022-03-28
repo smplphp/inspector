@@ -8,6 +8,7 @@ use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\MethodFilter as MethodFilterContract;
 use Smpl\Inspector\Contracts\ParameterFilter;
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Factories\TypeFactory;
 use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
@@ -169,7 +170,7 @@ final class MethodFilter implements MethodFilterContract
         }
 
         if (is_string($this->hasReturnType)) {
-            $this->hasReturnType = Inspector::getInstance()->types()->make($this->hasReturnType);
+            $this->hasReturnType = TypeFactory::getInstance()->make($this->hasReturnType);
         }
 
         return $this->hasReturnType->accepts($type);

@@ -27,7 +27,7 @@ class MetadataTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->factory = Inspector::getInstance()->structures();
+        $this->factory = StructureFactory::getInstance();
     }
 
     /**

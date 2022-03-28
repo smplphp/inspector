@@ -35,7 +35,7 @@ class StructureFactoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->structureFactory = Inspector::getInstance()->structures();
+        $this->structureFactory = StructureFactory::getInstance();
     }
 
     /**
