@@ -6,17 +6,6 @@ namespace Smpl\Inspector;
 
 class Inspector
 {
-    private static self $instance;
-
-    public static function getInstance(): self
-    {
-        if (! isset(self::$instance)) {
-            self::$instance = new self;
-        }
-
-        return self::$instance;
-    }
-
     private Contracts\TypeFactory $types;
 
     private Contracts\StructureFactory $structures;
@@ -26,8 +15,8 @@ class Inspector
         ?Contracts\StructureFactory $structures = null,
     )
     {
-        $this->types      = $types ?? new Factories\TypeFactory();
-        $this->structures = $structures ?? new Factories\StructureFactory($this->types);
+        $this->types      = $types ?? Factories\TypeFactory::getInstance();
+        $this->structures = $structures ?? Factories\StructureFactory::getInstance();
     }
 
     public function types(): Contracts\TypeFactory
