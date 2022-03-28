@@ -53,9 +53,14 @@ class StructureFactory implements Contracts\StructureFactory
 
     private Contracts\TypeFactory $typeFactory;
 
-    public function __construct(?Contracts\TypeFactory $typeFactory = null)
+    private function __construct(?Contracts\TypeFactory $typeFactory = null)
     {
         $this->typeFactory = $typeFactory ?? TypeFactory::getInstance();
+    }
+
+    private function __clone(): void
+    {
+        // This method is intentionally empty
     }
 
     private function getStructureType(ReflectionClass $reflection): StructureType

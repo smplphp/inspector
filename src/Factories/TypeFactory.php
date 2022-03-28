@@ -60,6 +60,16 @@ class TypeFactory implements Contracts\TypeFactory
      */
     private array $nullableTypes = [];
 
+    private function __construct()
+    {
+        // This method is intentionally empty
+    }
+
+    private function __clone(): void
+    {
+        // This method is intentionally empty
+    }
+
     /**
      * Create a new class type instance.
      *
