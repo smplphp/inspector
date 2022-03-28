@@ -14,6 +14,17 @@ use Smpl\Inspector\Types;
 
 class TypeFactory implements Contracts\TypeFactory
 {
+    private static self $instance;
+
+    public static function getInstance(): static
+    {
+        if (! isset(self::$instance)) {
+            self::$instance = new self;
+        }
+
+        return self::$instance;
+    }
+
     /**
      * @param ReflectionNamedType[]|\Smpl\Inspector\Contracts\Type[] $types
      *

@@ -27,6 +27,17 @@ class StructureFactory implements Contracts\StructureFactory
         Concerns\CachesMethods,
         Concerns\CachesAttributes;
 
+    private static self $instance;
+
+    public static function getInstance(?TypeFactory $factory = null): static
+    {
+        if (! isset(self::$instance)) {
+            self::$instance = new self($factory);
+        }
+
+        return self::$instance;
+    }
+
     /**
      * @param class-string|string $class
      *
@@ -42,9 +53,9 @@ class StructureFactory implements Contracts\StructureFactory
 
     private Contracts\TypeFactory $typeFactory;
 
-    public function __construct(Contracts\TypeFactory $typeFactory)
+    public function __construct(?Contracts\TypeFactory $typeFactory = null)
     {
-        $this->typeFactory = $typeFactory;
+        $this->typeFactory = $typeFactory ?? TypeFactory::getInstance();
     }
 
     private function getStructureType(ReflectionClass $reflection): StructureType
