@@ -30,6 +30,10 @@ abstract class BaseType implements Type
 
     public function accepts(Type|string $type): bool
     {
+        if ($type === $this) {
+            return true;
+        }
+
         if (! ($type instanceof Type)) {
             $type = TypeFactory::getInstance()->make($type);
         }
