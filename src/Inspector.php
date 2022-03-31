@@ -4,28 +4,72 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector;
 
+use Smpl\Inspector\Mappers\ComposerMapper;
+
 class Inspector
 {
     private Contracts\TypeFactory $types;
 
     private Contracts\StructureFactory $structures;
 
+    private Contracts\Mapper $mapper;
+
     public function __construct(
         ?Contracts\TypeFactory      $types = null,
         ?Contracts\StructureFactory $structures = null,
+        Contracts\Mapper            $mapper = null
     )
     {
         $this->types      = $types ?? Factories\TypeFactory::getInstance();
         $this->structures = $structures ?? Factories\StructureFactory::getInstance();
+        $this->mapper     = $mapper ?? new ComposerMapper;
     }
 
-    public function types(): Contracts\TypeFactory
+    /**
+     * @return \Smpl\Inspector\Contracts\TypeFactory
+     */
+    public function getTypeFactory(): Contracts\TypeFactory
     {
         return $this->types;
     }
 
-    public function structures(): Contracts\StructureFactory
+    /**
+     * @return \Smpl\Inspector\Contracts\StructureFactory
+     */
+    public function getStructureFactory(): Contracts\StructureFactory
     {
         return $this->structures;
+    }
+
+    /**
+     * @return \Smpl\Inspector\Contracts\Mapper
+     */
+    public function getMapper(): Contracts\Mapper
+    {
+        return $this->mapper;
+    }
+
+    public function inspect(): Inspection
+    {
+        return new Inspection($this);
+    }
+
+    /**
+     * @throws \Smpl\Inspector\Exceptions\InspectionException
+     */
+    public function inspectClass(string $className): Contracts\Structure
+    {
+        return $this->inspect()
+                    ->inClass($className)
+                    ->getStructures()
+                    ->first();
+    }
+
+    /**
+     * @throws \Smpl\Inspector\Exceptions\InspectionException
+     */
+    public function inspectMethod(string $className, string $methodName): Contracts\Method
+    {
+        return $this->inspectClass($className)?->getMethod($methodName);
     }
 }

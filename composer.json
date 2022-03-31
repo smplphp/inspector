@@ -36,8 +36,10 @@
     "test-coverage": "./vendor/bin/phpunit --coverage-html build/coverage",
     "psalm": "./vendor/bin/psalm --no-cache --shepherd",
     "phpstan": "./vendor/bin/phpstan analyse -c phpstan.neon",
+    "infection": "infection --only-covered --threads=8",
     "ci": [
       "@test-coverage",
+      "@infection",
       "@psalm",
       "@phpstan"
     ]

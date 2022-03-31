@@ -10,13 +10,14 @@ use ReflectionType;
 use ReflectionUnionType;
 use Smpl\Inspector\Contracts;
 use Smpl\Inspector\Exceptions\TypeException;
+use Smpl\Inspector\Support\MapperHelper;
 use Smpl\Inspector\Types;
 
 class TypeFactory implements Contracts\TypeFactory
 {
     private static self $instance;
 
-    public static function getInstance(): static
+    public static function getInstance(): self
     {
         if (! isset(self::$instance)) {
             self::$instance = new self;
@@ -65,7 +66,7 @@ class TypeFactory implements Contracts\TypeFactory
         // This method is intentionally empty
     }
 
-    private function __clone(): void
+    private function __clone()
     {
         // This method is intentionally empty
     }
@@ -258,7 +259,7 @@ class TypeFactory implements Contracts\TypeFactory
      */
     private function createBaseType(string $typeName): Contracts\Type
     {
-        if (StructureFactory::isValidClass($typeName)) {
+        if (MapperHelper::isValidClass($typeName)) {
             return $this->createClassType($typeName);
         }
 

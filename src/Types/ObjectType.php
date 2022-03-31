@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
-use Smpl\Inspector\Factories\StructureFactory;
+use Smpl\Inspector\Support\MapperHelper;
 
 class ObjectType extends BaseType
 {
@@ -23,7 +23,7 @@ class ObjectType extends BaseType
     {
         return parent::accepts($type)
             || $type instanceof ClassType
-            || (is_string($type) && StructureFactory::isValidClass($type));
+            || (is_string($type) && MapperHelper::isValidClass($type));
     }
 
     public function isPrimitive(): bool

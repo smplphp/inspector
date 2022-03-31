@@ -150,7 +150,7 @@ interface StructureFilter
      *
      * @return static
      */
-    public function doesNoUse(string $trait): static;
+    public function doesNotUse(string $trait): static;
 
     /**
      * Filter structures that have methods that match the provided filter.

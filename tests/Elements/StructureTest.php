@@ -618,7 +618,7 @@ class StructureTest extends TestCase
             StructureFilter::make()->uses(BasicTrait::class)
         ));
         self::assertCount(2, $collection->filter(
-            StructureFilter::make()->doesNoUse(BasicTrait::class)
+            StructureFilter::make()->doesNotUse(BasicTrait::class)
         ));
     }
 

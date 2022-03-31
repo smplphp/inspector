@@ -153,7 +153,7 @@ final class StructureFilter implements StructureFilterContract
         return $this;
     }
 
-    public function doesNoUse(string $trait): static
+    public function doesNotUse(string $trait): static
     {
         $this->trait = $trait;
         $this->uses  = false;

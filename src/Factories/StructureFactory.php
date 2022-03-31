@@ -18,6 +18,7 @@ use Smpl\Inspector\Contracts;
 use Smpl\Inspector\Elements;
 use Smpl\Inspector\Exceptions;
 use Smpl\Inspector\Support\AttributeTarget;
+use Smpl\Inspector\Support\MapperHelper;
 use Smpl\Inspector\Support\StructureType;
 
 class StructureFactory implements Contracts\StructureFactory
@@ -29,7 +30,7 @@ class StructureFactory implements Contracts\StructureFactory
 
     private static self $instance;
 
-    public static function getInstance(?TypeFactory $factory = null): static
+    public static function getInstance(?TypeFactory $factory = null): self
     {
         if (! isset(self::$instance)) {
             self::$instance = new self($factory);
@@ -38,27 +39,15 @@ class StructureFactory implements Contracts\StructureFactory
         return self::$instance;
     }
 
-    /**
-     * @param class-string|string $class
-     *
-     * @return bool
-     */
-    public static function isValidClass(string $class): bool
-    {
-        return class_exists($class)
-            || interface_exists($class)
-            || trait_exists($class)
-            || enum_exists($class);
-    }
-
     private Contracts\TypeFactory $typeFactory;
 
     private function __construct(?Contracts\TypeFactory $typeFactory = null)
     {
+        /** @infection-ignore-all */
         $this->typeFactory = $typeFactory ?? TypeFactory::getInstance();
     }
 
-    private function __clone(): void
+    private function __clone()
     {
         // This method is intentionally empty
     }
@@ -207,8 +196,8 @@ class StructureFactory implements Contracts\StructureFactory
         // Get the name from the object if one was passed
         $name = is_object($class) ? $class::class : $class;
 
-        if (! self::isValidClass($name)) {
-            /** @infection-ignore-all  */
+        if (! MapperHelper::isValidClass($name)) {
+            /** @infection-ignore-all */
             throw Exceptions\StructureException::invalidClass($name);
         }
 
@@ -378,8 +367,8 @@ class StructureFactory implements Contracts\StructureFactory
             throw Exceptions\AttributeException::baseAttribute();
         }
 
-        if (! self::isValidClass($class)) {
-            /** @infection-ignore-all  */
+        if (! MapperHelper::isValidClass($class)) {
+            /** @infection-ignore-all */
             throw Exceptions\StructureException::invalidClass($class);
         }
 
