@@ -125,10 +125,10 @@ abstract class MetadataCollection implements MetadataCollectionContract
     {
         $attribute = self::getAttributeName($attribute);
 
-        return array_filter(
+        return array_values(array_filter(
             $this->metadata,
             $instanceOf ? self::instanceOfFilter($attribute) : self::noneInstanceOfFilter($attribute)
-        );
+        ));
     }
 
     public function first(Attribute|string|null $attribute = null, bool $instanceOf = false): ?Metadata
