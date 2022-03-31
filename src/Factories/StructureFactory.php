@@ -9,6 +9,7 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionType;
@@ -73,10 +74,20 @@ class StructureFactory implements Contracts\StructureFactory
         return StructureType::Default;
     }
 
-    private function getType(?ReflectionType $type = null): ?Contracts\Type
+    private function getType(?ReflectionType $type = null, ?string $class = null): ?Contracts\Type
     {
         if ($type === null) {
             return null;
+        }
+
+        if (
+            ($type instanceof ReflectionNamedType)
+            && $class !== null
+            && ($type->getName() === 'self' || $type->getName() === 'static')
+        ) {
+            return $this->typeFactory->make(
+                ($type->allowsNull() ? '?' : '') . $class
+            );
         }
 
         return $this->typeFactory->make($type);
@@ -300,7 +311,7 @@ class StructureFactory implements Contracts\StructureFactory
         return $this->addMethod(new Elements\Method(
             $this->makeStructure($class),
             $method,
-            $this->getType($method->getReturnType())
+            $this->getType($method->getReturnType(), $class)
         ));
     }
 
