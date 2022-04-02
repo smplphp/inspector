@@ -40,4 +40,4 @@ jobs:
 
       - run:
           name: "Mutation testing"
-          command: composer infection
+          command: phpdbg -qrr ./vendor/bin/infection --only-covered --threads=8 --coverage=build
