@@ -12,7 +12,6 @@ use Smpl\Inspector\Contracts\StructurePropertyCollection;
 use Smpl\Inspector\Elements\InheritedProperty;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Filters\PropertyFilter;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 use Smpl\Inspector\Tests\Fixtures\ClassAttribute;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;

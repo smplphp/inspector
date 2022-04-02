@@ -222,6 +222,8 @@ class Inspection
 
     /**
      * @return list<class-string>
+     *
+     * @throws \Smpl\Inspector\Exceptions\MapperException
      */
     private function mapNamespaces(): array
     {

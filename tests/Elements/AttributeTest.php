@@ -6,8 +6,6 @@ namespace Smpl\Inspector\Tests\Elements;
 
 use PHPUnit\Framework\TestCase;
 use Smpl\Inspector\Factories\StructureFactory;
-use Smpl\Inspector\Factories\TypeFactory;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\AttributeTarget;
 use Smpl\Inspector\Tests\Fixtures\AllAttribute;
 use Smpl\Inspector\Tests\Fixtures\ClassAttribute;

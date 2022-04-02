@@ -47,7 +47,7 @@ class Parameters implements ParameterCollection
             $this->positions[$parameter->getPosition()] = $parameter->getName();
         }
 
-        /** @infection-ignore-all  */
+        /** @infection-ignore-all */
         ksort($this->positions, SORT_NUMERIC);
     }
 

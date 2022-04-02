@@ -6,7 +6,6 @@ namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Factories\TypeFactory;
-use Smpl\Inspector\Inspector;
 
 class ClassType extends BaseType
 {

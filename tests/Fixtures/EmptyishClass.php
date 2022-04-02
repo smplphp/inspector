@@ -8,7 +8,9 @@ class EmptyishClass
 {
     protected string $iAmAnInheritedProperty;
 
-    protected function iAmInherited(): void {}
+    protected function iAmInherited(): void
+    {
+    }
 
     public static $mixed;
 }

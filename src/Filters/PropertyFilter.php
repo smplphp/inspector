@@ -8,7 +8,6 @@ use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\PropertyFilter as PropertyFilterContract;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Factories\TypeFactory;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
 final class PropertyFilter implements PropertyFilterContract

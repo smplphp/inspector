@@ -9,7 +9,6 @@ use Smpl\Inspector\Contracts\PropertyMetadataCollection;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Factories\StructureFactory;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
 class Property implements PropertyContract

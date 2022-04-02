@@ -13,7 +13,6 @@ use Smpl\Inspector\Elements\InheritedMethod;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Filters\MethodFilter;
 use Smpl\Inspector\Filters\ParameterFilter;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 use Smpl\Inspector\Tests\Fixtures\AbstractClass;
 use Smpl\Inspector\Tests\Fixtures\BasicInterface;

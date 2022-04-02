@@ -9,7 +9,6 @@ use Smpl\Inspector\Contracts\MethodParameterCollection;
 use Smpl\Inspector\Contracts\ParameterCollection;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Filters\ParameterFilter;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Tests\Fixtures\ClassAttribute;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;
 use Smpl\Inspector\Tests\Fixtures\FilterableParameterClass;

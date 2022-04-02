@@ -11,7 +11,6 @@ use ReflectionFunction;
 use Smpl\Inspector\Exceptions\AttributeException;
 use Smpl\Inspector\Exceptions\StructureException;
 use Smpl\Inspector\Factories\StructureFactory;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\StructureType;
 use Smpl\Inspector\Tests\Fixtures\BasicInterface;
 use Smpl\Inspector\Tests\Fixtures\BasicTrait;

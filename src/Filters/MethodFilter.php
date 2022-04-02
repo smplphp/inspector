@@ -9,7 +9,6 @@ use Smpl\Inspector\Contracts\MethodFilter as MethodFilterContract;
 use Smpl\Inspector\Contracts\ParameterFilter;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Factories\TypeFactory;
-use Smpl\Inspector\Inspector;
 use Smpl\Inspector\Support\Visibility;
 
 final class MethodFilter implements MethodFilterContract

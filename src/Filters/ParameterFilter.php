@@ -8,7 +8,6 @@ use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\ParameterFilter as ParameterFilterContract;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Factories\TypeFactory;
-use Smpl\Inspector\Inspector;
 
 final class ParameterFilter implements ParameterFilterContract
 {
