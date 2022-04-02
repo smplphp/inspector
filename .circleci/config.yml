@@ -40,4 +40,6 @@ jobs:
 
       - run:
           name: "Mutation testing"
-          command: phpdbg -qrr ./vendor/bin/infection --only-covered --threads=8 --coverage=build
+          command: phpdbg -qrr ./vendor/bin/infection --only-covered --threads=8
+          environment:
+            XDEBUG_MODE: coverage
