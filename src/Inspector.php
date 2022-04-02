@@ -6,8 +6,28 @@ namespace Smpl\Inspector;
 
 use Smpl\Inspector\Mappers\ComposerMapper;
 
-class Inspector
+final class Inspector
 {
+    private static self $instance;
+
+    public static function getInstance(
+        ?Contracts\TypeFactory      $types = null,
+        ?Contracts\StructureFactory $structures = null,
+        Contracts\Mapper            $mapper = null
+    ): self
+    {
+        if (! isset(self::$instance)) {
+            self::setInstance(new self($types, $structures, $mapper));
+        }
+
+        return self::$instance;
+    }
+
+    public static function setInstance(self $instance): void
+    {
+        self::$instance = $instance;
+    }
+
     private Contracts\TypeFactory $types;
 
     private Contracts\StructureFactory $structures;
