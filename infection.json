@@ -10,7 +10,7 @@
   },
   "logs": {
     "stryker": {
-      "report": "/^release-.*$/"
+      "report": "main"
     }
   },
   "mutators": {
