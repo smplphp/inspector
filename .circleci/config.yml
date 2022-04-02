@@ -28,12 +28,15 @@ jobs:
 
       - run:
           name: "Run unit tests"
-          command: phpdbg -qrr./vendor/bin/phpunit --coverage-clover coverage.xml --log-junit junit.xml
+          command: phpdbg -qrr ./vendor/bin/phpunit --coverage-clover build/coverage.xml --coverage-html build/coverage --log-junit build/junit.xml
           environment:
             XDEBUG_MODE: coverage
 
       - codecov/upload:
-          file: coverage.xml
+          file: build/coverage.xml
 
       - store_test_results:
-          path: ./
+          path: build
+
+      - store_artifacts:
+          path: build/coverage
