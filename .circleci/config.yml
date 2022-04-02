@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/2.0/language-php/
 version: 2
 
+orbs:
+  codecov: codecov/codecov@3.0.0
+
 jobs:
   build:
     docker:
@@ -14,7 +17,9 @@ jobs:
           keys:
             - v1-dependencies-
 
-      - run: composer install -n --prefer-dist
+      - run:
+          name: "Composer install"
+          command: composer install -n --prefer-dist
 
       - save_cache:
           key: v1-dependencies-{{ checksum "composer.json" }}
@@ -23,12 +28,17 @@ jobs:
 
       - run: mkdir build
 
-      - run: phpdbg ./vendor/bin/phpunit --coverage-clover build/coverage.xml --coverage-html build/coverage --log-junit build/junit.xml
+      - run:
+          name: "Run unit tests"
+          command: phpdbg -qrr./vendor/bin/phpunit --coverage-clover build/coverage.xml --coverage-html build/coverage --log-junit build/junit.xml
+          environment:
+            XDEBUG_MODE: coverage
 
-      - run: bash <(curl -s https://codecov.io/bash)
+      - codecov/upload:
+          file: build/coverage.xml
 
       - store_test_results:
           path: build
 
       - store_artifacts:
-          path: build/coverage-report
+          path: build/coverage
