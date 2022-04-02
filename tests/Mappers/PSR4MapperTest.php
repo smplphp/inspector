@@ -42,35 +42,13 @@ class PSR4MapperTest extends TestCase
         $classes2 = $mapper->mapPath('./src/Factories');
 
         self::assertCount(3, $classes1);
-        self::assertSame(NotFoundExceptionInterface::class, $classes1[0]);
-        self::assertSame(ContainerInterface::class, $classes1[1]);
-        self::assertSame(ContainerExceptionInterface::class, $classes1[2]);
+        self::assertContains(NotFoundExceptionInterface::class, $classes1);
+        self::assertContains(ContainerInterface::class, $classes1);
+        self::assertContains(ContainerExceptionInterface::class, $classes1);
 
         self::assertCount(2, $classes2);
-        self::assertSame(StructureFactory::class, $classes2[0]);
-        self::assertSame(TypeFactory::class, $classes2[1]);
-    }
-
-    /**
-     * @test
-     */
-    public function can_load_classes_for_namespaces_with_multiple_paths(): void
-    {
-        $mapper   = new PSR4Mapper([
-            'Smpl\Inspector' => ['./src'],
-            'Psr\Container'  => ['./vendor/psr/container/src'],
-        ]);
-        $classes1 = $mapper->mapPath('./vendor/psr');
-        $classes2 = $mapper->mapPath('./src/Factories');
-
-        self::assertCount(3, $classes1);
-        self::assertSame(NotFoundExceptionInterface::class, $classes1[0]);
-        self::assertSame(ContainerInterface::class, $classes1[1]);
-        self::assertSame(ContainerExceptionInterface::class, $classes1[2]);
-
-        self::assertCount(2, $classes2);
-        self::assertSame(StructureFactory::class, $classes2[0]);
-        self::assertSame(TypeFactory::class, $classes2[1]);
+        self::assertContains(StructureFactory::class, $classes2);
+        self::assertContains(TypeFactory::class, $classes2);
     }
 
     /**
@@ -94,13 +72,13 @@ class PSR4MapperTest extends TestCase
         $classes2 = $mapper->mapNamespace('Smpl\Inspector\Factories');
 
         self::assertCount(3, $classes1);
-        self::assertSame(NotFoundExceptionInterface::class, $classes1[0]);
-        self::assertSame(ContainerInterface::class, $classes1[1]);
-        self::assertSame(ContainerExceptionInterface::class, $classes1[2]);
+        self::assertContains(NotFoundExceptionInterface::class, $classes1);
+        self::assertContains(ContainerInterface::class, $classes1);
+        self::assertContains(ContainerExceptionInterface::class, $classes1);
 
         self::assertCount(2, $classes2);
-        self::assertSame(StructureFactory::class, $classes2[0]);
-        self::assertSame(TypeFactory::class, $classes2[1]);
+        self::assertContains(StructureFactory::class, $classes2);
+        self::assertContains(TypeFactory::class, $classes2);
     }
 
     /**
