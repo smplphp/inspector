@@ -32,14 +32,22 @@ jobs:
           environment:
             XDEBUG_MODE: coverage
 
-      - codecov/upload:
-          file: build/coverage.xml
+      - run:
+          name: "Psalm"
+          command: ./vendor/bin/psalm --no-cache --shepherd
 
-      - store_test_results:
-          path: build
+      - run:
+          name: "PHPStan"
+          command: ./vendor/bin/phpstan analyse -c phpstan.neon
 
       - run:
           name: "Mutation testing"
           command: phpdbg -qrr ./vendor/bin/infection --only-covered --threads=8
           environment:
             XDEBUG_MODE: coverage
+
+      - codecov/upload:
+          file: build/coverage.xml
+
+      - store_test_results:
+          path: build
