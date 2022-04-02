@@ -75,9 +75,13 @@ final class Inspector
     }
 
     /**
+     * @param class-string $className
+     *
+     * @return \Smpl\Inspector\Contracts\Structure|null
+     *
      * @throws \Smpl\Inspector\Exceptions\InspectionException
      */
-    public function inspectClass(string $className): Contracts\Structure
+    public function inspectClass(string $className): ?Contracts\Structure
     {
         return $this->inspect()
                     ->inClass($className)
@@ -86,9 +90,14 @@ final class Inspector
     }
 
     /**
+     * @param class-string $className
+     * @param string       $methodName
+     *
+     * @return \Smpl\Inspector\Contracts\Method|null
+     *
      * @throws \Smpl\Inspector\Exceptions\InspectionException
      */
-    public function inspectMethod(string $className, string $methodName): Contracts\Method
+    public function inspectMethod(string $className, string $methodName): ?Contracts\Method
     {
         return $this->inspectClass($className)?->getMethod($methodName);
     }
