@@ -45,11 +45,11 @@ class Inspection
     }
 
     /**
-     * @param class-string $class
+     * @param object|class-string $class
      *
      * @return static
      */
-    public function inClass(string $class): static
+    public function inClass(object|string $class): static
     {
         return $this->inClasses($class);
     }
@@ -65,16 +65,20 @@ class Inspection
     }
 
     /**
-     * @param class-string ...$classes
+     * @param object|class-string ...$classes
      *
      * @return static
      */
-    public function inClasses(string ...$classes): static
+    public function inClasses(object|string ...$classes): static
     {
         /**
-         * @var list<class-string> $classes
+         * @var list<class-string|object> $classes
          */
-        $this->classes = $classes;
+
+        foreach ($classes as $class) {
+            $this->classes[] = is_object($class) ? $class::class : $class;
+        }
+
         return $this;
     }
 
