@@ -21,7 +21,9 @@ jobs:
           paths:
             - ./vendor
 
-      - run: phpdbg ./vendor/bin/phpunit --verbose --colors=always --coverage-html build/coverage --log-junit build/junit.xml
+      - run: mkdir build
+
+      - run: phpdbg ./vendor/bin/phpunit --coverage-clover build/coverage.xml --coverage-html build/coverage --log-junit build/junit.xml
 
       - run: bash <(curl -s https://codecov.io/bash)
 
