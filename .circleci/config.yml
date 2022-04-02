@@ -37,3 +37,7 @@ jobs:
 
       - store_test_results:
           path: build
+
+      - run:
+          name: "Mutation testing"
+          command: composer infection

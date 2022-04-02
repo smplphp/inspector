@@ -125,6 +125,7 @@ abstract class MetadataCollection implements MetadataCollectionContract
     {
         $attribute = self::getAttributeName($attribute);
 
+        /** @infection-ignore-all  */
         return array_values(array_filter(
             $this->metadata,
             $instanceOf ? self::instanceOfFilter($attribute) : self::noneInstanceOfFilter($attribute)

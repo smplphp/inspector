@@ -9,7 +9,9 @@
     ]
   },
   "logs": {
-    "html": "build/mutation/infection.html"
+    "stryker": {
+      "report": "/^release-.*$/"
+    }
   },
   "mutators": {
     "@default": true,

@@ -10,6 +10,7 @@ A simple modern PHP class inspector and mapper library.
 [![codecov](https://codecov.io/gh/smplphp/inspector/branch/main/graph/badge.svg?token=FHJ41NQMTA)](https://codecov.io/gh/smplphp/inspector)
 [![CircleCI](https://circleci.com/gh/smplphp/inspector/tree/main.svg?style=shield)](https://circleci.com/gh/smplphp/inspector/tree/main)
 ![Psalm Level](https://shepherd.dev/github/smplphp/inspector/level.svg)
+[![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fsmplphp%2Finspector%2Fmain)](https://dashboard.stryker-mutator.io/reports/github.com/smplphp/inspector/main)
 
 ## Install
 

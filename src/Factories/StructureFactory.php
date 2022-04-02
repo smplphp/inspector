@@ -80,6 +80,7 @@ class StructureFactory implements Contracts\StructureFactory
             return null;
         }
 
+        /** @infection-ignore-all  */
         if (
             ($type instanceof ReflectionNamedType)
             && $class !== null
