@@ -2,7 +2,7 @@
 
 # Inspector
 
-A simple modern PHP class inspector and mapper library.
+A simple, stand-alone, modern PHP class inspector and mapper library, wrapping PHPs native reflection in a fluent wrapper.
 
 ![Packagist Version](https://img.shields.io/packagist/v/smplphp/inspector)
 ![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/smplphp/inspector)
