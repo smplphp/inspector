@@ -17,26 +17,14 @@ A simple modern PHP class inspector and mapper library.
 Install via composer.
 
 ```bash
-$ composer require smplphp/inspector
+composer require smplphp/inspector
 ```
+
+You **must** be using at least PHP `8.1.2`, due to a bug in earlier versions when reflection enum type classes.
 
 ## Usage
 
-TBW
-
-## Testing
-
-Run the tests via composer.
-
-```bash
-$ composer test
-```
-
-Or if you want code-coverage
-
-```bash
-$ composer test-coverage
-```
+See the [wiki](https://github.com/smplphp/inspector/wiki)
 
 ## Contributing
 
