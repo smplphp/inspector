@@ -11,10 +11,10 @@ use Smpl\Inspector\Contracts\MethodCollection;
 use Smpl\Inspector\Contracts\PropertyCollection;
 use Smpl\Inspector\Contracts\StructureCollection;
 use Smpl\Inspector\Exceptions\InspectionException;
-use Smpl\Inspector\Exceptions\InspectorException;
 use Smpl\Inspector\Filters\MethodFilter;
 use Smpl\Inspector\Filters\PropertyFilter;
 use Smpl\Inspector\Filters\StructureFilter;
+use Throwable;
 
 class Inspection
 {
@@ -187,17 +187,17 @@ class Inspection
             } else {
                 throw InspectionException::noSource();
             }
+
+            $structures = $this->inspector->getStructureFactory()
+                                          ->makeStructures(...$classes);
+
+            if (isset($this->structureFilter)) {
+                $structures = $structures->filter($this->structureFilter);
+            }
         } catch (InspectionException $exception) {
             throw $exception;
-        } catch (InspectorException $exception) {
+        } catch (Throwable $exception) {
             throw InspectionException::somethingWrong($exception);
-        }
-
-        $structures = $this->inspector->getStructureFactory()
-                                      ->makeStructures(...$classes);
-
-        if (isset($this->structureFilter)) {
-            $structures = $structures->filter($this->structureFilter);
         }
 
         return $structures;

@@ -14,3 +14,4 @@ parameters:
           paths:
               - src/Factories/StructureFactory.php
         - '#Parameter \#1 \$typeName of method Smpl\\Inspector\\Factories\\TypeFactory\:\:createClassType\(\) expects class\-string, string given#'
+        - '#Method Smpl\\Inspector\\Inspector\:\:getInstance\(\) should return Smpl\\Inspector\\Inspector but returns Smpl\\Inspector\\Inspector\|null.#'

@@ -8,8 +8,18 @@ use Smpl\Inspector\Mappers\ComposerMapper;
 
 final class Inspector
 {
-    private static self $instance;
+    private static ?self $instance;
 
+    /**
+     * @param \Smpl\Inspector\Contracts\TypeFactory|null      $types
+     * @param \Smpl\Inspector\Contracts\StructureFactory|null $structures
+     * @param \Smpl\Inspector\Contracts\Mapper|null           $mapper
+     *
+     * @return static
+     *
+     * @psalm-suppress NullableReturnStatement
+     * @psalm-suppress InvalidNullableReturnType
+     */
     public static function getInstance(
         ?Contracts\TypeFactory      $types = null,
         ?Contracts\StructureFactory $structures = null,
@@ -23,7 +33,7 @@ final class Inspector
         return self::$instance;
     }
 
-    public static function setInstance(self $instance): void
+    public static function setInstance(?self $instance): void
     {
         self::$instance = $instance;
     }
@@ -47,6 +57,8 @@ final class Inspector
 
     /**
      * @return \Smpl\Inspector\Contracts\TypeFactory
+     *
+     * @codeCoverageIgnore This is a singletons so it's hard to test
      */
     public function getTypeFactory(): Contracts\TypeFactory
     {
@@ -55,6 +67,8 @@ final class Inspector
 
     /**
      * @return \Smpl\Inspector\Contracts\StructureFactory
+     *
+     * @codeCoverageIgnore This is a singletons so it's hard to test
      */
     public function getStructureFactory(): Contracts\StructureFactory
     {
@@ -99,6 +113,7 @@ final class Inspector
      */
     public function inspectMethod(string $className, string $methodName): ?Contracts\Method
     {
+        /** @infection-ignore-all  */
         return $this->inspectClass($className)?->getMethod($methodName);
     }
 }

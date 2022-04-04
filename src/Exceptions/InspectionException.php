@@ -17,9 +17,10 @@ final class InspectionException extends InspectorException
 
     public static function somethingWrong(Throwable $throwable): self
     {
-        return new self(
-            'Something went wrong during inspection',
-            previous: $throwable
+        return new self(sprintf(
+            'Something went wrong during inspection "%s"',
+            $throwable->getMessage()
+        ), previous: $throwable
         );
     }
 }
