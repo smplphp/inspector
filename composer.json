@@ -2,6 +2,11 @@
   "name": "smplphp/inspector",
   "description": "A simple modern PHP class inspector and mapper library",
   "minimum-stability": "stable",
+  "keywords": [
+    "reflection",
+    "fluent",
+    "wrapper"
+  ],
   "license": "MIT",
   "type": "library",
   "authors": [
@@ -24,15 +29,14 @@
     "psr-4": {
       "Smpl\\Inspector\\": "src/"
     },
-    "files": []
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "autoload-dev": {
     "psr-4": {
       "Smpl\\Inspector\\Tests\\": "tests/"
-    },
-    "files": [
-      "src/helpers.php"
-    ]
+    }
   },
   "scripts": {
     "test": "./vendor/bin/phpunit",
@@ -48,7 +52,7 @@
       "@phpstan"
     ]
   },
-  "version": "v1.0.0-alpha",
+  "version": "1.1.0-alpha",
   "config": {
     "allow-plugins": {
       "infection/extension-installer": true
