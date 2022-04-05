@@ -30,7 +30,9 @@
     "psr-4": {
       "Smpl\\Inspector\\Tests\\": "tests/"
     },
-    "files": []
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "scripts": {
     "test": "./vendor/bin/phpunit",
