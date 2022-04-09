@@ -79,4 +79,11 @@ interface Type extends Stringable
      * @return bool
      */
     public function isBuiltin(): bool;
+
+    /**
+     * Check if the type is nullable.
+     *
+     * @return bool
+     */
+    public function isNullable(): bool;
 }

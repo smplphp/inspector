@@ -188,7 +188,7 @@ class TypeFactoryTest extends TestCase
     public function throws_an_exception_for_nullable_union_types(): void
     {
         $this->expectException(TypeException::class);
-        $this->expectExceptionMessage('Nullable types cannot include union or intersection types');
+        $this->expectExceptionMessage('The provided type \'?int|string\' is not valid');
 
         $this->factory->make('?int|string');
     }
@@ -199,7 +199,7 @@ class TypeFactoryTest extends TestCase
     public function throws_an_exception_for_nullable_intersection_types(): void
     {
         $this->expectException(TypeException::class);
-        $this->expectExceptionMessage('Nullable types cannot include union or intersection types');
+        $this->expectExceptionMessage('The provided type \'?' . BasicInterface::class . '&' . ExampleClass::class .'\' is not valid');
 
         $this->factory->make('?' . BasicInterface::class . '&' . ExampleClass::class);
     }
@@ -416,5 +416,27 @@ class TypeFactoryTest extends TestCase
         $type       = $this->factory->make($property->getType());
 
         self::assertInstanceOf(MixedType::class, $type);
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_trying_to_create_nullable_false(): void
+    {
+        $this->expectException(TypeException::class);
+        $this->expectExceptionMessage('Nullable types cannot include \'false\'');
+
+        $this->factory->makeNullable('false');
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_when_trying_to_create_nullable_mixed(): void
+    {
+        $this->expectException(TypeException::class);
+        $this->expectExceptionMessage('Nullable types cannot include \'mixed\'');
+
+        $this->factory->makeNullable('mixed');
     }
 }

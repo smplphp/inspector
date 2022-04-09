@@ -22,4 +22,9 @@ class FalseType extends BaseType
     {
         return ($type instanceof Type ? $type->getName() : $type) === $this->getName();
     }
+
+    public function isNullable(): bool
+    {
+        return false;
+    }
 }

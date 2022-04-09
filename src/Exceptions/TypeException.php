@@ -14,9 +14,14 @@ final class TypeException extends InspectorException
         ));
     }
 
-    public static function invalidNullable(): self
+    public static function invalidNullable(string $type): self
     {
-        return new self('Nullable types cannot include union or intersection types');
+        return new self(sprintf('Nullable types cannot include \'%s\'', $type));
+    }
+
+    public static function invalidType(string $type): self
+    {
+        return new self(sprintf('The provided type \'%s\' is not valid', $type));
     }
 
     public static function invalidUnion(string $type): self

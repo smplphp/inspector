@@ -51,6 +51,14 @@ class ClassTypeTest extends TestCase
     /**
      * @test
      */
+    public function class_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function class_types_are_not_builtin(): void
     {
         self::assertFalse($this->type->isBuiltin());

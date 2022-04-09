@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Contracts\WrapperType;
 
-class StaticType extends BaseType
+class StaticType extends BaseType implements WrapperType
 {
     /**
      * @var \Smpl\Inspector\Types\ClassType

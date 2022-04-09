@@ -49,6 +49,14 @@ class ArrayTypeTest extends TestCase
     /**
      * @test
      */
+    public function array_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function array_types_are_builtin(): void
     {
         self::assertTrue($this->type->isBuiltin());

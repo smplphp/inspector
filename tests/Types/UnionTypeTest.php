@@ -54,6 +54,22 @@ class UnionTypeTest extends TestCase
     /**
      * @test
      */
+    public function union_types_cant_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
+    public function union_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function union_types_are_builtin_if_all_their_subtypes_are(): void
     {
         self::assertTrue($this->type->isBuiltin());

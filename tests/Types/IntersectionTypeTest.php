@@ -54,6 +54,14 @@ class IntersectionTypeTest extends TestCase
     /**
      * @test
      */
+    public function intersection_types_cant_be_nullable(): void
+    {
+        self::assertFalse($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function intersection_types_are_not_builtin(): void
     {
         self::assertFalse($this->type->isBuiltin());
