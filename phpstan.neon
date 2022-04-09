@@ -15,3 +15,5 @@ parameters:
               - src/Factories/StructureFactory.php
         - '#Parameter \#1 \$typeName of method Smpl\\Inspector\\Factories\\TypeFactory\:\:createClassType\(\) expects class\-string, string given#'
         - '#Method Smpl\\Inspector\\Inspector\:\:getInstance\(\) should return Smpl\\Inspector\\Inspector but returns Smpl\\Inspector\\Inspector\|null.#'
+        - '#Parameter \#1 \$self of method Smpl\\Inspector\\Contracts\\TypeFactory\:\:makeSelf\(\) expects class-string\|ReflectionType\|Smpl\\Inspector\\Contracts\\Type, string given#'
+        - '#Parameter \#1 \$static of method Smpl\\Inspector\\Contracts\\TypeFactory\:\:makeStatic\(\) expects class-string\|ReflectionType\|Smpl\\Inspector\\Contracts\\Type, string given#'

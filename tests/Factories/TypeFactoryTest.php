@@ -22,6 +22,8 @@ use Smpl\Inspector\Types\IterableType;
 use Smpl\Inspector\Types\MixedType;
 use Smpl\Inspector\Types\NullableType;
 use Smpl\Inspector\Types\ObjectType;
+use Smpl\Inspector\Types\SelfType;
+use Smpl\Inspector\Types\StaticType;
 use Smpl\Inspector\Types\StringType;
 use Smpl\Inspector\Types\UnionType;
 use Smpl\Inspector\Types\VoidType;
@@ -79,6 +81,44 @@ class TypeFactoryTest extends TestCase
     public function creates_class_types_from_class_names(): void
     {
         self::assertInstanceOf(ClassType::class, $this->factory->make(BasicInterface::class));
+    }
+
+    /**
+     * @test
+     */
+    public function creates_self_types_from_class_names(): void
+    {
+        self::assertInstanceOf(SelfType::class, $this->factory->makeSelf(ExampleClass::class));
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_for_self_types_that_arent_classes(): void
+    {
+        $this->expectException(TypeException::class);
+        $this->expectExceptionMessage('Self types must represent a valid class');
+
+        $this->factory->makeSelf('string');
+    }
+
+    /**
+     * @test
+     */
+    public function creates_static_types_from_class_names(): void
+    {
+        self::assertInstanceOf(StaticType::class, $this->factory->makeStatic(BasicInterface::class));
+    }
+
+    /**
+     * @test
+     */
+    public function throws_an_exception_for_static_types_that_arent_classes(): void
+    {
+        $this->expectException(TypeException::class);
+        $this->expectExceptionMessage('Static types must represent a valid class');
+
+        $this->factory->makeStatic('string');
     }
 
     /**

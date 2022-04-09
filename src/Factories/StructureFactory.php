@@ -84,11 +84,20 @@ class StructureFactory implements Contracts\StructureFactory
         if (
             ($type instanceof ReflectionNamedType)
             && $class !== null
-            && ($type->getName() === 'self' || $type->getName() === 'static')
         ) {
-            return $this->typeFactory->make(
-                ($type->allowsNull() ? '?' : '') . $class
-            );
+            if ($type->getName() === 'self') {
+                return $this->typeFactory->makeSelf($class);
+            }
+
+            if ($type->getName() === 'static') {
+                return $this->typeFactory->makeStatic($class);
+            }
+
+            if (MapperHelper::isValidClass($type->getName())) {
+                return $this->typeFactory->make(
+                    ($type->allowsNull() ? '?' : '') . $type->getName()
+                );
+            }
         }
 
         return $this->typeFactory->make($type);
@@ -265,7 +274,7 @@ class StructureFactory implements Contracts\StructureFactory
         return $this->addProperty(new Elements\Property(
             $this->makeStructure($class),
             $property,
-            $this->getType($property->getType())
+            $this->getType($property->getType(), $class)
         ));
     }
 
@@ -343,10 +352,12 @@ class StructureFactory implements Contracts\StructureFactory
             throw Exceptions\StructureException::functions();
         }
 
+        $method = $this->makeMethod($parentReflection);
+
         return new Elements\Parameter(
-            $this->makeMethod($parentReflection),
+            $method,
             $reflection,
-            $this->getType($reflection->getType())
+            $this->getType($reflection->getType(), $method->getStructure()->getFullName())
         );
     }
 

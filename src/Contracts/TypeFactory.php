@@ -25,6 +25,20 @@ interface TypeFactory
     public function make(ReflectionType|string $type): Type;
 
     /**
+     * @param \ReflectionType|\Smpl\Inspector\Contracts\Type|class-string $self
+     *
+     * @return \Smpl\Inspector\Contracts\Type
+     */
+    public function makeSelf(ReflectionType|Type|string $self): Type;
+
+    /**
+     * @param \ReflectionType|\Smpl\Inspector\Contracts\Type|class-string $static
+     *
+     * @return \Smpl\Inspector\Contracts\Type
+     */
+    public function makeStatic(ReflectionType|Type|string $static): Type;
+
+    /**
      * Make a nullable type from the provided reflection or name.
      *
      * @param \ReflectionType|\Smpl\Inspector\Contracts\Type|string|class-string $type
