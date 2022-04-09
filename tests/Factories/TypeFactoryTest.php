@@ -14,6 +14,7 @@ use Smpl\Inspector\Tests\Fixtures\SecondInterface;
 use Smpl\Inspector\Types\ArrayType;
 use Smpl\Inspector\Types\BoolType;
 use Smpl\Inspector\Types\ClassType;
+use Smpl\Inspector\Types\FalseType;
 use Smpl\Inspector\Types\FloatType;
 use Smpl\Inspector\Types\IntersectionType;
 use Smpl\Inspector\Types\IntType;
@@ -45,6 +46,7 @@ class TypeFactoryTest extends TestCase
     {
         self::assertInstanceOf(ArrayType::class, $this->factory->make('array'));
         self::assertInstanceOf(BoolType::class, $this->factory->make('bool'));
+        self::assertInstanceOf(FalseType::class, $this->factory->make('false'));
         self::assertInstanceOf(FloatType::class, $this->factory->make('float'));
         self::assertInstanceOf(IntType::class, $this->factory->make('int'));
         self::assertInstanceOf(IterableType::class, $this->factory->make('iterable'));
@@ -61,6 +63,7 @@ class TypeFactoryTest extends TestCase
     {
         self::assertSame($this->factory->make('array'), $this->factory->make('array'));
         self::assertSame($this->factory->make('bool'), $this->factory->make('bool'));
+        self::assertSame($this->factory->make('false'), $this->factory->make('false'));
         self::assertSame($this->factory->make('float'), $this->factory->make('float'));
         self::assertSame($this->factory->make('int'), $this->factory->make('int'));
         self::assertSame($this->factory->make('iterable'), $this->factory->make('iterable'));
