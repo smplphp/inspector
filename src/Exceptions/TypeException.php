@@ -37,6 +37,16 @@ final class TypeException extends InspectorException
         return new self('Mixed types cannot be nullable, or part of a union type');
     }
 
+    public static function invalidSelf(): self
+    {
+        return new self('Self types must represent a valid class');
+    }
+
+    public static function invalidStatic(): self
+    {
+        return new self('Static types must represent a valid class');
+    }
+
     public static function invalid(string $type): self
     {
         return new self(sprintf(
