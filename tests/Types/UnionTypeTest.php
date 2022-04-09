@@ -12,6 +12,7 @@ use Smpl\Inspector\Tests\Fixtures\SecondInterface;
 use Smpl\Inspector\Types\ArrayType;
 use Smpl\Inspector\Types\BoolType;
 use Smpl\Inspector\Types\ClassType;
+use Smpl\Inspector\Types\FalseType;
 use Smpl\Inspector\Types\FloatType;
 use Smpl\Inspector\Types\IntersectionType;
 use Smpl\Inspector\Types\IntType;
@@ -168,6 +169,20 @@ class UnionTypeTest extends TestCase
     {
         self::assertFalse($this->type->accepts('bool'));
         self::assertFalse($this->type->accepts(new BoolType()));
+    }
+
+    /**
+     * @test
+     */
+    public function union_types_accept_false_types_if_it_is_one_of_their_child_types(): void
+    {
+        $unionType1 = new UnionType(new StringType(), new FalseType());
+        $unionType2 = new UnionType(new StringType(), new IntType());
+
+        self::assertTrue($unionType1->accepts('false'));
+        self::assertTrue($unionType1->accepts(new FalseType()));
+        self::assertFalse($unionType2->accepts('false'));
+        self::assertFalse($unionType2->accepts(new FalseType()));
     }
 
     /**

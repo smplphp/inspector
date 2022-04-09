@@ -12,6 +12,7 @@ use Smpl\Inspector\Tests\Fixtures\SecondInterface;
 use Smpl\Inspector\Types\ArrayType;
 use Smpl\Inspector\Types\BoolType;
 use Smpl\Inspector\Types\ClassType;
+use Smpl\Inspector\Types\FalseType;
 use Smpl\Inspector\Types\FloatType;
 use Smpl\Inspector\Types\IntersectionType;
 use Smpl\Inspector\Types\IntType;
@@ -143,6 +144,15 @@ class BoolTypeTest extends TestCase
     {
         self::assertTrue($this->type->accepts('bool'));
         self::assertTrue($this->type->accepts(new BoolType()));
+    }
+
+    /**
+     * @test
+     */
+    public function bool_types_accept_false_types(): void
+    {
+        self::assertTrue($this->type->accepts('false'));
+        self::assertTrue($this->type->accepts(new FalseType()));
     }
 
     /**

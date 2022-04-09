@@ -156,7 +156,7 @@ class FalseTypeTest extends TestCase
     /**
      * @test
      */
-    public function false_types_dont_accept_false_types(): void
+    public function false_types_accept_false_types(): void
     {
         self::assertTrue($this->type->accepts('false'));
         self::assertTrue($this->type->accepts(new FalseType()));
