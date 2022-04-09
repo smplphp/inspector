@@ -9,6 +9,7 @@ use ReflectionNamedType;
 use ReflectionType;
 use ReflectionUnionType;
 use Smpl\Inspector\Contracts;
+use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Exceptions\TypeException;
 use Smpl\Inspector\Support\MapperHelper;
 use Smpl\Inspector\Types;
@@ -45,6 +46,16 @@ class TypeFactory implements Contracts\TypeFactory
      * @var \Smpl\Inspector\Contracts\Type[]
      */
     private array $baseTypes = [];
+
+    /**
+     * @var \Smpl\Inspector\Types\SelfType[]
+     */
+    private array $selfTypes = [];
+
+    /**
+     * @var \Smpl\Inspector\Types\StaticType[]
+     */
+    private array $staticTypes = [];
 
     /**
      * @var \Smpl\Inspector\Types\UnionType[]
@@ -145,6 +156,46 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         return $typeObject;
+    }
+
+    public function makeSelf(ReflectionType|Type|string $self): Type
+    {
+        /** @infection-ignore-all  */
+        if (! ($self instanceof Type)) {
+            $self = $this->make($self);
+        }
+
+        if (! ($self instanceof Types\ClassType)) {
+            throw TypeException::invalidSelf();
+        }
+
+        $selfName = $self->getName();
+
+        if (! isset($this->selfTypes[$selfName])) {
+            $this->selfTypes[$selfName] = new Types\SelfType($self);
+        }
+
+        return $this->selfTypes[$selfName];
+    }
+
+    public function makeStatic(ReflectionType|Type|string $static): Type
+    {
+        /** @infection-ignore-all  */
+        if (! ($static instanceof Type)) {
+            $static = $this->make($static);
+        }
+
+        if (! ($static instanceof Types\ClassType)) {
+            throw TypeException::invalidStatic();
+        }
+
+        $staticName = $static->getName();
+
+        if (! isset($this->staticTypes[$staticName])) {
+            $this->staticTypes[$staticName] = new Types\StaticType($static);
+        }
+
+        return $this->staticTypes[$staticName];
     }
 
     public function makeNullable(ReflectionType|Contracts\Type|string $type): Types\NullableType
