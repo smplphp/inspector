@@ -12,6 +12,7 @@ use Smpl\Inspector\Tests\Fixtures\SecondInterface;
 use Smpl\Inspector\Types\ArrayType;
 use Smpl\Inspector\Types\BoolType;
 use Smpl\Inspector\Types\ClassType;
+use Smpl\Inspector\Types\FalseType;
 use Smpl\Inspector\Types\FloatType;
 use Smpl\Inspector\Types\IntersectionType;
 use Smpl\Inspector\Types\IntType;
@@ -144,6 +145,15 @@ class FloatTypeTest extends TestCase
     {
         self::assertFalse($this->type->accepts('bool'));
         self::assertFalse($this->type->accepts(new BoolType()));
+    }
+
+    /**
+     * @test
+     */
+    public function float_types_dont_accept_false_types(): void
+    {
+        self::assertFalse($this->type->accepts('false'));
+        self::assertFalse($this->type->accepts(new FalseType()));
     }
 
     /**

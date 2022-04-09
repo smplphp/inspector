@@ -264,6 +264,7 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         return match ($typeName) {
+            'false'    => new Types\FalseType(),
             'array'    => new Types\ArrayType(),
             'bool'     => new Types\BoolType(),
             'float'    => new Types\FloatType(),

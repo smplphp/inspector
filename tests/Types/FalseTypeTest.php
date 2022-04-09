@@ -27,21 +27,21 @@ use stdClass;
 
 /**
  * @group types
- * @group bool
+ * @group false
  */
-class BoolTypeTest extends TestCase
+class FalseTypeTest extends TestCase
 {
-    private BoolType $type;
+    private FalseType $type;
 
     protected function setUp(): void
     {
-        $this->type = new BoolType();
+        $this->type = new FalseType();
     }
 
     /**
      * @test
      */
-    public function bool_types_are_primitive(): void
+    public function false_types_are_primitive(): void
     {
         self::assertTrue($this->type->isPrimitive());
     }
@@ -49,7 +49,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_are_builtin(): void
+    public function false_types_are_builtin(): void
     {
         self::assertTrue($this->type->isBuiltin());
     }
@@ -57,7 +57,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_match_arrays(): void
+    public function false_types_dont_match_arrays(): void
     {
         self::assertFalse($this->type->matches([]));
     }
@@ -65,16 +65,23 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_match_bools(): void
+    public function false_types_match_false(): void
     {
         self::assertTrue($this->type->matches(false));
-        self::assertTrue($this->type->matches(true));
     }
 
     /**
      * @test
      */
-    public function bool_types_dont_match_floats(): void
+    public function false_types_dont_match_true(): void
+    {
+        self::assertFalse($this->type->matches(true));
+    }
+
+    /**
+     * @test
+     */
+    public function false_types_dont_match_floats(): void
     {
         self::assertFalse($this->type->matches(3.5));
     }
@@ -82,7 +89,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_match_ints(): void
+    public function false_types_dont_match_ints(): void
     {
         self::assertFalse($this->type->matches(0));
     }
@@ -90,7 +97,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_match_iterables(): void
+    public function false_types_dont_match_iterables(): void
     {
         self::assertFalse($this->type->matches(new ArrayIterator()));
     }
@@ -98,7 +105,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_match_null(): void
+    public function false_types_dont_match_null(): void
     {
         self::assertFalse($this->type->matches(null));
     }
@@ -106,7 +113,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_match_objects(): void
+    public function false_types_dont_match_objects(): void
     {
         self::assertFalse($this->type->matches(new stdClass()));
     }
@@ -114,7 +121,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_match_strings(): void
+    public function false_types_dont_match_strings(): void
     {
         self::assertFalse($this->type->matches('bool'));
     }
@@ -122,16 +129,16 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_accept_nullable_versions_of_themselves(): void
+    public function false_types_dont_accept_nullable_versions_of_themselves(): void
     {
-        self::assertTrue($this->type->accepts('?bool'));
-        self::assertTrue($this->type->accepts(new NullableType($this->type)));
+        self::assertFalse($this->type->accepts('?false'));
+        self::assertFalse($this->type->accepts(new NullableType($this->type)));
     }
 
     /**
      * @test
      */
-    public function bool_types_dont_accept_array_types(): void
+    public function false_types_dont_accept_array_types(): void
     {
         self::assertFalse($this->type->accepts('array'));
         self::assertFalse($this->type->accepts(new ArrayType()));
@@ -140,16 +147,16 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_accept_bool_types(): void
+    public function false_types_dont_accept_bool_types(): void
     {
-        self::assertTrue($this->type->accepts('bool'));
-        self::assertTrue($this->type->accepts(new BoolType()));
+        self::assertFalse($this->type->accepts('bool'));
+        self::assertFalse($this->type->accepts(new BoolType()));
     }
 
     /**
      * @test
      */
-    public function bool_types_accept_false_types(): void
+    public function false_types_accept_false_types(): void
     {
         self::assertTrue($this->type->accepts('false'));
         self::assertTrue($this->type->accepts(new FalseType()));
@@ -158,7 +165,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_class_types(): void
+    public function false_types_dont_accept_class_types(): void
     {
         self::assertFalse($this->type->accepts(BasicInterface::class));
         self::assertFalse($this->type->accepts(new ClassType(BasicInterface::class)));
@@ -167,7 +174,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_float_types(): void
+    public function false_types_dont_accept_float_types(): void
     {
         self::assertFalse($this->type->accepts('float'));
         self::assertFalse($this->type->accepts(new FloatType()));
@@ -176,7 +183,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_intersection_types(): void
+    public function false_types_dont_accept_intersection_types(): void
     {
         self::assertFalse($this->type->accepts(
             BasicInterface::class . Type::INTERSECTION_SEPARATOR . SecondInterface::class
@@ -190,7 +197,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_int_types(): void
+    public function false_types_dont_accept_int_types(): void
     {
         self::assertFalse($this->type->accepts('int'));
         self::assertFalse($this->type->accepts(new IntType()));
@@ -199,7 +206,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_iterable_types(): void
+    public function false_types_dont_accept_iterable_types(): void
     {
         self::assertFalse($this->type->accepts('iterable'));
         self::assertFalse($this->type->accepts(new IterableType()));
@@ -208,7 +215,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_accept_mixed_types(): void
+    public function false_types_accept_mixed_types(): void
     {
         self::assertFalse($this->type->accepts('mixed'));
         self::assertFalse($this->type->accepts(new MixedType()));
@@ -217,7 +224,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_nullable_types_with_different_base_types(): void
+    public function false_types_dont_accept_nullable_types_with_different_base_types(): void
     {
         self::assertFalse($this->type->accepts('?array'));
         self::assertFalse($this->type->accepts(new NullableType(new ArrayType())));
@@ -226,7 +233,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_object_types(): void
+    public function false_types_dont_accept_object_types(): void
     {
         self::assertFalse($this->type->accepts('object'));
         self::assertFalse($this->type->accepts(new ObjectType()));
@@ -235,7 +242,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_string_types(): void
+    public function false_types_dont_accept_string_types(): void
     {
         self::assertFalse($this->type->accepts('string'));
         self::assertFalse($this->type->accepts(new StringType()));
@@ -244,7 +251,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_union_types_with_different_base_types(): void
+    public function false_types_dont_accept_union_types_with_different_base_types(): void
     {
         self::assertFalse($this->type->accepts('string|float'));
         self::assertFalse($this->type->accepts(new UnionType(
@@ -255,7 +262,7 @@ class BoolTypeTest extends TestCase
     /**
      * @test
      */
-    public function bool_types_dont_accept_void_types(): void
+    public function false_types_dont_accept_void_types(): void
     {
         self::assertFalse($this->type->accepts('void'));
         self::assertFalse($this->type->accepts(new VoidType()));
