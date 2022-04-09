@@ -145,22 +145,22 @@ class TypeFactory implements Contracts\TypeFactory
         }
 
         // If this happens there's a severe issue somewhere
+        // @codeCoverageIgnoreStart
         if ($typeObject === null) {
-            // @codeCoverageIgnoreStart
             throw TypeException::invalid($type->__toString());
-            // @codeCoverageIgnoreEnd
         }
 
-        if (! ($typeObject instanceof Types\MixedType) && ! ($typeObject instanceof Types\VoidType) && $type->allowsNull()) {
+        if ($type->allowsNull() && $typeObject->isNullable()) {
             return $this->makeNullable($typeObject);
         }
+        // @codeCoverageIgnoreEnd
 
         return $typeObject;
     }
 
     public function makeSelf(ReflectionType|Type|string $self): Type
     {
-        /** @infection-ignore-all  */
+        /** @infection-ignore-all */
         if (! ($self instanceof Type)) {
             $self = $this->make($self);
         }
@@ -180,7 +180,7 @@ class TypeFactory implements Contracts\TypeFactory
 
     public function makeStatic(ReflectionType|Type|string $static): Type
     {
-        /** @infection-ignore-all  */
+        /** @infection-ignore-all */
         if (! ($static instanceof Type)) {
             $static = $this->make($static);
         }
@@ -206,6 +206,11 @@ class TypeFactory implements Contracts\TypeFactory
 
         $baseType     = $type instanceof Contracts\Type ? $type : $this->make($type);
         $baseTypeName = $baseType->getName();
+
+        if (! $baseType->isNullable()) {
+            throw TypeException::invalidNullable($baseTypeName);
+        }
+
 
         if (! isset($this->nullableTypes[$baseTypeName])) {
             $this->nullableTypes[$baseTypeName] = new Types\NullableType($baseType);
@@ -341,7 +346,7 @@ class TypeFactory implements Contracts\TypeFactory
 
         if (str_starts_with($type, Contracts\Type::NULLABLE_CHARACTER)) {
             if (str_contains($type, Contracts\Type::UNION_SEPARATOR) || str_contains($type, Contracts\Type::INTERSECTION_SEPARATOR)) {
-                throw TypeException::invalidNullable();
+                throw TypeException::invalidType($type);
             }
 
             return $this->makeNullable($this->makeBaseType(substr($type, 1)));

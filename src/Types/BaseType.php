@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Contracts\WrapperType;
 use Smpl\Inspector\Factories\TypeFactory;
 
 abstract class BaseType implements Type
@@ -27,6 +28,11 @@ abstract class BaseType implements Type
         return true;
     }
 
+    public function isNullable(): bool
+    {
+        return true;
+    }
+
     public function accepts(Type|string $type): bool
     {
         if ($type === $this) {
@@ -37,7 +43,7 @@ abstract class BaseType implements Type
             $type = TypeFactory::getInstance()->make($type);
         }
 
-        if ($type instanceof NullableType) {
+        if ($type instanceof WrapperType) {
             $type = $type->getBaseType();
         }
 

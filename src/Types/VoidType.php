@@ -25,4 +25,9 @@ class VoidType extends BaseType
             || $type === 'never'
             || $type instanceof self;
     }
+
+    public function isNullable(): bool
+    {
+        return false;
+    }
 }

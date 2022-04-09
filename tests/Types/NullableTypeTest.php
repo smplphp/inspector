@@ -49,6 +49,14 @@ class NullableTypeTest extends TestCase
     /**
      * @test
      */
+    public function nullable_types_cant_be_nullable(): void
+    {
+        self::assertFalse($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function nullable_types_are_primitive(): void
     {
         self::assertTrue($this->type->isPrimitive());

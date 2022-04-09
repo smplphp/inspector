@@ -71,6 +71,11 @@ class IntersectionType extends BaseType
         return false;
     }
 
+    public function isNullable(): bool
+    {
+        return false;
+    }
+
     /**
      * @return \Smpl\Inspector\Contracts\Type[]
      */

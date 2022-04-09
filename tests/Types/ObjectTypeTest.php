@@ -49,6 +49,14 @@ class ObjectTypeTest extends TestCase
     /**
      * @test
      */
+    public function object_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function object_types_are_builtin(): void
     {
         self::assertTrue($this->type->isBuiltin());

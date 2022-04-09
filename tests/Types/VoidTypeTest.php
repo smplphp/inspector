@@ -49,6 +49,14 @@ class VoidTypeTest extends TestCase
     /**
      * @test
      */
+    public function void_types_cant_be_nullable(): void
+    {
+        self::assertFalse($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function void_types_are_builtin(): void
     {
         self::assertTrue($this->type->isBuiltin());

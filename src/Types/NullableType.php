@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Contracts\WrapperType;
 use Smpl\Inspector\Factories\TypeFactory;
 
-class NullableType extends BaseType
+class NullableType extends BaseType implements WrapperType
 {
     /**
      * @var \Smpl\Inspector\Contracts\Type
@@ -68,5 +69,10 @@ class NullableType extends BaseType
         return $this->getBaseType()->accepts(
             TypeFactory::getInstance()->make($type)
         );
+    }
+
+    public function isNullable(): bool
+    {
+        return false;
     }
 }

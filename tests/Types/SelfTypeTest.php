@@ -52,6 +52,14 @@ class SelfTypeTest extends TestCase
     /**
      * @test
      */
+    public function self_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function self_types_are_not_primitive(): void
     {
         self::assertFalse($this->type->isPrimitive());

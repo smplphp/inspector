@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
+use Smpl\Inspector\Contracts\WrapperType;
 use Smpl\Inspector\Factories\TypeFactory;
 
-class SelfType extends BaseType
+class SelfType extends BaseType implements WrapperType
 {
     /**
      * @var \Smpl\Inspector\Types\ClassType
@@ -59,7 +60,7 @@ class SelfType extends BaseType
             $type = TypeFactory::getInstance()->make($type);
         }
 
-        if ($type instanceof NullableType) {
+        if ($type instanceof WrapperType) {
             $type = $type->getBaseType();
         }
 

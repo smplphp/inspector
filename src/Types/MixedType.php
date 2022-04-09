@@ -22,4 +22,9 @@ class MixedType extends BaseType
     {
         return ! ($type === 'never' || $type === 'void' || $type instanceof VoidType);
     }
+
+    public function isNullable(): bool
+    {
+        return false;
+    }
 }

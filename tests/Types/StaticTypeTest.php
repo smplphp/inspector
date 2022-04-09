@@ -52,6 +52,14 @@ class StaticTypeTest extends TestCase
     /**
      * @test
      */
+    public function static_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function static_types_are_not_primitive(): void
     {
         self::assertFalse($this->type->isPrimitive());

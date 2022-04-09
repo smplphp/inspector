@@ -49,6 +49,14 @@ class FloatTypeTest extends TestCase
     /**
      * @test
      */
+    public function float_types_can_be_nullable(): void
+    {
+        self::assertTrue($this->type->isNullable());
+    }
+
+    /**
+     * @test
+     */
     public function float_types_are_builtin(): void
     {
         self::assertTrue($this->type->isBuiltin());
