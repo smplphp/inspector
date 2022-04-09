@@ -319,10 +319,8 @@ class InspectionTest extends TestCase
                                ->inspect()
                                ->inNamespaces('Smpl\Inspector\Elements')
                                ->where(StructureFilter::make()->uses(HasAttributes::class))
-                               ->getProperties(
-                                   PropertyFilter::make()
-                                                 ->hasType(Visibility::class)
-                               )->names();
+                               ->getProperties(PropertyFilter::make()->hasType(Visibility::class))
+                               ->names();
 
         self::assertCount(2, $properties);
         self::assertContains('Smpl\Inspector\Elements\Method::visibility', $properties);

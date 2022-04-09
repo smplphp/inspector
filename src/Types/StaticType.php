@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Types;
 
 use Smpl\Inspector\Contracts\Type;
-use Smpl\Inspector\Factories\TypeFactory;
 
 class StaticType extends BaseType
 {
@@ -34,7 +33,7 @@ class StaticType extends BaseType
         return false;
     }
 
-    /** @infection-ignore-all  */
+    /** @infection-ignore-all */
     public function getBaseType(): Type
     {
         return $this->baseType;
