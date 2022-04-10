@@ -215,10 +215,14 @@ final class MethodFilter implements MethodFilterContract
             return true;
         }
 
+        if ($method->isConstructor()) {
+            return false;
+        }
+
         $type = $method->getReturnType();
 
         if ($type === null) {
-            return false;
+            $type = TypeFactory::getInstance()->make('mixed');
         }
 
         return $this->accept === $type->accepts($this->acceptType);
@@ -230,10 +234,14 @@ final class MethodFilter implements MethodFilterContract
             return true;
         }
 
+        if ($method->isConstructor()) {
+            return false;
+        }
+
         $type = $method->getReturnType();
 
         if ($type === null) {
-            return false;
+            $type = TypeFactory::getInstance()->make('mixed');
         }
 
         return $this->match === $type->matches($this->matchValue);

@@ -190,7 +190,11 @@ final class ParameterFilter implements ParameterFilterContract
         $type = $parameter->getType();
 
         if ($type === null) {
-            return false;
+            $type = TypeFactory::getInstance()->make('mixed');
+        }
+
+        if (! ($this->acceptType instanceof Type)) {
+            $this->acceptType = TypeFactory::getInstance()->make($this->acceptType);
         }
 
         return $this->accept === $type->accepts($this->acceptType);
@@ -205,7 +209,7 @@ final class ParameterFilter implements ParameterFilterContract
         $type = $parameter->getType();
 
         if ($type === null) {
-            return false;
+            $type = TypeFactory::getInstance()->make('mixed');
         }
 
         return $this->match === $type->matches($this->matchValue);

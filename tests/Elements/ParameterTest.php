@@ -418,6 +418,124 @@ class ParameterTest extends TestCase
     /**
      * @test
      */
+    public function parameter_collections_can_be_filtered_by_what_their_type_accepts(): void
+    {
+        $structure  = $this->factory->makeStructure(FilterableParameterClass::class);
+        $collection = $structure->getConstructor()->getParameters();
+
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeAccepts('string')
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeAccepts(new StringType())
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeAccepts('int')
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeAccepts(new IntType())
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeAccepts('?bool')
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeAccepts(new NullableType(new BoolType()))
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeAccepts('float')
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeAccepts(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function parameter_collections_can_be_filtered_by_what_their_type_does_not_accept(): void
+    {
+        $structure  = $this->factory->makeStructure(FilterableParameterClass::class);
+        $collection = $structure->getConstructor()->getParameters();
+
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept('string')
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept(new StringType())
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept('int')
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept(new IntType())
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept('?bool')
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept(new NullableType(new BoolType()))
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept('float')
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeDoesNotAccept(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function parameter_collections_can_be_filtered_by_what_their_type_matches(): void
+    {
+        $structure  = $this->factory->makeStructure(FilterableParameterClass::class);
+        $collection = $structure->getConstructor()->getParameters();
+
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeMatches('string')
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeMatches(3)
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeMatches(false)
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeMatches(null)
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeMatches(11.6)
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function parameter_collections_can_be_filtered_by_what_their_type_does_not_match(): void
+    {
+        $structure  = $this->factory->makeStructure(FilterableParameterClass::class);
+        $collection = $structure->getConstructor()->getParameters();
+
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeDoesNotMatch('string')
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeDoesNotMatch(3)
+        ));
+        self::assertCount(3, $collection->filter(
+            ParameterFilter::make()->typeDoesNotMatch(false)
+        ));
+        self::assertCount(2, $collection->filter(
+            ParameterFilter::make()->typeDoesNotMatch(null)
+        ));
+        self::assertCount(4, $collection->filter(
+            ParameterFilter::make()->typeDoesNotMatch(11.6)
+        ));
+    }
+
+    /**
+     * @test
+     */
     public function parameter_collections_can_be_filtered_by_whether_they_are_nullable(): void
     {
         $structure  = $this->factory->makeStructure(FilterableParameterClass::class);
