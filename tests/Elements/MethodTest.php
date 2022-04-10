@@ -192,7 +192,7 @@ class MethodTest extends TestCase
         $parameters    = $method->getParameters(ParameterFilter::make()->hasType('int'));
 
         self::assertCount(3, $allParameters);
-        self::assertCount(2, $parameters);
+        self::assertCount(1, $parameters);
     }
 
     /**
@@ -563,6 +563,97 @@ class MethodTest extends TestCase
         ));
         self::assertCount(0, $collection->filter(
             MethodFilter::make()->hasReturnType(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function method_collections_can_be_filtered_by_what_their_return_type_accepts(): void
+    {
+        $structure  = $this->factory->makeStructure(AbstractClass::class);
+        $collection = $structure->getMethods();
+
+        self::assertCount(2, $collection->filter(
+            MethodFilter::make()->returnTypeAccepts('void')
+        ));
+        self::assertCount(2, $collection->filter(
+            MethodFilter::make()->returnTypeAccepts(new VoidType())
+        ));
+        self::assertCount(2, $collection->filter(
+            MethodFilter::make()->returnTypeAccepts('int')
+        ));
+        self::assertCount(2, $collection->filter(
+            MethodFilter::make()->returnTypeAccepts(new IntType())
+        ));
+        self::assertCount(1, $collection->filter(
+            MethodFilter::make()->returnTypeAccepts(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function method_collections_can_be_filtered_by_what_their_return_type_does_not_accept(): void
+    {
+        $structure  = $this->factory->makeStructure(AbstractClass::class);
+        $collection = $structure->getMethods();
+
+        self::assertCount(3, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotAccept('void')
+        ));
+        self::assertCount(3, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotAccept(new VoidType())
+        ));
+        self::assertCount(3, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotAccept('int')
+        ));
+        self::assertCount(3, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotAccept(new IntType())
+        ));
+        self::assertCount(4, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotAccept(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function method_collections_can_be_filtered_by_what_their_return_type_matches(): void
+    {
+        $structure  = $this->factory->makeStructure(AbstractClass::class);
+        $collection = $structure->getMethods();
+
+        self::assertCount(1, $collection->filter(
+            MethodFilter::make()->returnTypeMatches(null)
+        ));
+        self::assertCount(2, $collection->filter(
+            MethodFilter::make()->returnTypeMatches(4)
+        ));
+        self::assertCount(1, $collection->filter(
+            MethodFilter::make()->returnTypeMatches(11.0)
+        ));
+        self::assertCount(2, $collection->filter(
+            MethodFilter::make()->returnTypeMatches(true)
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function method_collections_can_be_filtered_by_what_their_return_type_does_not_match(): void
+    {
+        $structure  = $this->factory->makeStructure(AbstractClass::class);
+        $collection = $structure->getMethods();
+
+        self::assertCount(4, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotMatch(null)
+        ));
+        self::assertCount(3, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotMatch(4)
+        ));
+        self::assertCount(3, $collection->filter(
+            MethodFilter::make()->returnTypeDoesNotMatch(false)
         ));
     }
 

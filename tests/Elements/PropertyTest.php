@@ -492,7 +492,7 @@ class PropertyTest extends TestCase
     /**
      * @test
      */
-    public function property_collections_can_be_filtered_by_their_return_type(): void
+    public function property_collections_can_be_filtered_by_their_type(): void
     {
         $structure  = $this->factory->makeStructure(ExampleClass::class);
         $collection = $structure->getProperties();
@@ -511,6 +511,100 @@ class PropertyTest extends TestCase
         ));
         self::assertCount(0, $collection->filter(
             PropertyFilter::make()->hasType(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function property_collections_can_be_filtered_by_what_their_type_accepts(): void
+    {
+        $structure  = $this->factory->makeStructure(ExampleClass::class);
+        $collection = $structure->getProperties();
+
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeAccepts('string')
+        ));
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeAccepts(new StringType())
+        ));
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeAccepts('?int')
+        ));
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeAccepts(new NullableType(new IntType()))
+        ));
+        self::assertCount(2, $collection->filter(
+            PropertyFilter::make()->typeAccepts(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function property_collections_can_be_filtered_by_what_their_type_does_not_accept(): void
+    {
+        $structure  = $this->factory->makeStructure(ExampleClass::class);
+        $collection = $structure->getProperties();
+
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeDoesNotAccept('string')
+        ));
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeDoesNotAccept(new StringType())
+        ));
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeDoesNotAccept('?int')
+        ));
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeDoesNotAccept(new NullableType(new IntType()))
+        ));
+        self::assertCount(7, $collection->filter(
+            PropertyFilter::make()->typeDoesNotAccept(new FloatType())
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function property_collections_can_be_filtered_by_what_their_type_matches(): void
+    {
+        $structure  = $this->factory->makeStructure(ExampleClass::class);
+        $collection = $structure->getProperties();
+
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeMatches('string')
+        ));
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeMatches(3)
+        ));
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeMatches(null)
+        ));
+        self::assertCount(2, $collection->filter(
+            PropertyFilter::make()->typeMatches(11.0)
+        ));
+    }
+
+    /**
+     * @test
+     */
+    public function property_collections_can_be_filtered_by_what_their_type_does_not_match(): void
+    {
+        $structure  = $this->factory->makeStructure(ExampleClass::class);
+        $collection = $structure->getProperties();
+
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeDoesNotMatch('string')
+        ));
+        self::assertCount(4, $collection->filter(
+            PropertyFilter::make()->typeDoesNotMatch(3)
+        ));
+        self::assertCount(5, $collection->filter(
+            PropertyFilter::make()->typeDoesNotMatch(null)
+        ));
+        self::assertCount(7, $collection->filter(
+            PropertyFilter::make()->typeDoesNotMatch(11.0)
         ));
     }
 
