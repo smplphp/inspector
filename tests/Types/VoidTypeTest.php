@@ -107,9 +107,9 @@ class VoidTypeTest extends TestCase
     /**
      * @test
      */
-    public function void_types_match_null(): void
+    public function void_types_dont_match_null(): void
     {
-        self::assertTrue($this->type->matches(null));
+        self::assertFalse($this->type->matches(null));
     }
 
     /**

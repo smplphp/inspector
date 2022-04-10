@@ -15,7 +15,7 @@ class VoidType extends BaseType
 
     public function matches(mixed $value): bool
     {
-        return $value === null;
+        return false;
     }
 
     public function accepts(Type|string $type): bool

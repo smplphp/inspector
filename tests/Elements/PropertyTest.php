@@ -19,6 +19,7 @@ use Smpl\Inspector\Tests\Fixtures\IntersectionClass;
 use Smpl\Inspector\Tests\Fixtures\PropertyAttribute;
 use Smpl\Inspector\Types\FloatType;
 use Smpl\Inspector\Types\IntType;
+use Smpl\Inspector\Types\NullableType;
 use Smpl\Inspector\Types\StringType;
 
 /**
@@ -503,10 +504,10 @@ class PropertyTest extends TestCase
             PropertyFilter::make()->hasType(new StringType())
         ));
         self::assertCount(2, $collection->filter(
-            PropertyFilter::make()->hasType('int')
+            PropertyFilter::make()->hasType('?int')
         ));
         self::assertCount(2, $collection->filter(
-            PropertyFilter::make()->hasType(new IntType())
+            PropertyFilter::make()->hasType(new NullableType(new IntType()))
         ));
         self::assertCount(0, $collection->filter(
             PropertyFilter::make()->hasType(new FloatType())

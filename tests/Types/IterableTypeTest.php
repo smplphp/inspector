@@ -228,8 +228,8 @@ class IterableTypeTest extends TestCase
      */
     public function iterable_types_accept_mixed_types(): void
     {
-        self::assertFalse($this->type->accepts('mixed'));
-        self::assertFalse($this->type->accepts(new MixedType()));
+        self::assertTrue($this->type->accepts('mixed'));
+        self::assertTrue($this->type->accepts(new MixedType()));
     }
 
     /**

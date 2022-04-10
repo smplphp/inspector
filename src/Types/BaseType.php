@@ -39,6 +39,10 @@ abstract class BaseType implements Type
             return true;
         }
 
+        if ($type === 'mixed' || $type instanceof MixedType) {
+            return true;
+        }
+
         if (! ($type instanceof Type)) {
             $type = TypeFactory::getInstance()->make($type);
         }

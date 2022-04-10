@@ -56,6 +56,10 @@ class SelfType extends BaseType implements WrapperType
 
     public function accepts(Type|string $type): bool
     {
+        if ($type === 'mixed' || $type instanceof MixedType) {
+            return true;
+        }
+
         if (! ($type instanceof Type)) {
             $type = TypeFactory::getInstance()->make($type);
         }

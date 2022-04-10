@@ -172,7 +172,7 @@ final class MethodFilter implements MethodFilterContract
             $this->hasReturnType = TypeFactory::getInstance()->make($this->hasReturnType);
         }
 
-        return $this->hasReturnType->accepts($type);
+        return $this->hasReturnType->getName() === $type->getName();
     }
 
     private function checkStatic(Method $method): bool

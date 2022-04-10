@@ -20,6 +20,10 @@ class FalseType extends BaseType
 
     public function accepts(Type|string $type): bool
     {
+        if ($type === 'mixed' || $type instanceof MixedType) {
+            return true;
+        }
+
         return ($type instanceof Type ? $type->getName() : $type) === $this->getName();
     }
 
