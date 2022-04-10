@@ -192,7 +192,7 @@ class MethodTest extends TestCase
         $parameters    = $method->getParameters(ParameterFilter::make()->hasType('int'));
 
         self::assertCount(3, $allParameters);
-        self::assertCount(2, $parameters);
+        self::assertCount(1, $parameters);
     }
 
     /**

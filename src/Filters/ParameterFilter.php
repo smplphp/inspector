@@ -143,7 +143,7 @@ final class ParameterFilter implements ParameterFilterContract
             $this->hasType = TypeFactory::getInstance()->make($this->hasType);
         }
 
-        return $this->hasType->accepts($type);
+        return $this->hasType->getName() === $type->getName();
     }
 
     private function checkNullable(Parameter $parameter): bool

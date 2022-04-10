@@ -17,6 +17,7 @@ use Smpl\Inspector\Tests\Fixtures\VariadicMethodInterface;
 use Smpl\Inspector\Types\BoolType;
 use Smpl\Inspector\Types\FloatType;
 use Smpl\Inspector\Types\IntType;
+use Smpl\Inspector\Types\NullableType;
 use Smpl\Inspector\Types\StringType;
 
 /**
@@ -394,17 +395,17 @@ class ParameterTest extends TestCase
         self::assertCount(1, $collection->filter(
             ParameterFilter::make()->hasType(new StringType())
         ));
-        self::assertCount(2, $collection->filter(
+        self::assertCount(1, $collection->filter(
             ParameterFilter::make()->hasType('int')
         ));
-        self::assertCount(2, $collection->filter(
+        self::assertCount(1, $collection->filter(
             ParameterFilter::make()->hasType(new IntType())
         ));
         self::assertCount(1, $collection->filter(
-            ParameterFilter::make()->hasType('bool')
+            ParameterFilter::make()->hasType('?bool')
         ));
         self::assertCount(1, $collection->filter(
-            ParameterFilter::make()->hasType(new BoolType())
+            ParameterFilter::make()->hasType(new NullableType(new BoolType()))
         ));
         self::assertCount(0, $collection->filter(
             ParameterFilter::make()->hasType('float')
