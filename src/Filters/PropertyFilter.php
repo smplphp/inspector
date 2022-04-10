@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Filters;
 
-use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\PropertyFilter as PropertyFilterContract;
 use Smpl\Inspector\Contracts\Type;
@@ -218,6 +217,7 @@ final class PropertyFilter implements PropertyFilterContract
             $type = TypeFactory::getInstance()->make('mixed');
         }
 
+        /** @infection-ignore-all */
         if (! ($this->acceptType instanceof Type)) {
             $this->acceptType = TypeFactory::getInstance()->make($this->acceptType);
         }
