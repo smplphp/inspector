@@ -65,6 +65,42 @@ interface ParameterFilter
     public function hasType(string|Type $type): static;
 
     /**
+     * Filter parameters by types that accept the provided type.
+     *
+     * @param string|\Smpl\Inspector\Contracts\Type $type
+     *
+     * @return static
+     */
+    public function typeAccepts(string|Type $type): static;
+
+    /**
+     * Filter parameters by types that do not accept the provided type.
+     *
+     * @param string|\Smpl\Inspector\Contracts\Type $type
+     *
+     * @return static
+     */
+    public function typeDoesNotAccept(string|Type $type): static;
+
+    /**
+     * Filter parameters by types that match the provided value.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     */
+    public function typeMatches(mixed $value): static;
+
+    /**
+     * Filter parameters by types that do not match the provided value.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     */
+    public function typeDoesNotMatch(mixed $value): static;
+
+    /**
      * Filter parameters that are nullable.
      *
      * @return static

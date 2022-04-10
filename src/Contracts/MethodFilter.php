@@ -66,6 +66,42 @@ interface MethodFilter
     public function hasNoReturnType(): static;
 
     /**
+     * Filter methods by types that accept the provided type.
+     *
+     * @param string|\Smpl\Inspector\Contracts\Type $type
+     *
+     * @return static
+     */
+    public function returnTypeAccepts(string|Type $type): static;
+
+    /**
+     * Filter methods by types that do not accept the provided type.
+     *
+     * @param string|\Smpl\Inspector\Contracts\Type $type
+     *
+     * @return static
+     */
+    public function returnTypeDoesNotAccept(string|Type $type): static;
+
+    /**
+     * Filter methods by types that match the provided value.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     */
+    public function returnTypeMatches(mixed $value): static;
+
+    /**
+     * Filter methods by types that do not match the provided value.
+     *
+     * @param mixed $value
+     *
+     * @return static
+     */
+    public function returnTypeDoesNotMatch(mixed $value): static;
+
+    /**
      * Filter methods that are static.
      *
      * @return static

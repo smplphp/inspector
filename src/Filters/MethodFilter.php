@@ -24,6 +24,10 @@ final class MethodFilter implements MethodFilterContract
     protected array       $visibilities   = [];
     protected ?bool       $isTyped;
     protected string|Type $hasReturnType;
+    protected string|Type $acceptType;
+    protected bool        $accept;
+    protected mixed       $matchValue;
+    protected bool        $match;
     protected bool        $isStatic;
     protected bool        $isNullable;
     protected bool        $hasDefaultValue;
@@ -74,6 +78,34 @@ final class MethodFilter implements MethodFilterContract
     public function hasNoReturnType(): static
     {
         $this->isTyped = false;
+        return $this;
+    }
+
+    public function returnTypeAccepts(Type|string $type): static
+    {
+        $this->acceptType = $type;
+        $this->accept     = true;
+        return $this;
+    }
+
+    public function returnTypeDoesNotAccept(Type|string $type): static
+    {
+        $this->acceptType = $type;
+        $this->accept     = false;
+        return $this;
+    }
+
+    public function returnTypeMatches(mixed $value): static
+    {
+        $this->matchValue = $value;
+        $this->match      = true;
+        return $this;
+    }
+
+    public function returnTypeDoesNotMatch(mixed $value): static
+    {
+        $this->matchValue = $value;
+        $this->match      = false;
         return $this;
     }
 
@@ -131,6 +163,8 @@ final class MethodFilter implements MethodFilterContract
         return $this->checkVisibility($method)
             && $this->checkTyped($method)
             && $this->checkType($method)
+            && $this->checkAcceptsType($method)
+            && $this->checkMatchesType($method)
             && $this->checkStatic($method)
             && $this->checkParameters($method)
             && $this->checkParameterCount($method)
@@ -173,6 +207,36 @@ final class MethodFilter implements MethodFilterContract
         }
 
         return $this->hasReturnType->getName() === $type->getName();
+    }
+
+    private function checkAcceptsType(Method $method): bool
+    {
+        if (! isset($this->accept)) {
+            return true;
+        }
+
+        $type = $method->getReturnType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        return $this->accept === $type->accepts($this->acceptType);
+    }
+
+    private function checkMatchesType(Method $method): bool
+    {
+        if (! isset($this->match)) {
+            return true;
+        }
+
+        $type = $method->getReturnType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        return $this->match === $type->matches($this->matchValue);
     }
 
     private function checkStatic(Method $method): bool

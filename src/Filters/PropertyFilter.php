@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Filters;
 
+use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\Property;
 use Smpl\Inspector\Contracts\PropertyFilter as PropertyFilterContract;
 use Smpl\Inspector\Contracts\Type;
@@ -23,6 +24,10 @@ final class PropertyFilter implements PropertyFilterContract
     protected array       $visibilities = [];
     protected ?bool       $isTyped;
     protected string|Type $hasType;
+    protected string|Type $acceptType;
+    protected bool        $accept;
+    protected mixed       $matchValue;
+    protected bool        $match;
     protected bool        $isStatic;
     protected bool        $isNullable;
     protected bool        $hasDefaultValue;
@@ -71,6 +76,34 @@ final class PropertyFilter implements PropertyFilterContract
     public function hasType(Type|string $type): static
     {
         $this->hasType = $type;
+        return $this;
+    }
+
+    public function typeAccepts(Type|string $type): static
+    {
+        $this->acceptType = $type;
+        $this->accept     = true;
+        return $this;
+    }
+
+    public function typeDoesNotAccept(Type|string $type): static
+    {
+        $this->acceptType = $type;
+        $this->accept     = false;
+        return $this;
+    }
+
+    public function typeMatches(mixed $value): static
+    {
+        $this->matchValue = $value;
+        $this->match      = true;
+        return $this;
+    }
+
+    public function typeDoesNotMatch(mixed $value): static
+    {
+        $this->matchValue = $value;
+        $this->match      = false;
         return $this;
     }
 
@@ -128,6 +161,8 @@ final class PropertyFilter implements PropertyFilterContract
         return $this->checkVisibility($property)
             && $this->checkTyped($property)
             && $this->checkType($property)
+            && $this->checkAcceptsType($property)
+            && $this->checkMatchesType($property)
             && $this->checkStatic($property)
             && $this->checkNullable($property)
             && $this->checkDefaultValue($property)
@@ -169,6 +204,36 @@ final class PropertyFilter implements PropertyFilterContract
         }
 
         return $type->getName() === $this->hasType->getName();
+    }
+
+    private function checkAcceptsType(Property $property): bool
+    {
+        if (! isset($this->accept)) {
+            return true;
+        }
+
+        $type = $property->getType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        return $this->accept === $type->accepts($this->acceptType);
+    }
+
+    private function checkMatchesType(Property $property): bool
+    {
+        if (! isset($this->match)) {
+            return true;
+        }
+
+        $type = $property->getType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        return $this->match === $type->matches($this->matchValue);
     }
 
     private function checkStatic(Property $property): bool

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Smpl\Inspector\Filters;
 
+use Smpl\Inspector\Contracts\Method;
 use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\ParameterFilter as ParameterFilterContract;
 use Smpl\Inspector\Contracts\Type;
@@ -18,6 +19,10 @@ final class ParameterFilter implements ParameterFilterContract
 
     protected ?bool       $isTyped;
     protected string|Type $hasType;
+    protected string|Type $acceptType;
+    protected bool        $accept;
+    protected mixed       $matchValue;
+    protected bool        $match;
     protected ?bool       $isPromoted;
     protected ?bool       $isVariadic;
     protected bool        $isNullable;
@@ -43,6 +48,34 @@ final class ParameterFilter implements ParameterFilterContract
     public function hasType(Type|string $type): static
     {
         $this->hasType = $type;
+        return $this;
+    }
+
+    public function typeAccepts(Type|string $type): static
+    {
+        $this->acceptType = $type;
+        $this->accept     = true;
+        return $this;
+    }
+
+    public function typeDoesNotAccept(Type|string $type): static
+    {
+        $this->acceptType = $type;
+        $this->accept     = false;
+        return $this;
+    }
+
+    public function typeMatches(mixed $value): static
+    {
+        $this->matchValue = $value;
+        $this->match      = true;
+        return $this;
+    }
+
+    public function typeDoesNotMatch(mixed $value): static
+    {
+        $this->matchValue = $value;
+        $this->match      = false;
         return $this;
     }
 
@@ -111,6 +144,8 @@ final class ParameterFilter implements ParameterFilterContract
     {
         return $this->checkTyped($parameter)
             && $this->checkType($parameter)
+            && $this->checkAcceptsType($parameter)
+            && $this->checkMatchesType($parameter)
             && $this->checkNullable($parameter)
             && $this->checkDefaultValue($parameter)
             && $this->checkPromoted($parameter)
@@ -144,6 +179,36 @@ final class ParameterFilter implements ParameterFilterContract
         }
 
         return $this->hasType->getName() === $type->getName();
+    }
+
+    private function checkAcceptsType(Parameter $parameter): bool
+    {
+        if (! isset($this->accept)) {
+            return true;
+        }
+
+        $type = $parameter->getType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        return $this->accept === $type->accepts($this->acceptType);
+    }
+
+    private function checkMatchesType(Parameter $parameter): bool
+    {
+        if (! isset($this->match)) {
+            return true;
+        }
+
+        $type = $parameter->getType();
+
+        if ($type === null) {
+            return false;
+        }
+
+        return $this->match === $type->matches($this->matchValue);
     }
 
     private function checkNullable(Parameter $parameter): bool
