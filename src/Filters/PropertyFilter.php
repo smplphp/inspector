@@ -168,7 +168,7 @@ final class PropertyFilter implements PropertyFilterContract
             $this->hasType = TypeFactory::getInstance()->make($this->hasType);
         }
 
-        return $this->hasType->accepts($type);
+        return $type->getName() === $this->hasType->getName();
     }
 
     private function checkStatic(Property $property): bool
