@@ -2,6 +2,7 @@
 
 namespace Smpl\Inspector\Contracts;
 
+use Closure as BaseClosure;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;
@@ -23,6 +24,26 @@ use ReflectionProperty;
  */
 interface StructureFactory
 {
+    /**
+     * Make a closure instance for the provided closure.
+     *
+     * @param BaseClosure $closure
+     *
+     * @return \Smpl\Inspector\Contracts\Closure
+     */
+    public function makeClosure(BaseClosure $closure): Closure;
+
+    /**
+     * Make a collection of closures parameters for the provided closure.
+     *
+     * @param \Smpl\Inspector\Contracts\Closure $closure
+     *
+     * @return \Smpl\Inspector\Contracts\ClosureParameterCollection
+     *
+     * @throws \Smpl\Inspector\Exceptions\InspectorException
+     */
+    public function makeClosureParameters(Closure $closure): ClosureParameterCollection;
+
     /**
      * Make a structure for the provided class name or object.
      *

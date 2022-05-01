@@ -8,6 +8,8 @@ use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Type as SebastianBergmann;
 use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Elements\Attribute;
+use Smpl\Inspector\Elements\BaseFunction;
+use Smpl\Inspector\Elements\Closure;
 use Smpl\Inspector\Elements\InheritedMethod;
 use Smpl\Inspector\Elements\InheritedProperty;
 use Smpl\Inspector\Elements\Metadata;
@@ -86,7 +88,7 @@ class InspectionTest extends TestCase
                                ->inPath('./src/Elements')
                                ->getStructures();
 
-        self::assertCount(8, $structures);
+        self::assertCount(10, $structures);
         self::assertTrue($structures->has(Attribute::class));
         self::assertTrue($structures->has(InheritedMethod::class));
         self::assertTrue($structures->has(InheritedProperty::class));
@@ -95,6 +97,8 @@ class InspectionTest extends TestCase
         self::assertTrue($structures->has(Parameter::class));
         self::assertTrue($structures->has(Property::class));
         self::assertTrue($structures->has(Structure::class));
+        self::assertTrue($structures->has(Closure::class));
+        self::assertTrue($structures->has(BaseFunction::class));
     }
 
     /**
@@ -107,7 +111,7 @@ class InspectionTest extends TestCase
                                ->inNamespace('Smpl\Inspector\Elements')
                                ->getStructures();
 
-        self::assertCount(8, $structures);
+        self::assertCount(10, $structures);
         self::assertTrue($structures->has(Attribute::class));
         self::assertTrue($structures->has(InheritedMethod::class));
         self::assertTrue($structures->has(InheritedProperty::class));
@@ -116,6 +120,8 @@ class InspectionTest extends TestCase
         self::assertTrue($structures->has(Parameter::class));
         self::assertTrue($structures->has(Property::class));
         self::assertTrue($structures->has(Structure::class));
+        self::assertTrue($structures->has(Closure::class));
+        self::assertTrue($structures->has(BaseFunction::class));
     }
 
     /**
@@ -128,7 +134,7 @@ class InspectionTest extends TestCase
                                ->inPaths('./src/Elements', './src/Filters')
                                ->getStructures();
 
-        self::assertCount(12, $structures);
+        self::assertCount(14, $structures);
         self::assertTrue($structures->has(Attribute::class));
         self::assertTrue($structures->has(InheritedMethod::class));
         self::assertTrue($structures->has(InheritedProperty::class));
@@ -141,6 +147,8 @@ class InspectionTest extends TestCase
         self::assertTrue($structures->has(ParameterFilter::class));
         self::assertTrue($structures->has(PropertyFilter::class));
         self::assertTrue($structures->has(StructureFilter::class));
+        self::assertTrue($structures->has(Closure::class));
+        self::assertTrue($structures->has(BaseFunction::class));
     }
 
     /**
@@ -153,7 +161,7 @@ class InspectionTest extends TestCase
                                ->inNamespaces('Smpl\Inspector\Elements', 'Smpl\Inspector\Filters')
                                ->getStructures();
 
-        self::assertCount(12, $structures);
+        self::assertCount(14, $structures);
         self::assertTrue($structures->has(Attribute::class));
         self::assertTrue($structures->has(InheritedMethod::class));
         self::assertTrue($structures->has(InheritedProperty::class));
@@ -166,6 +174,8 @@ class InspectionTest extends TestCase
         self::assertTrue($structures->has(ParameterFilter::class));
         self::assertTrue($structures->has(PropertyFilter::class));
         self::assertTrue($structures->has(StructureFilter::class));
+        self::assertTrue($structures->has(Closure::class));
+        self::assertTrue($structures->has(BaseFunction::class));
     }
 
     /**

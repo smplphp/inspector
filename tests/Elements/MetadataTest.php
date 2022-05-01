@@ -11,6 +11,7 @@ use Smpl\Inspector\Tests\Fixtures\AttributeInterface;
 use Smpl\Inspector\Tests\Fixtures\ClassAttribute;
 use Smpl\Inspector\Tests\Fixtures\EmptyishClass;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;
+use Smpl\Inspector\Tests\Fixtures\FunctionAttribute;
 use Smpl\Inspector\Tests\Fixtures\MethodAttribute;
 use Smpl\Inspector\Tests\Fixtures\ParameterAttribute;
 use Smpl\Inspector\Tests\Fixtures\PropertyAttribute;

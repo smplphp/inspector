@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpSuperClassIncompatibleWithInterfaceInspection */
 
 declare(strict_types=1);
 
