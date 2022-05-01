@@ -19,7 +19,9 @@ use Smpl\Inspector\Tests\Fixtures\AttributeInterface;
 use Smpl\Inspector\Tests\Fixtures\BasicInterface;
 use Smpl\Inspector\Tests\Fixtures\BasicTrait;
 use Smpl\Inspector\Tests\Fixtures\ClassAttribute;
+use Smpl\Inspector\Tests\Fixtures\EmptyInterface;
 use Smpl\Inspector\Tests\Fixtures\EmptyishClass;
+use Smpl\Inspector\Tests\Fixtures\EmptyTrait;
 use Smpl\Inspector\Tests\Fixtures\ExampleClass;
 use Smpl\Inspector\Tests\Fixtures\MethodAttribute;
 use Smpl\Inspector\Tests\Fixtures\SecondExampleClass;
@@ -286,8 +288,9 @@ class StructureTest extends TestCase
         $structure  = $this->factory->makeStructure(ExampleClass::class);
         $interfaces = $structure->getInterfaces();
 
-        self::assertCount(1, $interfaces);
+        self::assertCount(2, $interfaces);
         self::assertNotNull($interfaces->get(BasicInterface::class));
+        self::assertNotNull($interfaces->get(EmptyInterface::class));
     }
 
     /**
@@ -306,13 +309,24 @@ class StructureTest extends TestCase
     /**
      * @test
      */
+    public function structures_inherit_interfaces(): void
+    {
+        $structure = $this->factory->makeStructure(ExampleClass::class);
+
+        self::assertTrue($structure->getInterfaces()->has(EmptyInterface::class));
+    }
+
+    /**
+     * @test
+     */
     public function structures_have_a_collection_of_traits_they_use(): void
     {
         $structure = $this->factory->makeStructure(ExampleClass::class);
         $traits    = $structure->getTraits();
 
-        self::assertCount(1, $traits);
+        self::assertCount(2, $traits);
         self::assertNotNull($traits->get(BasicTrait::class));
+        self::assertNotNull($traits->get(EmptyTrait::class));
     }
 
     /**
@@ -327,6 +341,16 @@ class StructureTest extends TestCase
         self::assertTrue($structure->uses(
             $this->factory->makeStructure(BasicTrait::class)
         ));
+    }
+
+    /**
+     * @test
+     */
+    public function structures_inherit_traits(): void
+    {
+        $structure = $this->factory->makeStructure(ExampleClass::class);
+
+        self::assertTrue($structure->getTraits()->has(EmptyTrait::class));
     }
 
     /**

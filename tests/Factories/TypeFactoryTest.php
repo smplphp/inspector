@@ -199,7 +199,7 @@ class TypeFactoryTest extends TestCase
     public function throws_an_exception_for_nullable_intersection_types(): void
     {
         $this->expectException(TypeException::class);
-        $this->expectExceptionMessage('The provided type \'?' . BasicInterface::class . '&' . ExampleClass::class .'\' is not valid');
+        $this->expectExceptionMessage('The provided type \'?' . BasicInterface::class . '&' . ExampleClass::class . '\' is not valid');
 
         $this->factory->make('?' . BasicInterface::class . '&' . ExampleClass::class);
     }

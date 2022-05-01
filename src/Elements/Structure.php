@@ -169,6 +169,17 @@ class Structure implements StructureContract
                 $interfaces[] = $factory->makeStructure($reflection->getName());
             }
 
+            // If this structure has a parent, we'll want to look at its interfaces too
+            if ($this->getParent() !== null) {
+                /**
+                 * @psalm-suppress PossiblyNullReference
+                 * @infection-ignore-all
+                 */
+                foreach ($this->getParent()->getReflection()->getInterfaces() as $reflection) {
+                    $interfaces[] = $factory->makeStructure($reflection->getName());
+                }
+            }
+
             $this->interfaces = new Structures($interfaces);
         }
 
@@ -183,6 +194,17 @@ class Structure implements StructureContract
 
             foreach ($this->getReflection()->getTraits() as $reflection) {
                 $traits[] = $factory->makeStructure($reflection->getName());
+            }
+
+            // If this structure has a parent, we'll want to look at its traits too
+            if ($this->getParent() !== null) {
+                /**
+                 * @psalm-suppress PossiblyNullReference
+                 * @infection-ignore-all
+                 */
+                foreach ($this->getParent()->getReflection()->getTraits() as $reflection) {
+                    $traits[] = $factory->makeStructure($reflection->getName());
+                }
             }
 
             $this->traits = new Structures($traits);

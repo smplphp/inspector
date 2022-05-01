@@ -24,9 +24,9 @@ class ExampleClass extends EmptyishClass implements BasicInterface
     public BasicInterface&SecondInterface $publicIntersectionType;
 
     public function __construct(
-        string $someString,
-               #[ParameterAttribute] int $someNumber = 2,
-        public readonly bool $promotedPublicBoolProperty = false,
+        string                    $someString,
+        #[ParameterAttribute] int $someNumber = 2,
+        public                    readonly bool $promotedPublicBoolProperty = false,
     )
     {
     }
