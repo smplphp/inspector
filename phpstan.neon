@@ -13,6 +13,8 @@ parameters:
         - message: '#Method ([a-zA-Z\\]+)::([a-zA-Z\(\)]+) should return ([a-zA-Z\\]+) but returns ([a-zA-Z\\\|]+)#'
           paths:
               - src/Factories/StructureFactory.php
+              - src/Elements/Closure.php
+              - src/Elements/Method.php
         - '#Parameter \#1 \$typeName of method Smpl\\Inspector\\Factories\\TypeFactory\:\:createClassType\(\) expects class\-string, string given#'
         - '#Method Smpl\\Inspector\\Inspector\:\:getInstance\(\) should return Smpl\\Inspector\\Inspector but returns Smpl\\Inspector\\Inspector\|null.#'
         - '#Parameter \#1 \$self of method Smpl\\Inspector\\Contracts\\TypeFactory\:\:makeSelf\(\) expects class-string\|ReflectionType\|Smpl\\Inspector\\Contracts\\Type, string given#'

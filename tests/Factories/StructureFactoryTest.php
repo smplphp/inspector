@@ -95,6 +95,42 @@ class StructureFactoryTest extends TestCase
     /**
      * @test
      */
+    public function creates_closure_from_short_anonymous_function(): void
+    {
+        $closure = static fn() => true;
+        $element = $this->structureFactory->makeClosure($closure);
+
+        self::assertSame($closure, $element->getReflection()->getClosure());
+    }
+
+    /**
+     * @test
+     */
+    public function creates_closure_from_anonymous_function(): void
+    {
+        $closure = static function() {
+            return true;
+        };
+        $element = $this->structureFactory->makeClosure($closure);
+
+        self::assertSame($closure, $element->getReflection()->getClosure());
+    }
+
+    /**
+     * @test
+     */
+    public function creates_closure_from_closure_object(): void
+    {
+        /** @noinspection PhpClosureCanBeConvertedToFirstClassCallableInspection */
+        $closure = \Closure::fromCallable(static fn() => true);
+        $element = $this->structureFactory->makeClosure($closure);
+
+        self::assertSame($closure, $element->getReflection()->getClosure());
+    }
+
+    /**
+     * @test
+     */
     public function throws_an_exception_when_trying_to_create_a_structure_for_an_invalid_class(): void
     {
         $this->expectException(StructureException::class);
@@ -287,6 +323,18 @@ class StructureFactoryTest extends TestCase
 
         self::assertCount(1, $collection);
         self::assertSame($method, $collection->getMethod());
+    }
+
+    /**
+     * @test
+     */
+    public function creates_parameter_collection_from_closure(): void
+    {
+        $element    = $this->structureFactory->makeClosure(fn(string $arg) => $arg);
+        $collection = $this->structureFactory->makeClosureParameters($element);
+
+        self::assertCount(1, $collection);
+        self::assertSame($element, $collection->getClosure());
     }
 
     /**

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Tests\Elements;
 
 use PHPUnit\Framework\TestCase;
+use Smpl\Inspector\Contracts\ClosureParameterCollection;
 use Smpl\Inspector\Contracts\MethodParameterCollection;
 use Smpl\Inspector\Contracts\ParameterCollection;
 use Smpl\Inspector\Factories\StructureFactory;
@@ -367,6 +368,19 @@ class ParameterTest extends TestCase
 
         self::assertInstanceOf(ParameterCollection::class, $collection);
         self::assertNotInstanceOf(MethodParameterCollection::class, $baseCollection);
+    }
+
+    /**
+     * @test
+     */
+    public function closure_parameter_collections_can_be_converted_to_their_base_collection(): void
+    {
+        $closure        = $this->factory->makeClosure(fn(string $arg) => $arg);
+        $collection     = $closure->getParameters();
+        $baseCollection = $collection->asBase();
+
+        self::assertInstanceOf(ParameterCollection::class, $collection);
+        self::assertNotInstanceOf(ClosureParameterCollection::class, $baseCollection);
     }
 
     /**
