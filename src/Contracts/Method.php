@@ -12,7 +12,7 @@ use Smpl\Inspector\Support\Visibility;
  *
  * @see \Smpl\Inspector\Contracts\Structure
  */
-interface Method extends AttributableElement
+interface Method extends BaseFunction, AttributableElement
 {
     /**
      * Get the reflection instance for this method.
@@ -29,7 +29,7 @@ interface Method extends AttributableElement
     public function getName(): string;
 
     /**
-     * Get the full name of the method, including the class name.
+     * Get the full name of the method.
      *
      * @return string
      */
@@ -41,13 +41,6 @@ interface Method extends AttributableElement
      * @return \Smpl\Inspector\Support\Visibility
      */
     public function getVisibility(): Visibility;
-
-    /**
-     * Check if the method is static.
-     *
-     * @return bool
-     */
-    public function isStatic(): bool;
 
     /**
      * Check if the method is abstract.
@@ -62,13 +55,6 @@ interface Method extends AttributableElement
      * @return bool
      */
     public function isConstructor(): bool;
-
-    /**
-     * Get the return type of the method.
-     *
-     * @return \Smpl\Inspector\Contracts\Type|null
-     */
-    public function getReturnType(): ?Type;
 
     /**
      * Get the structure this method belongs to.
@@ -95,7 +81,7 @@ interface Method extends AttributableElement
     public function isInherited(): bool;
 
     /**
-     * Get a collection of parameters for this method.
+     * Get a collection of parameters for this function.
      *
      * If the $filter parameter is provided the results will be filtered according
      * to the provided filter.
@@ -107,29 +93,6 @@ interface Method extends AttributableElement
      * @see \Smpl\Inspector\Contracts\MethodParameterCollection::filter()
      */
     public function getParameters(?ParameterFilter $filter = null): MethodParameterCollection;
-
-    /**
-     * Get a parameter for this method by name or position.
-     *
-     * @param string|int $parameter
-     *
-     * @return \Smpl\Inspector\Contracts\Parameter|null
-     *
-     * @see \Smpl\Inspector\Contracts\MethodParameterCollection::get()
-     */
-    public function getParameter(string|int $parameter): ?Parameter;
-
-    /**
-     * Check if this method has a parameter by the provided name or at the
-     * provided position.
-     *
-     * @param string|int $parameter
-     *
-     * @return bool
-     *
-     * @see \Smpl\Inspector\Contracts\MethodParameterCollection::has()
-     */
-    public function hasParameter(string|int $parameter): bool;
 
     /**
      * Get a collection of metadata for this method.

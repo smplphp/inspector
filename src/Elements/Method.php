@@ -9,42 +9,40 @@ use Smpl\Inspector\Concerns\HasAttributes;
 use Smpl\Inspector\Contracts\Method as MethodContract;
 use Smpl\Inspector\Contracts\MethodMetadataCollection;
 use Smpl\Inspector\Contracts\MethodParameterCollection;
-use Smpl\Inspector\Contracts\Parameter;
 use Smpl\Inspector\Contracts\ParameterFilter;
 use Smpl\Inspector\Contracts\Structure;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Factories\StructureFactory;
 use Smpl\Inspector\Support\Visibility;
 
-class Method implements MethodContract
+class Method extends BaseFunction implements MethodContract
 {
     use HasAttributes;
 
-    private ReflectionMethod          $reflection;
     private Structure                 $structure;
-    private ?Type                     $type;
     private Visibility                $visibility;
     private MethodParameterCollection $parameters;
     private MethodMetadataCollection  $metadata;
 
     public function __construct(Structure $structure, ReflectionMethod $reflection, ?Type $type = null)
     {
-        $this->structure  = $structure;
-        $this->reflection = $reflection;
-        $this->type       = $type;
+        $this->structure = $structure;
+        parent::__construct($reflection, $type);
     }
 
     /**
      * @codeCoverageIgnore
+     * @psalm-suppress MoreSpecificReturnType
+     * @psalm-suppress LessSpecificReturnStatement
      */
     public function getReflection(): ReflectionMethod
     {
-        return $this->reflection;
+        return parent::getReflection();
     }
 
     public function getName(): string
     {
-        return $this->reflection->getShortName();
+        return $this->getReflection()->getShortName();
     }
 
     public function getFullName(): string
@@ -61,24 +59,14 @@ class Method implements MethodContract
         return $this->visibility;
     }
 
-    public function isStatic(): bool
-    {
-        return $this->reflection->isStatic();
-    }
-
     public function isAbstract(): bool
     {
-        return $this->reflection->isAbstract();
+        return $this->getReflection()->isAbstract();
     }
 
     public function isConstructor(): bool
     {
         return $this->getReflection()->isConstructor();
-    }
-
-    public function getReturnType(): ?Type
-    {
-        return $this->type;
     }
 
     public function getStructure(): Structure
@@ -116,19 +104,5 @@ class Method implements MethodContract
         }
 
         return $this->metadata;
-    }
-
-    public function getParameter(int|string $parameter): ?Parameter
-    {
-        return is_string($parameter)
-            ? $this->getParameters()->get($parameter)
-            : $this->getParameters()->indexOf($parameter);
-    }
-
-    public function hasParameter(int|string $parameter): bool
-    {
-        return is_string($parameter)
-            ? $this->getParameters()->has($parameter)
-            : $this->getParameters()->indexOf($parameter) !== null;
     }
 }
