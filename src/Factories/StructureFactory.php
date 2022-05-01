@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Smpl\Inspector\Factories;
 
 use Attribute as BaseAttribute;
+use Closure as BaseClosure;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionFunction;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionParameter;
@@ -16,6 +18,8 @@ use ReflectionType;
 use Smpl\Inspector\Collections;
 use Smpl\Inspector\Concerns;
 use Smpl\Inspector\Contracts;
+use Smpl\Inspector\Contracts\Closure;
+use Smpl\Inspector\Contracts\ClosureMetadataCollection;
 use Smpl\Inspector\Elements;
 use Smpl\Inspector\Exceptions;
 use Smpl\Inspector\Support\AttributeTarget;
@@ -80,7 +84,7 @@ class StructureFactory implements Contracts\StructureFactory
             return null;
         }
 
-        /** @infection-ignore-all  */
+        /** @infection-ignore-all */
         if (
             ($type instanceof ReflectionNamedType)
             && $class !== null
@@ -206,6 +210,16 @@ class StructureFactory implements Contracts\StructureFactory
         }
 
         return new Collections\Properties($array);
+    }
+
+    public function makeClosure(BaseClosure $closure): Contracts\Closure
+    {
+        $reflection = new ReflectionFunction($closure);
+
+        return new Elements\Closure(
+            $reflection,
+            $this->getType($reflection->getReturnType())
+        );
     }
 
     /**
@@ -370,6 +384,14 @@ class StructureFactory implements Contracts\StructureFactory
         }
 
         return new Collections\Parameters($array);
+    }
+
+    public function makeClosureParameters(Contracts\Closure $closure): Contracts\ClosureParameterCollection
+    {
+        return Collections\ClosureParameters::for(
+            $closure,
+            $this->makeParameters(...$closure->getReflection()->getParameters())
+        );
     }
 
     public function makeMethodParameters(Contracts\Method $method): Contracts\MethodParameterCollection
