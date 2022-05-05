@@ -9,7 +9,8 @@ use RecursiveIteratorIterator;
 use RegexIterator;
 use Smpl\Inspector\Concerns\CachesMappings;
 use Smpl\Inspector\Contracts\Mapper;
-use Smpl\Inspector\Support\MapperHelper;
+use Smpl\Inspector\Support\ClassHelper;
+use Smpl\Inspector\Support\PathHelper;
 
 class PSR4Mapper implements Mapper
 {
@@ -42,8 +43,8 @@ class PSR4Mapper implements Mapper
      */
     private function findClassesIn(string $path, string $baseNamespace, string $basePath, array &$classes): void
     {
-        $path     = MapperHelper::normalisePath($path);
-        $basePath = MapperHelper::normalisePath($basePath);
+        $path     = PathHelper::normalisePath($path);
+        $basePath = PathHelper::normalisePath($basePath);
 
         $files = new RegexIterator(
             new RecursiveIteratorIterator(
@@ -62,10 +63,10 @@ class PSR4Mapper implements Mapper
             /**
              * @var array<string> $file
              */
-            $fqn = MapperHelper::getPSR4NamespaceFromPath($basePath, $baseNamespace, $file[0]);
+            $fqn = ClassHelper::getPSR4NamespaceFromPath($basePath, $baseNamespace, $file[0]);
 
-            if (MapperHelper::isValidClass($fqn)) {
-                $classes[] = ltrim($fqn, MapperHelper::NAMESPACE_SEPARATOR);
+            if (ClassHelper::isValidClass($fqn)) {
+                $classes[] = ltrim($fqn, ClassHelper::NAMESPACE_SEPARATOR);
             }
         }
     }
@@ -83,12 +84,12 @@ class PSR4Mapper implements Mapper
         $classes = [];
 
         foreach ($this->map as $namespace => $classPaths) {
-            $namespace = MapperHelper::normaliseNamespace($namespace);
+            $namespace = ClassHelper::normaliseNamespace($namespace);
 
             foreach ($classPaths as $classPath) {
-                if (MapperHelper::isSubDirOf($classPath, $path, $depth)) {
+                if (PathHelper::isSubDirOf($classPath, $path, $depth)) {
                     $pathCheck = $classPath;
-                } else if (MapperHelper::isSubDirOf($path, $classPath, $depth)) {
+                } else if (PathHelper::isSubDirOf($path, $classPath, $depth)) {
                     $pathCheck = $path;
                 } else {
                     /** @infection-ignore-all */
@@ -115,15 +116,15 @@ class PSR4Mapper implements Mapper
         $classes = [];
 
         foreach ($this->map as $psrNamespace => $classPaths) {
-            $psrNamespace = MapperHelper::normaliseNamespace($psrNamespace);
+            $psrNamespace = ClassHelper::normaliseNamespace($psrNamespace);
 
             foreach ($classPaths as $classPath) {
-                $realPath = MapperHelper::normalisePath($classPath);
+                $realPath = PathHelper::normalisePath($classPath);
 
-                if (MapperHelper::isSubNamespaceOf($psrNamespace, $namespace, $depth)) {
+                if (ClassHelper::isSubNamespaceOf($psrNamespace, $namespace, $depth)) {
                     $pathCheck = $realPath;
-                } else if (MapperHelper::isSubNamespaceOf($namespace, $psrNamespace, $depth)) {
-                    $pathCheck = MapperHelper::getPathFromNamespace($namespace, $psrNamespace, $realPath);
+                } else if (ClassHelper::isSubNamespaceOf($namespace, $psrNamespace, $depth)) {
+                    $pathCheck = ClassHelper::getPathFromNamespace($namespace, $psrNamespace, $realPath);
                 } else {
                     /** @infection-ignore-all */
                     continue;
@@ -138,7 +139,7 @@ class PSR4Mapper implements Mapper
 
     public function mapPath(string $path, ?int $depth = null): array
     {
-        $path = MapperHelper::normalisePath($path);
+        $path = PathHelper::normalisePath($path);
 
         return $this->getOrStorePathMapping(
             $path, fn() => $this->mapPathsFromMap($path, $depth)
@@ -147,7 +148,7 @@ class PSR4Mapper implements Mapper
 
     public function mapNamespace(string $namespace, ?int $depth = null): array
     {
-        $namespace = MapperHelper::normaliseNamespace($namespace);
+        $namespace = ClassHelper::normaliseNamespace($namespace);
 
         return $this->getOrStoreNamespaceMapping(
             $namespace, fn() => $this->mapNamespacesFromMap($namespace, $depth)

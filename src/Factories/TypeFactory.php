@@ -11,7 +11,7 @@ use ReflectionUnionType;
 use Smpl\Inspector\Contracts;
 use Smpl\Inspector\Contracts\Type;
 use Smpl\Inspector\Exceptions\TypeException;
-use Smpl\Inspector\Support\MapperHelper;
+use Smpl\Inspector\Support\ClassHelper;
 use Smpl\Inspector\Types;
 
 class TypeFactory implements Contracts\TypeFactory
@@ -315,7 +315,7 @@ class TypeFactory implements Contracts\TypeFactory
      */
     private function createBaseType(string $typeName): Contracts\Type
     {
-        if (MapperHelper::isValidClass($typeName)) {
+        if (ClassHelper::isValidClass($typeName)) {
             return $this->createClassType($typeName);
         }
 

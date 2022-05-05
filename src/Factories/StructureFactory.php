@@ -18,12 +18,11 @@ use ReflectionType;
 use Smpl\Inspector\Collections;
 use Smpl\Inspector\Concerns;
 use Smpl\Inspector\Contracts;
-use Smpl\Inspector\Contracts\Closure;
 use Smpl\Inspector\Contracts\ClosureMetadataCollection;
 use Smpl\Inspector\Elements;
 use Smpl\Inspector\Exceptions;
 use Smpl\Inspector\Support\AttributeTarget;
-use Smpl\Inspector\Support\MapperHelper;
+use Smpl\Inspector\Support\ClassHelper;
 use Smpl\Inspector\Support\StructureType;
 
 class StructureFactory implements Contracts\StructureFactory
@@ -97,7 +96,7 @@ class StructureFactory implements Contracts\StructureFactory
                 return $this->typeFactory->makeStatic($class);
             }
 
-            if (MapperHelper::isValidClass($type->getName())) {
+            if (ClassHelper::isValidClass($type->getName())) {
                 return $this->typeFactory->make(
                     ($type->allowsNull() ? '?' : '') . $type->getName()
                 );
@@ -231,7 +230,7 @@ class StructureFactory implements Contracts\StructureFactory
         // Get the name from the object if one was passed
         $name = is_object($class) ? $class::class : $class;
 
-        if (! MapperHelper::isValidClass($name)) {
+        if (! ClassHelper::isValidClass($name)) {
             /** @infection-ignore-all */
             throw Exceptions\StructureException::invalidClass($name);
         }
@@ -412,7 +411,7 @@ class StructureFactory implements Contracts\StructureFactory
             throw Exceptions\AttributeException::baseAttribute();
         }
 
-        if (! MapperHelper::isValidClass($class)) {
+        if (! ClassHelper::isValidClass($class)) {
             /** @infection-ignore-all */
             throw Exceptions\StructureException::invalidClass($class);
         }

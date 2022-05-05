@@ -7,7 +7,8 @@ namespace Smpl\Inspector\Mappers;
 use Smpl\Inspector\Concerns\CachesMappings;
 use Smpl\Inspector\Contracts\Mapper;
 use Smpl\Inspector\Exceptions\MapperException;
-use Smpl\Inspector\Support\MapperHelper;
+use Smpl\Inspector\Support\ClassHelper;
+use Smpl\Inspector\Support\PathHelper;
 
 class ClassmapMapper implements Mapper
 {
@@ -39,8 +40,8 @@ class ClassmapMapper implements Mapper
         $classes = [];
 
         foreach ($this->classmap as $class => $classPath) {
-            if (MapperHelper::isFileInDir($classPath, $path, $depth)) {
-                if (! MapperHelper::isValidClass($class)) {
+            if (PathHelper::isFileInDir($classPath, $path, $depth)) {
+                if (! ClassHelper::isValidClass($class)) {
                     throw MapperException::invalidClass($class);
                 }
 
@@ -66,7 +67,7 @@ class ClassmapMapper implements Mapper
         $classes = [];
 
         foreach ($this->classmap as $class => $classPath) {
-            if (MapperHelper::isClassInNamespace($class, $namespace, $depth)) {
+            if (ClassHelper::isClassInNamespace($class, $namespace, $depth)) {
                 $classes[] = $class;
             }
         }
@@ -76,7 +77,7 @@ class ClassmapMapper implements Mapper
 
     public function mapPath(string $path, ?int $depth = null): array
     {
-        $path = MapperHelper::normalisePath($path);
+        $path = PathHelper::normalisePath($path);
 
         return $this->getOrStorePathMapping(
             $path, fn() => $this->mapPathsFromClassMap($path, $depth)

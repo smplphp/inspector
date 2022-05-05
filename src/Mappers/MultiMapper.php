@@ -6,7 +6,8 @@ namespace Smpl\Inspector\Mappers;
 
 use Smpl\Inspector\Concerns\CachesMappings;
 use Smpl\Inspector\Contracts\Mapper;
-use Smpl\Inspector\Support\MapperHelper;
+use Smpl\Inspector\Support\ClassHelper;
+use Smpl\Inspector\Support\PathHelper;
 
 class MultiMapper implements Mapper
 {
@@ -33,7 +34,7 @@ class MultiMapper implements Mapper
 
     public function mapPath(string $path, ?int $depth = null): array
     {
-        $path = MapperHelper::normalisePath($path);
+        $path = PathHelper::normalisePath($path);
 
         return $this->getOrStorePathMapping($path, function () use ($depth, $path) {
             $classes = [];
@@ -60,7 +61,7 @@ class MultiMapper implements Mapper
 
     public function mapNamespace(string $namespace, ?int $depth = null): array
     {
-        $namespace = MapperHelper::normaliseNamespace($namespace);
+        $namespace = ClassHelper::normaliseNamespace($namespace);
 
         return $this->getOrStoreNamespaceMapping($namespace, function () use ($depth, $namespace) {
             $classes = [];
